@@ -1,0 +1,28 @@
+{
+  "placeholderImages": [
+    {
+      "id": "profile-photo",
+      "description": "A portrait of the tarot reader.",
+      "imageUrl": "https://storage.googleapis.com/aifirebase-79019.appspot.com/users%2F-MJ_6-Gyw6vj-aLp1uF9%2F226f3152-78d1-4447-9dc5-d5e65650130e?alt=media&token=e90e4428-c174-419b-af52-921c50424597",
+      "imageHint": "woman holding tarot cards"
+    },
+    {
+      "id": "card-back",
+      "description": "The back of a tarot card.",
+      "imageUrl": "https://images.unsplash.com/photo-1628304163832-0a4038f2bd6a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx0YXJvdCUyMGNhcmRzfGVufDB8fHx8MTc2NjMwMTEzOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "mystical pattern"
+    },
+    {
+      "id": "booking-hero",
+      "description": "An atmospheric image for the booking page.",
+      "imageUrl": "https://images.unsplash.com/photo-1637757949726-0a4038f2bd6a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx0YXJvdCUyMGNhcmRzfGVufDB8fHx8MTc2NjMwMTEzOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "tarot cards"
+    },
+    {
+      "id": "decorative-pattern",
+      "description": "A decorative background pattern.",
+      "imageUrl": "https://images.unsplash.com/photo-1593623122287-95d3122244a3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxtYWdpYyUyMGJhY2tncm91bmR8ZW58MHx8fHwxNzE4ODMxMzM4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "magic background"
+    }
+  ]
+}

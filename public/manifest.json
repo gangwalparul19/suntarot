@@ -1,0 +1,21 @@
+{
+  "name": "Mystic Insights",
+  "short_name": "Mystic",
+  "description": "A mystical journey of self-discovery through tarot card readings.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#363023",
+  "theme_color": "#D4A95D",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

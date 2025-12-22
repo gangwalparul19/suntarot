@@ -1,0 +1,134 @@
+/**
+ * This ruleset enforces a strict user-ownership model for the Mystic Insights application.
+ *
+ * Core Philosophy:
+ * All user-generated data, including profiles, bookings, and readings, is considered private.
+ * Access is granted only to the authenticated owner of that data. There are no public or shared
+ * collections, and users are strictly prohibited from viewing or modifying another user's data.
+ *
+ * Data Structure:
+ * All data is hierarchically nested under the `/users/{userId}` collection. A user's profile,
+ * their bookings (`/users/{userId}/bookings`), and their readings
+ * (`/users/{userId}/readings`) are all contained within a private
+ * data tree, making it simple to secure the entire tree with a single ownership rule.
+ *
+ * Key Security Decisions:
+ * - Default Deny: All paths are closed by default. Access must be explicitly granted.
+ * - No User Enumeration: Listing the top-level `/users` collection is disallowed to protect user privacy.
+ * - Path-Based Security: Authorization is derived entirely from the `{userId}` in the document path,
+ *   matching it against the authenticated user's ID. This is highly performant and secure.
+ * - Relational Integrity: On document creation, key relational IDs (e.g., a booking's `userId`) are
+ *   validated against the path to ensure data consistency. These IDs are immutable once set.
+ *
+ * Denormalization for Authorization:
+ * The data model is inherently designed for simple, performant rules. By nesting all user data
+ * under `/users/{userId}`, we use the document path as the sole source of truth for ownership.
+ * This completely avoids the need for slow, costly `get()` or `exists()` calls to other collections
+ * to verify permissions.
+ *
+ * Structural Segregation:
+ * The model uses structural segregation by design. All data is private and located within user-specific
+ * subcollections. There are no top-level public collections, which provides a strong security boundary
+ * and simplifies query rules.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions for improved readability and reuse.
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Checks if the requesting user is the owner based on the document path.
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Checks for ownership and ensures the document already exists for state-changing operations.
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+
+    // On create, validates the user document's internal ID matches the path.
+    function hasValidUserData(userId) {
+      return request.resource.data.id == userId;
+    }
+
+    // On update, ensures the user document's internal ID is immutable.
+    function isUserDataImmutable() {
+      return request.resource.data.id == resource.data.id;
+    }
+
+    // On create, validates the booking's internal userId matches the owner's path.
+    function hasValidBookingData(userId) {
+      return request.resource.data.userId == userId;
+    }
+
+    // On update, ensures the booking's internal userId is immutable.
+    function isBookingDataImmutable() {
+      return request.resource.data.userId == resource.data.userId;
+    }
+    
+    // On create, validates the reading's internal userId matches the owner's path.
+    function hasValidReadingData(userId) {
+      return request.resource.data.userId == userId;
+    }
+
+    // On update, ensures the reading's internal userId is immutable.
+    function isReadingDataImmutable() {
+      return request.resource.data.userId == resource.data.userId;
+    }
+
+    /**
+     * @description Controls access to user profile documents.
+     * @path /users/{userId}
+     * @allow (get) A signed-in user reads their own profile: `get /users/user_abc` (auth.uid: 'user_abc').
+     * @allow (create) A new user creates their own profile: `create /users/user_abc` (auth.uid: 'user_abc').
+     * @deny (list) Any user attempts to list all user profiles: `list /users`.
+     * @deny (get) A user tries to read another user's profile: `get /users/user_xyz` (auth.uid: 'user_abc').
+     * @principle Restricts access to a user's own data tree and prevents user enumeration.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false; // Disallow listing users for privacy.
+      allow create: if isOwner(userId) && hasValidUserData(userId);
+      allow update: if isExistingOwner(userId) && isUserDataImmutable();
+      allow delete: if isExistingOwner(userId);
+
+      /**
+       * @description Controls access to a user's private collection of bookings.
+       * @path /users/{userId}/bookings/{bookingId}
+       * @allow (create) A user creates a booking for themselves: `create /users/user_abc/bookings/booking_123` (auth.uid: 'user_abc').
+       * @allow (list) A user lists their own past bookings: `list /users/user_abc/bookings` (auth.uid: 'user_abc').
+       * @deny (update) A user tries to modify another user's booking: `update /users/user_xyz/bookings/booking_456` (auth.uid: 'user_abc').
+       * @deny (list) A user tries to list another user's bookings: `list /users/user_xyz/bookings` (auth.uid: 'user_abc').
+       * @principle Enforces strict ownership for all documents within a user's private subcollection.
+       */
+      match /bookings/{bookingId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && hasValidBookingData(userId);
+        allow update: if isExistingOwner(userId) && isBookingDataImmutable();
+        allow delete: if isExistingOwner(userId);
+      }
+      
+      /**
+       * @description Controls access to a reading associated with a user's booking.
+       * @path /users/{userId}/readings/{readingId}
+       * @allow (get) A user reads one of their own past readings: `get /users/user_abc/readings/r_1` (auth.uid: 'user_abc').
+       * @allow (list) A user lists readings for their booking: `list /users/user_abc/readings` (auth.uid: 'user_abc').
+       * @deny (create) A user tries to create a reading under another user's account: `create /users/user_xyz/readings/r_2` (auth.uid: 'user_abc').
+       * @deny (get) A user tries to read another user's reading: `get /users/user_xyz/readings/r_2` (auth.uid: 'user_abc').
+       * @principle Extends the parent document's ownership rules to nested subcollections.
+       */
+      match /readings/{readingId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && hasValidReadingData(userId);
+        allow update: if isExistingOwner(userId) && isReadingDataImmutable();
+        allow delete: if isExistingOwner(userId);
+      }
+    }
+  }
+}
