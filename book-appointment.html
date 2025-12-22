@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Book your personal tarot reading session with Sun Tarot.">
+    <title>Book Appointment - Sun Tarot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .booking-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Service Selection */
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .service-option {
+            background: var(--color-card);
+            border: 2px solid var(--color-border);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .service-option:hover {
+            border-color: var(--color-primary);
+        }
+
+        .service-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(212, 169, 93, 0.1);
+        }
+
+        .service-option h4 {
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .service-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--color-text);
+        }
+
+        .service-duration {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+        }
+
+        /* Calendar */
+        .calendar-section {
+            display: none;
+        }
+
+        .calendar-section.active {
+            display: block;
+        }
+
+        .date-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .date-option {
+            background: var(--color-card);
+            border: 2px solid var(--color-border);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .date-option:hover {
+            border-color: var(--color-primary);
+        }
+
+        .date-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(212, 169, 93, 0.1);
+        }
+
+        .date-option .day-name {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .date-option .date-display {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--color-text);
+        }
+
+        /* Time Slots */
+        .time-section {
+            display: none;
+        }
+
+        .time-section.active {
+            display: block;
+        }
+
+        .time-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .time-option {
+            background: var(--color-card);
+            border: 2px solid var(--color-border);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .time-option:hover {
+            border-color: var(--color-primary);
+        }
+
+        .time-option.selected {
+            border-color: var(--color-primary);
+            background: var(--color-primary);
+            color: var(--color-background);
+        }
+
+        /* Confirmation */
+        .confirm-section {
+            display: none;
+        }
+
+        .confirm-section.active {
+            display: block;
+        }
+
+        .booking-summary {
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .booking-summary h3 {
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+
+        .notes-input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--color-background-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            color: var(--color-text);
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .notes-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        /* Progress Steps */
+        .progress-steps {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-text-muted);
+        }
+
+        .step.active {
+            color: var(--color-primary);
+        }
+
+        .step.completed {
+            color: var(--color-primary);
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-card);
+            border: 2px solid currentColor;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .step.active .step-number,
+        .step.completed .step-number {
+            background: var(--color-primary);
+            color: var(--color-background);
+            border-color: var(--color-primary);
+        }
+
+        /* Login Prompt */
+        .login-prompt {
+            text-align: center;
+            padding: 3rem;
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+            background: rgba(39, 174, 96, 0.1);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+            border-radius: 1rem;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .success-message h2 {
+            color: #27ae60;
+        }
+
+        /* Auth Container Styles */
+        .auth-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-name {
+            color: var(--color-text);
+            font-size: 0.875rem;
+        }
+
+        #userInfo {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stars" id="stars"></div>
+
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo"><span>☀️</span><span>Sun Tarot</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="reading.html">Reading</a></li>
+                <li><a href="love-reading.html">Love</a></li>
+                <li><a href="learn.html">Learn</a></li>
+                <li><a href="spreads.html">Spreads</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="booking.html">Book</a></li>
+            </ul>
+            <div class="auth-container" id="authContainer">
+                <div id="userInfo"></div>
+                <button class="btn btn-outline" id="loginBtn" onclick="signInWithGoogle()"
+                    style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                    Sign In
+                </button>
+                <button class="btn btn-outline" id="logoutBtn" onclick="signOut()"
+                    style="display: none; padding: 0.5rem 1rem; font-size: 0.875rem;">
+                    Sign Out
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </nav>
+    </header>
+
+    <main class="section" style="padding-top: 120px;">
+        <div class="container booking-container">
+            <div class="section-header">
+                <h1 class="section-title text-primary">Book Your Reading</h1>
+                <p class="section-subtitle">Select a service, pick a date and time that works for you</p>
+            </div>
+
+            <!-- Login Required Message -->
+            <div class="login-prompt" id="loginPrompt">
+                <h2 class="text-primary">Sign In Required</h2>
+                <p class="text-muted" style="margin: 1rem 0 2rem;">Please sign in with Google to book an appointment.
+                </p>
+                <button class="btn btn-primary" onclick="signInWithGoogle()">
+                    🔐 Sign In with Google
+                </button>
+            </div>
+
+            <!-- Booking Flow (hidden until logged in) -->
+            <div id="bookingFlow" style="display: none;">
+                <!-- Progress Steps -->
+                <div class="progress-steps">
+                    <div class="step active" id="step1Indicator">
+                        <span class="step-number">1</span>
+                        <span>Service</span>
+                    </div>
+                    <div class="step" id="step2Indicator">
+                        <span class="step-number">2</span>
+                        <span>Date</span>
+                    </div>
+                    <div class="step" id="step3Indicator">
+                        <span class="step-number">3</span>
+                        <span>Time</span>
+                    </div>
+                    <div class="step" id="step4Indicator">
+                        <span class="step-number">4</span>
+                        <span>Confirm</span>
+                    </div>
+                </div>
+
+                <!-- Step 1: Service Selection -->
+                <div class="service-section" id="serviceSection">
+                    <h2 class="text-center mb-md">Choose Your Reading</h2>
+                    <div class="service-grid" id="serviceGrid"></div>
+                </div>
+
+                <!-- Step 2: Date Selection -->
+                <div class="calendar-section" id="calendarSection">
+                    <h2 class="text-center mb-md">Select a Date</h2>
+                    <div class="date-grid" id="dateGrid">
+                        <p class="text-muted text-center">Loading available dates...</p>
+                    </div>
+                    <button class="btn btn-outline" onclick="goToStep(1)">← Back to Services</button>
+                </div>
+
+                <!-- Step 3: Time Selection -->
+                <div class="time-section" id="timeSection">
+                    <h2 class="text-center mb-md">Select a Time</h2>
+                    <div class="time-grid" id="timeGrid"></div>
+                    <button class="btn btn-outline" onclick="goToStep(2)">← Back to Dates</button>
+                </div>
+
+                <!-- Step 4: Confirmation -->
+                <div class="confirm-section" id="confirmSection">
+                    <h2 class="text-center mb-md">Confirm Your Booking</h2>
+                    <div class="booking-summary" id="bookingSummary"></div>
+
+                    <div class="mb-md">
+                        <label class="text-muted" style="display: block; margin-bottom: 0.5rem;">
+                            Any questions or special requests?
+                        </label>
+                        <textarea class="notes-input" id="bookingNotes"
+                            placeholder="Optional: Add any questions you'd like answered..."></textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        <button class="btn btn-outline" onclick="goToStep(3)">← Back</button>
+                        <button class="btn btn-primary" onclick="confirmBooking()" style="flex: 1;">
+                            ✨ Confirm Booking
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div class="success-message" id="successMessage">
+                <h2>🎉 Booking Confirmed!</h2>
+                <p class="text-muted" style="margin: 1rem 0;">Your appointment has been scheduled. You'll receive a
+                    confirmation at your email.</p>
+                <div id="confirmationDetails" style="margin: 2rem 0;"></div>
+                <a href="index.html" class="btn btn-primary">Return to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2024 Sun Tarot. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- Environment Config (generated by build) -->
+    <script src="js/env.js" onerror="console.log('env.js not found - using placeholder config')"></script>
+
+    <!-- App Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/booking.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        // State
+        let selectedService = null;
+        let selectedDate = null;
+        let selectedTime = null;
+        let availableDates = [];
+
+        // Initialize booking page
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Wait for auth state
+            setTimeout(async () => {
+                updateBookingUI();
+                renderServices();
+            }, 500);
+        });
+
+        // Auth state callback
+        function updateBookingUI() {
+            const loginPrompt = document.getElementById('loginPrompt');
+            const bookingFlow = document.getElementById('bookingFlow');
+
+            if (isLoggedIn()) {
+                loginPrompt.style.display = 'none';
+                bookingFlow.style.display = 'block';
+            } else {
+                loginPrompt.style.display = 'block';
+                bookingFlow.style.display = 'none';
+            }
+        }
+
+        // Render service options
+        function renderServices() {
+            const grid = document.getElementById('serviceGrid');
+            grid.innerHTML = Object.entries(SERVICES).map(([id, service]) => `
+                <div class="service-option" data-service="${id}" onclick="selectService('${id}')">
+                    <h4>${service.name}</h4>
+                    <div class="service-price">₹${service.price}</div>
+                    <div class="service-duration">${service.duration} minutes</div>
+                </div>
+            `).join('');
+        }
+
+        // Select a service
+        async function selectService(serviceId) {
+            selectedService = serviceId;
+
+            // Update UI
+            document.querySelectorAll('.service-option').forEach(el => {
+                el.classList.toggle('selected', el.dataset.service === serviceId);
+            });
+
+            // Load available dates and go to step 2
+            await loadAvailableDates();
+            goToStep(2);
+        }
+
+        // Load available dates
+        async function loadAvailableDates() {
+            const grid = document.getElementById('dateGrid');
+            grid.innerHTML = '<p class="text-muted text-center">Loading available dates...</p>';
+
+            availableDates = await getAvailableDates(30);
+
+            if (availableDates.length === 0) {
+                grid.innerHTML = '<p class="text-muted text-center">No available dates found. Please try again later.</p>';
+                return;
+            }
+
+            grid.innerHTML = availableDates.map(date => `
+                <div class="date-option" data-date="${date.date}" onclick="selectDate('${date.date}')">
+                    <div class="day-name">${date.dayName}</div>
+                    <div class="date-display">${date.displayDate}</div>
+                </div>
+            `).join('');
+        }
+
+        // Select a date
+        function selectDate(dateStr) {
+            selectedDate = dateStr;
+
+            // Update UI
+            document.querySelectorAll('.date-option').forEach(el => {
+                el.classList.toggle('selected', el.dataset.date === dateStr);
+            });
+
+            // Load time slots and go to step 3
+            loadTimeSlots(dateStr);
+            goToStep(3);
+        }
+
+        // Load time slots for selected date
+        function loadTimeSlots(dateStr) {
+            const dateInfo = availableDates.find(d => d.date === dateStr);
+            const grid = document.getElementById('timeGrid');
+
+            if (!dateInfo || dateInfo.availableSlots.length === 0) {
+                grid.innerHTML = '<p class="text-muted text-center">No available times for this date.</p>';
+                return;
+            }
+
+            grid.innerHTML = dateInfo.availableSlots.map(time => `
+                <div class="time-option" data-time="${time}" onclick="selectTime('${time}')">
+                    ${formatTime(time)}
+                </div>
+            `).join('');
+        }
+
+        // Format time for display
+        function formatTime(time) {
+            const [hours, minutes] = time.split(':');
+            const hour = parseInt(hours);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const displayHour = hour % 12 || 12;
+            return `${displayHour}:${minutes} ${ampm}`;
+        }
+
+        // Select a time
+        function selectTime(time) {
+            selectedTime = time;
+
+            // Update UI
+            document.querySelectorAll('.time-option').forEach(el => {
+                el.classList.toggle('selected', el.dataset.time === time);
+            });
+
+            // Show confirmation
+            renderConfirmation();
+            goToStep(4);
+        }
+
+        // Render confirmation summary
+        function renderConfirmation() {
+            const service = SERVICES[selectedService];
+            const dateInfo = availableDates.find(d => d.date === selectedDate);
+
+            const summary = document.getElementById('bookingSummary');
+            summary.innerHTML = `
+                <h3>Booking Summary</h3>
+                <div class="summary-row">
+                    <span class="text-muted">Service</span>
+                    <span>${service.name}</span>
+                </div>
+                <div class="summary-row">
+                    <span class="text-muted">Date</span>
+                    <span>${dateInfo.dayName}, ${dateInfo.displayDate}</span>
+                </div>
+                <div class="summary-row">
+                    <span class="text-muted">Time</span>
+                    <span>${formatTime(selectedTime)}</span>
+                </div>
+                <div class="summary-row">
+                    <span class="text-muted">Duration</span>
+                    <span>${service.duration} minutes</span>
+                </div>
+                <div class="summary-row">
+                    <span class="text-muted">Total</span>
+                    <span class="text-primary">₹${service.price}</span>
+                </div>
+            `;
+        }
+
+        // Confirm booking
+        async function confirmBooking() {
+            const notes = document.getElementById('bookingNotes').value;
+
+            const bookingId = await createBooking(selectedDate, selectedTime, selectedService, notes);
+
+            if (bookingId) {
+                // Show success
+                document.getElementById('bookingFlow').style.display = 'none';
+                document.getElementById('successMessage').classList.add('show');
+
+                const service = SERVICES[selectedService];
+                const dateInfo = availableDates.find(d => d.date === selectedDate);
+
+                document.getElementById('confirmationDetails').innerHTML = `
+                    <p><strong>${service.name}</strong></p>
+                    <p>${dateInfo.dayName}, ${dateInfo.displayDate} at ${formatTime(selectedTime)}</p>
+                    <p class="text-primary" style="font-size: 1.5rem; margin-top: 1rem;">₹${service.price}</p>
+                `;
+            }
+        }
+
+        // Navigate between steps
+        function goToStep(step) {
+            // Update step indicators
+            for (let i = 1; i <= 4; i++) {
+                const indicator = document.getElementById(`step${i}Indicator`);
+                indicator.classList.remove('active', 'completed');
+                if (i < step) {
+                    indicator.classList.add('completed');
+                } else if (i === step) {
+                    indicator.classList.add('active');
+                }
+            }
+
+            // Show/hide sections
+            document.getElementById('serviceSection').style.display = step === 1 ? 'block' : 'none';
+            document.getElementById('calendarSection').classList.toggle('active', step === 2);
+            document.getElementById('timeSection').classList.toggle('active', step === 3);
+            document.getElementById('confirmSection').classList.toggle('active', step === 4);
+        }
+
+        // Override updateAuthUI to refresh booking page state
+        const originalUpdateAuthUI = window.updateAuthUI;
+        window.updateAuthUI = function (user) {
+            if (originalUpdateAuthUI) originalUpdateAuthUI(user);
+            updateBookingUI();
+        };
+    </script>
+</body>
+
+</html>

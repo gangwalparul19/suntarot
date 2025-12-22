@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Sun Tarot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .admin-tab {
+            padding: 0.75rem 1.5rem;
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--color-text);
+        }
+
+        .admin-tab:hover {
+            border-color: var(--color-primary);
+        }
+
+        .admin-tab.active {
+            background: var(--color-primary);
+            color: var(--color-background);
+            border-color: var(--color-primary);
+        }
+
+        .admin-panel {
+            display: none;
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-panel h2 {
+            color: var(--color-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--color-background);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .stat-label {
+            color: var(--color-text-muted);
+            margin-top: 0.5rem;
+        }
+
+        /* Table Styles */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .admin-table th {
+            color: var(--color-primary);
+            font-weight: 600;
+        }
+
+        .admin-table tr:hover {
+            background: rgba(212, 169, 93, 0.05);
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .status-confirmed {
+            background: rgba(39, 174, 96, 0.2);
+            color: #27ae60;
+        }
+
+        .status-pending {
+            background: rgba(241, 196, 15, 0.2);
+            color: #f1c40f;
+        }
+
+        .status-cancelled {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .status-approved {
+            background: rgba(39, 174, 96, 0.2);
+            color: #27ae60;
+        }
+
+        .status-rejected {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+        }
+
+        .action-btn-approve {
+            background: #27ae60;
+            color: white;
+        }
+
+        .action-btn-reject {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .action-btn-block {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .action-btn-unblock {
+            background: #27ae60;
+            color: white;
+        }
+
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+
+        /* Calendar Grid */
+        .availability-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calendar-day {
+            padding: 1rem;
+            text-align: center;
+            background: var(--color-background);
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .calendar-day:hover {
+            border-color: var(--color-primary);
+        }
+
+        .calendar-day.blocked {
+            background: rgba(231, 76, 60, 0.2);
+            border-color: #e74c3c;
+        }
+
+        .calendar-day.has-bookings {
+            background: rgba(39, 174, 96, 0.2);
+            border-color: #27ae60;
+        }
+
+        .calendar-day-header {
+            padding: 0.5rem;
+            text-align: center;
+            font-weight: bold;
+            color: var(--color-text-muted);
+        }
+
+        /* Review Card */
+        .review-card {
+            background: var(--color-background);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .review-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .review-user img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .review-text {
+            color: var(--color-text-muted);
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        .review-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        /* Access Denied */
+        .access-denied {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-name {
+            color: var(--color-text);
+            font-size: 0.875rem;
+        }
+
+        #userInfo {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .admin-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stars" id="stars"></div>
+
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo"><span>☀️</span><span>Sun Tarot</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="reading.html">Reading</a></li>
+                <li><a href="love-reading.html">Love</a></li>
+                <li><a href="learn.html">Learn</a></li>
+                <li><a href="booking.html">Book</a></li>
+            </ul>
+            <div class="auth-container" id="authContainer">
+                <div id="userInfo"></div>
+                <button class="btn btn-outline" id="loginBtn" onclick="signInWithGoogle()"
+                    style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                    Sign In
+                </button>
+                <button class="btn btn-outline" id="logoutBtn" onclick="signOut()"
+                    style="display: none; padding: 0.5rem 1rem; font-size: 0.875rem;">
+                    Sign Out
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </nav>
+    </header>
+
+    <main class="section" style="padding-top: 120px;">
+        <div class="container admin-container">
+            <div class="section-header">
+                <h1 class="section-title text-primary">Admin Dashboard</h1>
+            </div>
+
+            <!-- Access Denied (shown to non-admins) -->
+            <div class="access-denied" id="accessDenied" style="display: none;">
+                <h2 class="text-primary">Access Denied</h2>
+                <p class="text-muted" style="margin: 1rem 0;">You don't have permission to access this page.</p>
+                <a href="index.html" class="btn btn-primary">Return to Home</a>
+            </div>
+
+            <!-- Admin Content (shown to admins only) -->
+            <div id="adminContent" style="display: none;">
+                <!-- Navigation Tabs -->
+                <div class="admin-tabs">
+                    <button class="admin-tab active" onclick="showPanel('overview')">📊 Overview</button>
+                    <button class="admin-tab" onclick="showPanel('bookings')">📅 Bookings</button>
+                    <button class="admin-tab" onclick="showPanel('availability')">🗓️ Availability</button>
+                    <button class="admin-tab" onclick="showPanel('reviews')">⭐ Reviews</button>
+                </div>
+
+                <!-- Overview Panel -->
+                <div class="admin-panel active" id="overviewPanel">
+                    <h2>Overview</h2>
+                    <div class="stats-grid" id="statsGrid">
+                        <div class="stat-card">
+                            <div class="stat-number" id="statBookings">-</div>
+                            <div class="stat-label">Total Bookings</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="statPendingReviews">-</div>
+                            <div class="stat-label">Pending Reviews</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="statApprovedReviews">-</div>
+                            <div class="stat-label">Approved Reviews</div>
+                        </div>
+                    </div>
+
+                    <h3 class="text-primary mb-md">Recent Bookings</h3>
+                    <div id="recentBookings">Loading...</div>
+                </div>
+
+                <!-- Bookings Panel -->
+                <div class="admin-panel" id="bookingsPanel">
+                    <h2>All Bookings</h2>
+                    <div id="allBookings">Loading...</div>
+                </div>
+
+                <!-- Availability Panel -->
+                <div class="admin-panel" id="availabilityPanel">
+                    <h2>Manage Availability</h2>
+                    <p class="text-muted mb-md">Click on a date to block/unblock it. Blocked dates won't be available
+                        for booking.</p>
+
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
+                        <button class="btn btn-outline" onclick="changeMonth(-1)">← Previous</button>
+                        <h3 id="currentMonthLabel" class="text-primary" style="margin: 0; line-height: 2.5;"></h3>
+                        <button class="btn btn-outline" onclick="changeMonth(1)">Next →</button>
+                    </div>
+
+                    <div class="availability-grid" id="availabilityGrid">
+                        <div class="calendar-day-header">Sun</div>
+                        <div class="calendar-day-header">Mon</div>
+                        <div class="calendar-day-header">Tue</div>
+                        <div class="calendar-day-header">Wed</div>
+                        <div class="calendar-day-header">Thu</div>
+                        <div class="calendar-day-header">Fri</div>
+                        <div class="calendar-day-header">Sat</div>
+                    </div>
+                    <div id="calendarDays"></div>
+                </div>
+
+                <!-- Reviews Panel -->
+                <div class="admin-panel" id="reviewsPanel">
+                    <h2>Manage Reviews</h2>
+
+                    <div class="admin-tabs" style="margin-bottom: 1rem;">
+                        <button class="admin-tab active" onclick="loadReviewsByStatus('pending')">Pending</button>
+                        <button class="admin-tab" onclick="loadReviewsByStatus('approved')">Approved</button>
+                        <button class="admin-tab" onclick="loadReviewsByStatus('rejected')">Rejected</button>
+                    </div>
+
+                    <div id="reviewsList">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2024 Sun Tarot. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- Environment Config (generated by build) -->
+    <script src="js/env.js" onerror="console.log('env.js not found - using placeholder config')"></script>
+
+    <!-- App Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/booking.js"></script>
+    <script src="js/reviews.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        let currentMonth = new Date();
+        let blockedDates = new Set();
+
+        // Check admin access
+        function checkAdminAccess() {
+            const accessDenied = document.getElementById('accessDenied');
+            const adminContent = document.getElementById('adminContent');
+
+            if (!isLoggedIn()) {
+                accessDenied.style.display = 'block';
+                accessDenied.innerHTML = `
+                    <h2 class="text-primary">Please Sign In</h2>
+                    <p class="text-muted" style="margin: 1rem 0;">Sign in to access the admin dashboard.</p>
+                    <button class="btn btn-primary" onclick="signInWithGoogle()">Sign In with Google</button>
+                `;
+                adminContent.style.display = 'none';
+            } else if (!isAdmin()) {
+                accessDenied.style.display = 'block';
+                accessDenied.innerHTML = `
+                    <h2 class="text-primary">Access Denied</h2>
+                    <p class="text-muted" style="margin: 1rem 0;">You don't have admin permissions.</p>
+                    <a href="index.html" class="btn btn-primary">Return to Home</a>
+                `;
+                adminContent.style.display = 'none';
+            } else {
+                accessDenied.style.display = 'none';
+                adminContent.style.display = 'block';
+                loadDashboardData();
+            }
+        }
+
+        // Show panel
+        function showPanel(panelName) {
+            document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.admin-tabs > .admin-tab').forEach(t => t.classList.remove('active'));
+
+            document.getElementById(panelName + 'Panel').classList.add('active');
+            event.target.classList.add('active');
+
+            if (panelName === 'availability') {
+                renderCalendar();
+            } else if (panelName === 'reviews') {
+                loadReviewsByStatus('pending');
+            } else if (panelName === 'bookings') {
+                loadAllBookings();
+            }
+        }
+
+        // Load dashboard data
+        async function loadDashboardData() {
+            // Load stats
+            const bookings = await getAllBookings();
+            document.getElementById('statBookings').textContent = bookings.length;
+
+            const pendingReviews = await getAllReviews('pending');
+            document.getElementById('statPendingReviews').textContent = pendingReviews.length;
+
+            const approvedReviews = await getAllReviews('approved');
+            document.getElementById('statApprovedReviews').textContent = approvedReviews.length;
+
+            // Recent bookings
+            renderBookingsTable(bookings.slice(0, 5), 'recentBookings');
+        }
+
+        // Load all bookings
+        async function loadAllBookings() {
+            const bookings = await getAllBookings();
+            renderBookingsTable(bookings, 'allBookings');
+        }
+
+        // Render bookings table
+        function renderBookingsTable(bookings, containerId) {
+            const container = document.getElementById(containerId);
+
+            if (bookings.length === 0) {
+                container.innerHTML = '<p class="text-muted">No bookings found.</p>';
+                return;
+            }
+
+            container.innerHTML = `
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Service</th>
+                            <th>Customer</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${bookings.map(b => `
+                            <tr>
+                                <td>${b.date}</td>
+                                <td>${b.time}</td>
+                                <td>${b.serviceName}</td>
+                                <td>${b.userName || b.userEmail}</td>
+                                <td><span class="status-badge status-${b.status}">${b.status}</span></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // Calendar functions
+        function changeMonth(delta) {
+            currentMonth.setMonth(currentMonth.getMonth() + delta);
+            renderCalendar();
+        }
+
+        async function renderCalendar() {
+            document.getElementById('currentMonthLabel').textContent =
+                currentMonth.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+
+            // Get blocked dates for this month
+            const startOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+            const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
+
+            try {
+                const snapshot = await db.collection('availability')
+                    .where('blocked', '==', true)
+                    .get();
+
+                blockedDates.clear();
+                snapshot.forEach(doc => blockedDates.add(doc.id));
+            } catch (error) {
+                console.error('Error loading blocked dates:', error);
+            }
+
+            // Render calendar
+            const calendarContainer = document.getElementById('calendarDays');
+            const firstDay = startOfMonth.getDay();
+            const daysInMonth = endOfMonth.getDate();
+
+            let html = '<div class="availability-grid">';
+
+            // Empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                html += '<div class="calendar-day" style="opacity: 0.3;"></div>';
+            }
+
+            // Days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+                const dateStr = date.toISOString().split('T')[0];
+                const isBlocked = blockedDates.has(dateStr);
+                const isPast = date < new Date().setHours(0, 0, 0, 0);
+
+                html += `
+                    <div class="calendar-day ${isBlocked ? 'blocked' : ''}" 
+                         onclick="${isPast ? '' : `toggleDate('${dateStr}')`}"
+                         style="${isPast ? 'opacity: 0.4; cursor: not-allowed;' : ''}">
+                        <div style="font-size: 1.25rem; font-weight: bold;">${day}</div>
+                        <div style="font-size: 0.75rem; color: var(--color-text-muted);">
+                            ${isBlocked ? '🚫 Blocked' : '✓ Open'}
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += '</div>';
+            calendarContainer.innerHTML = html;
+        }
+
+        async function toggleDate(dateStr) {
+            const isCurrentlyBlocked = blockedDates.has(dateStr);
+
+            if (isCurrentlyBlocked) {
+                if (await unblockDate(dateStr)) {
+                    blockedDates.delete(dateStr);
+                }
+            } else {
+                if (await blockDate(dateStr, 'Blocked by admin')) {
+                    blockedDates.add(dateStr);
+                }
+            }
+
+            renderCalendar();
+        }
+
+        // Reviews functions
+        async function loadReviewsByStatus(status) {
+            document.querySelectorAll('#reviewsPanel .admin-tabs .admin-tab').forEach((t, i) => {
+                t.classList.toggle('active',
+                    (status === 'pending' && i === 0) ||
+                    (status === 'approved' && i === 1) ||
+                    (status === 'rejected' && i === 2)
+                );
+            });
+
+            const container = document.getElementById('reviewsList');
+            container.innerHTML = 'Loading...';
+
+            const reviews = await getAllReviews(status);
+
+            if (reviews.length === 0) {
+                container.innerHTML = '<p class="text-muted">No reviews found.</p>';
+                return;
+            }
+
+            container.innerHTML = reviews.map(review => `
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-user">
+                            <img src="${review.userPhoto || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(review.userName || 'User')}" 
+                                 alt="${review.userName}">
+                            <div>
+                                <strong>${review.userName || 'Anonymous'}</strong>
+                                <div class="text-muted">${review.userEmail}</div>
+                            </div>
+                        </div>
+                        <span class="status-badge status-${review.status}">${review.status}</span>
+                    </div>
+                    <div class="review-text">"${review.text}"</div>
+                    <div style="margin-top: 0.5rem;">${renderStars(review.rating)}</div>
+                    ${status === 'pending' ? `
+                        <div class="review-actions">
+                            <button class="action-btn action-btn-approve" onclick="handleApprove('${review.id}')">✓ Approve</button>
+                            <button class="action-btn action-btn-reject" onclick="handleReject('${review.id}')">✗ Reject</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        async function handleApprove(reviewId) {
+            if (await approveReview(reviewId)) {
+                loadReviewsByStatus('pending');
+            }
+        }
+
+        async function handleReject(reviewId) {
+            if (await rejectReview(reviewId)) {
+                loadReviewsByStatus('pending');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(checkAdminAccess, 500);
+        });
+
+        // Update on auth change
+        const originalUpdateAuthUI = window.updateAuthUI;
+        window.updateAuthUI = function (user) {
+            if (originalUpdateAuthUI) originalUpdateAuthUI(user);
+            checkAdminAccess();
+        };
+    </script>
+</body>
+
+</html>
