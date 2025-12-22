@@ -1,79 +1,76 @@
-# Sun Tarot - AI-Powered Tarot & Spiritual Guidance
+# ☀️ Sun Tarot
 
-Sun Tarot is a modern, interactive web application designed to provide users with spiritual guidance through Tarot readings. Built with **Next.js** and **Firebase**, it leverages AI to deliver personalized and meaningful interpretations, making the ancient wisdom of Tarot accessible to everyone.
+A mystical tarot reading website with beautiful dark theme and interactive features.
 
-## ✨ Features Present
+## 🌟 Features
 
-### 🔮 Interactive Tarot Reading
--   **AI-Driven Insights**: Users can select cards and receive personalized interpretations based on their specific questions using Genkit and Gemini.
--   **Interactive Deck**: A visually engaging digital deck that allows users to pick their own cards, simulating a real-life reading experience.
--   **Custom Spreads**: (Currently supports 3-card spreads for past, present, future).
+- **Daily Reading** - Interactive 3-card Past/Present/Future spread
+- **Learn Tarot** - Browse all 22 Major Arcana cards
+- **Spreads Guide** - Visual guide to popular tarot layouts
+- **FAQ** - Common questions about tarot
+- **Book a Reading** - Pricing with WhatsApp booking
 
-### 📅 Daily Inspiration
--   **Card of the Day**: A daily feature that presents a random card with its meaning to offer guidance and reflection for the day ahead.
+## 🚀 Deploy to Vercel
 
-### 📚 Learning Hub
--   **Major Arcana Explorer**: A dedicated section for users to learn about the 22 Major Arcana cards, complete with high-quality imagery and detailed meanings.
+### Option 1: One-Click Deploy
 
-### 👤 User Features
--   **Google Authentication**: Secure and easy sign-in using Google accounts via Firebase Auth.
--   **Reading History**: Users can save their readings to their profile (persisted in Firestore) to revisit past insights.
--   **History Management**: Options to delete individual readings or clear the entire history.
+1. Push this folder to a GitHub repository
+2. Go to [vercel.com](https://vercel.com)
+3. Click "Add New Project"
+4. Import your GitHub repository
+5. Click "Deploy" - No build settings needed!
 
-### 🗓️ Booking System
--   **Service Tiers**: Clear display of different reading packages (Quick Insight, Standard Spread, Deep Dive).
--   **Booking Request Form**: A streamlined form for users to request personal one-on-one sessions, integrated with form validation.
+### Option 2: Vercel CLI
 
-### 🎨 UI/UX
--   **Responsive Design**: Fully optimized for desktops, tablets, and mobile devices.
--   **Animations**: Smooth transitions and interactive elements powered by Framer Motion.
--   **Modern Aesthetics**: Glassmorphism effects, rich gradients, and a cohesive mystical theme.
+```bash
+# Install Vercel CLI
+npm install -g vercel
 
-## 🛠️ Tech Stack
+# Deploy (run from project folder)
+vercel
 
--   **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
--   **Language**: TypeScript
--   **Styling**: Tailwind CSS, CSS Modules
--   **UI Components**: Radix UI, Lucide React
--   **Animations**: Framer Motion
--   **Backend / BaaS**: Firebase (Authentication, Firestore)
--   **AI Integration**: Genkit, Google Gemini
+# Follow the prompts
+```
 
-## 🚀 Setup & Installation
+### Option 3: Drag & Drop
 
-1.  **Clone the repository:**
-    ```bash
-    git clone <repository-url>
-    cd suntarot
-    ```
+1. Go to [vercel.com/new](https://vercel.com/new)
+2. Drag and drop this entire folder
+3. Done!
 
-2.  **Install dependencies:**
-    ```bash
-    npm install
-    ```
+## 📁 Project Structure
 
-3.  **Set up Environment Variables:**
-    Create a `.env.local` file in the root directory and add your Firebase and Genkit credentials.
+```
+suntarot/
+├── index.html      # Home page
+├── reading.html    # Interactive 3-card spread
+├── learn.html      # Card gallery
+├── spreads.html    # Spreads guide
+├── faq.html        # FAQ
+├── booking.html    # Pricing
+├── privacy.html    # Privacy policy
+├── terms.html      # Terms of service
+├── 404.html        # Error page
+├── css/
+│   └── style.css   # All styles
+└── js/
+    ├── cards.js    # Card data
+    └── main.js     # Interactivity
+```
 
-4.  **Run the development server:**
-    ```bash
-    npm run dev
-    ```
+## 🔧 Local Development
 
-5.  **Open your browser:**
-    Navigate to `http://localhost:3000` to see the application.
+Just open `index.html` in your browser - no build step required!
 
-## 🗺️ Future Roadmap
+Or use a local server:
+```bash
+# Python
+python -m http.server 8000
 
-Here are potential features that could be added to enhance the application further:
+# Node.js
+npx serve
+```
 
--   **💳 Payment Gateway Integration**: Integrate Stripe or PayPal to allow direct payments for booking sessions.
--   **🧠 Advanced AI Models**: Fine-tune the AI personas to offer different "reading styles" (e.g., empathetic, direct, mystical).
--   **🎴 Minor Arcana Support**: Expand the learning hub and reading deck to include the 56 Minor Arcana cards for more detailed readings.
--   **🔔 Real-time Notifications**: Implement email or push notifications for booking confirmations and "Card of the Day" reminders.
--   **📱 PWA Support**: Turn the website into a Progressive Web App for a native app-like experience on mobile.
--   **🗣️ Social Sharing**: Allow users to share their reading results on social media platforms with generated images.
--   **⚡ Admin Dashboard**: A secure admin panel to manage bookings, view user stats, and update content dynamically.
+## 📝 License
 
----
-Built with ❤️ by Parul for the spiritual community.
+© 2024 Sun Tarot. All rights reserved.

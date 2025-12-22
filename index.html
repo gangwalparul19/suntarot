@@ -1,26 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Sun Tarot - Discover your path with ancient wisdom and modern insight. Daily tarot readings and spiritual guidance.">
+  <meta name="description"
+    content="Sun Tarot - Discover your path with ancient wisdom and modern insight. Daily tarot readings and spiritual guidance.">
   <title>Sun Tarot - Ancient Wisdom, Modern Insight</title>
-  
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
+    rel="stylesheet">
+
   <!-- Styles -->
   <link rel="stylesheet" href="css/style.css">
-  
+
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☀️</text></svg>">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☀️</text></svg>">
 </head>
+
 <body>
   <!-- Scroll Progress -->
   <div class="scroll-progress" id="scrollProgress"></div>
-  
+
   <!-- Starry Background -->
   <div class="stars" id="stars"></div>
 
@@ -31,13 +37,16 @@
         <span>☀️</span>
         <span>Sun Tarot</span>
       </a>
-      
+
       <ul class="nav-links" id="navLinks">
         <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="reading.html">Reading</a></li>
         <li><a href="learn.html">Learn</a></li>
-        <li><a href="booking.html">Book a Reading</a></li>
+        <li><a href="spreads.html">Spreads</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="booking.html">Book</a></li>
       </ul>
-      
+
       <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">☰</button>
     </nav>
   </header>
@@ -48,7 +57,7 @@
       <p class="hero-subtitle">Ancient Wisdom • Modern Insight</p>
       <h1 class="hero-title">Discover Your Path Through the Cards</h1>
       <p class="hero-description">
-        Let the ancient wisdom of Tarot illuminate your journey. 
+        Let the ancient wisdom of Tarot illuminate your journey.
         Receive guidance, clarity, and insight into life's most profound questions.
       </p>
       <div class="hero-buttons">
@@ -72,7 +81,7 @@
         <p class="text-primary">✦ Daily Guidance ✦</p>
         <h2 class="section-title">Your Card of the Day</h2>
       </div>
-      
+
       <div class="card-of-day">
         <div class="card-of-day-content">
           <div class="tarot-card flipped" id="dailyCard">
@@ -86,7 +95,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="card-details">
             <h3 id="dailyCardTitle" class="text-primary"></h3>
             <blockquote class="card-meaning" id="dailyCardMeaning"></blockquote>
@@ -106,7 +115,7 @@
         <h2 class="section-title">The Journey</h2>
         <p class="section-subtitle">Three simple steps to unlock the wisdom of the cards</p>
       </div>
-      
+
       <div class="pricing-grid">
         <div class="pricing-card">
           <div style="font-size: 3rem; margin-bottom: 1rem;">🔮</div>
@@ -131,18 +140,20 @@
   <section class="section" id="about" style="background: var(--color-background-secondary);">
     <div class="container">
       <div class="card-of-day-content" style="padding: 2rem;">
-        <div style="width: 200px; height: 200px; border-radius: 50%; overflow: hidden; border: 3px solid var(--color-primary);">
-          <img src="about.png" alt="Sun Tarot Reader" style="width: 100%; height: 100%; object-fit: cover; object-position: top;">
+        <div
+          style="width: 200px; height: 200px; border-radius: 50%; overflow: hidden; border: 3px solid var(--color-primary);">
+          <img src="about.png" alt="Sun Tarot Reader"
+            style="width: 100%; height: 100%; object-fit: cover; object-position: top;">
         </div>
         <div>
           <h2 class="section-title">About Sun Tarot</h2>
           <p class="text-muted" style="font-size: 1.125rem; line-height: 1.8; margin-top: 1rem;">
-            Welcome to Sun Tarot, where ancient wisdom meets modern insight. 
-            With years of experience in tarot reading and spiritual guidance, 
+            Welcome to Sun Tarot, where ancient wisdom meets modern insight.
+            With years of experience in tarot reading and spiritual guidance,
             I am dedicated to helping you navigate life's challenges and discover your true path.
           </p>
           <p class="text-muted" style="font-size: 1.125rem; line-height: 1.8; margin-top: 1rem;">
-            Every reading is a sacred conversation between you and the universe. 
+            Every reading is a sacred conversation between you and the universe.
             Let the cards illuminate the way forward.
           </p>
         </div>
@@ -156,7 +167,7 @@
       <div class="section-header">
         <h2 class="section-title">What Our Seekers Say</h2>
       </div>
-      
+
       <div class="pricing-grid">
         <div class="pricing-card">
           <p class="text-muted" style="font-style: italic; margin-bottom: 1rem;">
@@ -230,4 +241,5 @@
   <script src="js/cards.js"></script>
   <script src="js/main.js"></script>
 </body>
+
 </html>

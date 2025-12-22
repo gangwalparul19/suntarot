@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - Sun Tarot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .faq-item {
+            background: var(--color-background-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: var(--color-text);
+            transition: all 0.3s;
+        }
+
+        .faq-question:hover {
+            color: var(--color-primary);
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            color: var(--color-primary);
+            transition: transform 0.3s;
+        }
+
+        .faq-item.active .faq-question::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+        }
+
+        .faq-answer p {
+            padding: 0 1.5rem 1.5rem;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stars" id="stars"></div>
+
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo"><span>☀️</span><span>Sun Tarot</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="reading.html">Reading</a></li>
+                <li><a href="learn.html">Learn</a></li>
+                <li><a href="faq.html" class="active">FAQ</a></li>
+                <li><a href="booking.html">Book</a></li>
+            </ul>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </nav>
+    </header>
+
+    <main class="section" style="padding-top: 120px;">
+        <div class="container" style="max-width: 800px;">
+            <div class="section-header">
+                <h1 class="section-title text-primary">Frequently Asked Questions</h1>
+                <p class="section-subtitle">Everything you need to know about tarot readings</p>
+            </div>
+
+            <div class="faq-list">
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">What is Tarot?</div>
+                    <div class="faq-answer">
+                        <p class="text-muted">Tarot is a deck of 78 cards used for divination, self-reflection, and
+                            guidance. The deck is divided into the Major Arcana (22 cards representing life's spiritual
+                            lessons) and the Minor Arcana (56 cards reflecting daily trials and tribulations).</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">How accurate are tarot readings?</div>
+                    <div class="faq-answer">
+                        <p class="text-muted">Tarot readings offer guidance and insight based on your current energy and
+                            situation. They are not meant to predict a fixed future, but rather illuminate possibilities
+                            and help you understand yourself better. The accuracy depends on your openness to the
+                            message.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">Do I need to believe in tarot for it to work?
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-muted">You don't need to believe in any supernatural power. Many people use tarot
+                            as a tool for self-reflection and contemplation. The cards can help you consider different
+                            perspectives on a situation, regardless of your spiritual beliefs.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">What questions can I ask during a reading?</div>
+                    <div class="faq-answer">
+                        <p class="text-muted">Open-ended questions work best. Instead of "Will I get the job?", try
+                            "What do I need to know about my career path?" Focus on what you can learn or do, rather
+                            than yes/no predictions. Questions about relationships, career, personal growth, and life
+                            direction are all great topics.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">What is the Death card? Should I be scared?
+                    </div>
+                    <div class="faq-answer">
+                        <p class="text-muted">No! The Death card rarely means physical death. It represents
+                            transformation, endings that lead to new beginnings, and major life changes. It's actually
+                            one of the most positive cards for personal growth, signifying that something old is making
+                            way for something new.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">How often should I get a reading?</div>
+                    <div class="faq-answer">
+                        <p class="text-muted">There's no strict rule. Some people do daily single-card draws for
+                            guidance, while larger readings are best spaced out by weeks or months. Give yourself time
+                            to process and act on the insights before seeking another reading on the same topic.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">Can I read tarot for myself?</div>
+                    <div class="faq-answer">
+                        <p class="text-muted">Absolutely! Self-readings are a wonderful practice. Start with a simple
+                            one-card daily draw and gradually work up to larger spreads as you become familiar with the
+                            cards. Keep a tarot journal to track your interpretations and insights.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question" onclick="toggleFaq(this)">What's included in a professional reading?</div>
+                    <div class="faq-answer">
+                        <p class="text-muted">Professional readings include a personal consultation where we discuss
+                            your question, a customized spread selection, detailed card interpretation, and practical
+                            guidance for moving forward. You'll also receive a written summary to reference later.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-md" style="margin-top: 3rem;">
+                <p class="text-muted mb-sm">Still have questions?</p>
+                <a href="booking.html" class="btn btn-primary">Book a Consultation</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2024 Sun Tarot. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop">↑</button>
+    <script src="js/main.js"></script>
+    <script>
+        function toggleFaq(element) {
+            const item = element.parentElement;
+            item.classList.toggle('active');
+        }
+    </script>
+</body>
+
+</html>

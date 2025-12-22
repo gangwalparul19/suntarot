@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarot Spreads - Sun Tarot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .spread-card {
+            background: var(--color-background-secondary);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .spread-diagram {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .spread-position {
+            width: 60px;
+            height: 90px;
+            background: var(--color-card);
+            border: 2px dashed var(--color-primary);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--color-primary);
+            font-size: 1.25rem;
+        }
+
+        .spread-positions-list {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .spread-positions-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            gap: 1rem;
+        }
+
+        .spread-positions-list .num {
+            color: var(--color-primary);
+            font-weight: bold;
+            min-width: 30px;
+        }
+
+        .celtic-cross {
+            display: grid;
+            grid-template-columns: repeat(5, 60px);
+            grid-template-rows: repeat(4, 90px);
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .celtic-cross .spread-position:nth-child(1) {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        .celtic-cross .spread-position:nth-child(2) {
+            grid-column: 2;
+            grid-row: 2;
+            transform: rotate(90deg);
+        }
+
+        .celtic-cross .spread-position:nth-child(3) {
+            grid-column: 2;
+            grid-row: 3;
+        }
+
+        .celtic-cross .spread-position:nth-child(4) {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
+        .celtic-cross .spread-position:nth-child(5) {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        .celtic-cross .spread-position:nth-child(6) {
+            grid-column: 3;
+            grid-row: 2;
+        }
+
+        .celtic-cross .spread-position:nth-child(7) {
+            grid-column: 5;
+            grid-row: 4;
+        }
+
+        .celtic-cross .spread-position:nth-child(8) {
+            grid-column: 5;
+            grid-row: 3;
+        }
+
+        .celtic-cross .spread-position:nth-child(9) {
+            grid-column: 5;
+            grid-row: 2;
+        }
+
+        .celtic-cross .spread-position:nth-child(10) {
+            grid-column: 5;
+            grid-row: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stars" id="stars"></div>
+
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo"><span>☀️</span><span>Sun Tarot</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="reading.html">Reading</a></li>
+                <li><a href="learn.html">Learn</a></li>
+                <li><a href="spreads.html" class="active">Spreads</a></li>
+                <li><a href="booking.html">Book</a></li>
+            </ul>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </nav>
+    </header>
+
+    <main class="section" style="padding-top: 120px;">
+        <div class="container" style="max-width: 900px;">
+            <div class="section-header">
+                <h1 class="section-title text-primary">Tarot Spreads Guide</h1>
+                <p class="section-subtitle">Learn the most popular layouts for tarot readings</p>
+            </div>
+
+            <!-- One Card -->
+            <div class="spread-card">
+                <h2 class="text-primary">🎯 One Card Draw</h2>
+                <p class="text-muted">Perfect for daily guidance or quick yes/no questions.</p>
+                <div class="spread-diagram">
+                    <div class="spread-position">1</div>
+                </div>
+                <ul class="spread-positions-list">
+                    <li><span class="num">1</span><span class="text-muted">The Answer / Daily Guidance</span></li>
+                </ul>
+            </div>
+
+            <!-- Three Card -->
+            <div class="spread-card">
+                <h2 class="text-primary">🔮 Three Card Spread</h2>
+                <p class="text-muted">The most versatile spread. Can represent Past/Present/Future, Mind/Body/Spirit, or
+                    Situation/Action/Outcome.</p>
+                <div class="spread-diagram">
+                    <div class="spread-position">1</div>
+                    <div class="spread-position">2</div>
+                    <div class="spread-position">3</div>
+                </div>
+                <ul class="spread-positions-list">
+                    <li><span class="num">1</span><span class="text-muted">Past / Situation / Mind</span></li>
+                    <li><span class="num">2</span><span class="text-muted">Present / Action / Body</span></li>
+                    <li><span class="num">3</span><span class="text-muted">Future / Outcome / Spirit</span></li>
+                </ul>
+                <div class="text-center mt-md">
+                    <a href="reading.html" class="btn btn-primary">Try This Spread →</a>
+                </div>
+            </div>
+
+            <!-- Five Card -->
+            <div class="spread-card">
+                <h2 class="text-primary">⭐ Five Card Cross</h2>
+                <p class="text-muted">A balanced spread for exploring a situation from multiple angles.</p>
+                <div class="spread-diagram"
+                    style="display: grid; grid-template-columns: repeat(3, 60px); grid-template-rows: repeat(3, 90px); gap: 0.5rem;">
+                    <div></div>
+                    <div class="spread-position">1</div>
+                    <div></div>
+                    <div class="spread-position">4</div>
+                    <div class="spread-position">5</div>
+                    <div class="spread-position">2</div>
+                    <div></div>
+                    <div class="spread-position">3</div>
+                    <div></div>
+                </div>
+                <ul class="spread-positions-list">
+                    <li><span class="num">1</span><span class="text-muted">Present situation</span></li>
+                    <li><span class="num">2</span><span class="text-muted">Obstacles / Challenges</span></li>
+                    <li><span class="num">3</span><span class="text-muted">Foundation / Root cause</span></li>
+                    <li><span class="num">4</span><span class="text-muted">Recent past</span></li>
+                    <li><span class="num">5</span><span class="text-muted">Possible outcome</span></li>
+                </ul>
+            </div>
+
+            <!-- Celtic Cross -->
+            <div class="spread-card">
+                <h2 class="text-primary">🍀 Celtic Cross</h2>
+                <p class="text-muted">The classic 10-card spread for comprehensive life readings.</p>
+                <div class="celtic-cross">
+                    <div class="spread-position">1</div>
+                    <div class="spread-position">2</div>
+                    <div class="spread-position">3</div>
+                    <div class="spread-position">4</div>
+                    <div class="spread-position">5</div>
+                    <div class="spread-position">6</div>
+                    <div class="spread-position">7</div>
+                    <div class="spread-position">8</div>
+                    <div class="spread-position">9</div>
+                    <div class="spread-position">10</div>
+                </div>
+                <ul class="spread-positions-list">
+                    <li><span class="num">1</span><span class="text-muted">Present situation</span></li>
+                    <li><span class="num">2</span><span class="text-muted">Challenge / Cross</span></li>
+                    <li><span class="num">3</span><span class="text-muted">Foundation</span></li>
+                    <li><span class="num">4</span><span class="text-muted">Recent past</span></li>
+                    <li><span class="num">5</span><span class="text-muted">Crown / Goal</span></li>
+                    <li><span class="num">6</span><span class="text-muted">Near future</span></li>
+                    <li><span class="num">7</span><span class="text-muted">Your attitude</span></li>
+                    <li><span class="num">8</span><span class="text-muted">External influences</span></li>
+                    <li><span class="num">9</span><span class="text-muted">Hopes and fears</span></li>
+                    <li><span class="num">10</span><span class="text-muted">Final outcome</span></li>
+                </ul>
+            </div>
+
+            <div class="text-center mt-md">
+                <a href="booking.html" class="btn btn-primary">Book a Professional Reading</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2024 Sun Tarot. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop">↑</button>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
