@@ -1,0 +1,12 @@
+{
+    "name": "suntarot",
+    "version": "1.0.0",
+    "description": "Sun Tarot - Mystical tarot reading website",
+    "scripts": {
+        "build": "node scripts/generate-env.js",
+        "start": "npx serve ."
+    },
+    "keywords": ["tarot", "spiritual", "reading"],
+    "author": "Sun Tarot",
+    "license": "MIT"
+}

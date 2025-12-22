@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Share your experience with Sun Tarot.">
+    <title>Submit Review - Sun Tarot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .review-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .review-form {
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--color-text);
+            font-weight: 600;
+        }
+
+        .form-group label span {
+            color: var(--color-text-muted);
+            font-weight: normal;
+        }
+
+        .textarea-input {
+            width: 100%;
+            padding: 1rem;
+            background: var(--color-background);
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            color: var(--color-text);
+            font-family: inherit;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .textarea-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .char-count {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+            text-align: right;
+            margin-top: 0.5rem;
+        }
+
+        /* Star Rating */
+        .star-rating {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .star-rating .star {
+            cursor: pointer;
+            color: var(--color-border);
+            transition: color 0.3s;
+        }
+
+        .star-rating .star:hover,
+        .star-rating .star.active {
+            color: #f39c12;
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 3rem;
+            background: rgba(39, 174, 96, 0.1);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+            border-radius: 1rem;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .success-message h2 {
+            color: #27ae60;
+        }
+
+        /* Login Prompt */
+        .login-prompt {
+            text-align: center;
+            padding: 3rem;
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-name {
+            color: var(--color-text);
+            font-size: 0.875rem;
+        }
+
+        #userInfo {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stars" id="stars"></div>
+
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo"><span>☀️</span><span>Sun Tarot</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="reading.html">Reading</a></li>
+                <li><a href="love-reading.html">Love</a></li>
+                <li><a href="learn.html">Learn</a></li>
+                <li><a href="spreads.html">Spreads</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+                <li><a href="booking.html">Book</a></li>
+            </ul>
+            <div class="auth-container" id="authContainer">
+                <div id="userInfo"></div>
+                <button class="btn btn-outline" id="loginBtn" onclick="signInWithGoogle()"
+                    style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                    Sign In
+                </button>
+                <button class="btn btn-outline" id="logoutBtn" onclick="signOut()"
+                    style="display: none; padding: 0.5rem 1rem; font-size: 0.875rem;">
+                    Sign Out
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </nav>
+    </header>
+
+    <main class="section" style="padding-top: 120px;">
+        <div class="container review-container">
+            <div class="section-header">
+                <h1 class="section-title text-primary">Share Your Experience</h1>
+                <p class="section-subtitle">Your feedback helps others discover the magic of tarot</p>
+            </div>
+
+            <!-- Login Required Message -->
+            <div class="login-prompt" id="loginPrompt">
+                <h2 class="text-primary">Sign In Required</h2>
+                <p class="text-muted" style="margin: 1rem 0 2rem;">Please sign in with Google to submit a review.</p>
+                <button class="btn btn-primary" onclick="signInWithGoogle()">
+                    🔐 Sign In with Google
+                </button>
+            </div>
+
+            <!-- Review Form (hidden until logged in) -->
+            <div class="review-form" id="reviewForm" style="display: none;">
+                <div class="form-group">
+                    <label>Your Rating</label>
+                    <div class="star-rating" id="starRating">
+                        <span class="star active" data-value="1">⭐</span>
+                        <span class="star active" data-value="2">⭐</span>
+                        <span class="star active" data-value="3">⭐</span>
+                        <span class="star active" data-value="4">⭐</span>
+                        <span class="star active" data-value="5">⭐</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Your Review <span>(minimum 10 characters)</span></label>
+                    <textarea class="textarea-input" id="reviewText"
+                        placeholder="Tell us about your experience with Sun Tarot. How did the reading help you? What stood out most?"
+                        maxlength="500"></textarea>
+                    <div class="char-count"><span id="charCount">0</span>/500</div>
+                </div>
+
+                <button class="btn btn-primary" onclick="handleSubmit()" style="width: 100%;">
+                    ✨ Submit Review
+                </button>
+
+                <p class="text-muted text-center" style="margin-top: 1rem; font-size: 0.875rem;">
+                    Your review will be published after approval.
+                </p>
+            </div>
+
+            <!-- Success Message -->
+            <div class="success-message" id="successMessage">
+                <h2>🎉 Thank You!</h2>
+                <p class="text-muted" style="margin: 1rem 0;">
+                    Your review has been submitted and is pending approval.
+                    We appreciate you taking the time to share your experience!
+                </p>
+                <a href="index.html" class="btn btn-primary" style="margin-top: 1rem;">Return to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2024 Sun Tarot. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- Environment Config (generated by build) -->
+    <script src="js/env.js" onerror="console.log('env.js not found - using placeholder config')"></script>
+
+    <!-- App Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/reviews.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        let selectedRating = 5;
+
+        // Update UI based on auth state
+        function updateReviewUI() {
+            const loginPrompt = document.getElementById('loginPrompt');
+            const reviewForm = document.getElementById('reviewForm');
+
+            if (isLoggedIn()) {
+                loginPrompt.style.display = 'none';
+                reviewForm.style.display = 'block';
+            } else {
+                loginPrompt.style.display = 'block';
+                reviewForm.style.display = 'none';
+            }
+        }
+
+        // Star rating interaction
+        document.getElementById('starRating').addEventListener('click', (e) => {
+            if (e.target.classList.contains('star')) {
+                selectedRating = parseInt(e.target.dataset.value);
+                updateStars();
+            }
+        });
+
+        function updateStars() {
+            document.querySelectorAll('.star').forEach((star, index) => {
+                star.classList.toggle('active', index < selectedRating);
+            });
+        }
+
+        // Character count
+        document.getElementById('reviewText').addEventListener('input', (e) => {
+            document.getElementById('charCount').textContent = e.target.value.length;
+        });
+
+        // Submit review
+        async function handleSubmit() {
+            const text = document.getElementById('reviewText').value;
+
+            if (text.length < 10) {
+                alert('Please write at least 10 characters for your review.');
+                return;
+            }
+
+            const reviewId = await submitReview(text, selectedRating);
+
+            if (reviewId) {
+                document.getElementById('reviewForm').style.display = 'none';
+                document.getElementById('successMessage').classList.add('show');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(updateReviewUI, 500);
+        });
+
+        // Update on auth change
+        const originalUpdateAuthUI = window.updateAuthUI;
+        window.updateAuthUI = function (user) {
+            if (originalUpdateAuthUI) originalUpdateAuthUI(user);
+            updateReviewUI();
+        };
+    </script>
+</body>
+
+</html>
