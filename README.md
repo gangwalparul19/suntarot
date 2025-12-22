@@ -1,6 +1,6 @@
-# Mystic Insights - AI-Powered Tarot & Spiritual Guidance
+# Sun Tarot - AI-Powered Tarot & Spiritual Guidance
 
-Mystic Insights is a modern, interactive web application designed to provide users with spiritual guidance through Tarot readings. Built with **Next.js** and **Firebase**, it leverages AI to deliver personalized and meaningful interpretations, making the ancient wisdom of Tarot accessible to everyone.
+Sun Tarot is a modern, interactive web application designed to provide users with spiritual guidance through Tarot readings. Built with **Next.js** and **Firebase**, it leverages AI to deliver personalized and meaningful interpretations, making the ancient wisdom of Tarot accessible to everyone.
 
 ## ✨ Features Present
 

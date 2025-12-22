@@ -4,7 +4,7 @@
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "User",
       "type": "object",
-      "description": "Represents a user of the Mystic Insights application.",
+      "description": "Represents a user of the Sun Tarot application.",
       "properties": {
         "id": {
           "type": "string",
@@ -170,6 +170,6 @@
         }
       }
     ],
-    "reasoning": "The Firestore structure is designed to securely manage user data, bookings, and reading information for the Mystic Insights application, prioritizing authorization independence and clear access patterns. It leverages path-based ownership and denormalization to eliminate the need for `get()` calls in security rules, ensuring atomic operations and simplifying debugging.\n\n*   **Users:** User profiles are stored in `/users/{userId}`. This adheres to the Private Data access model. Each user can only access their own profile.  This structure supports the requirement of users being able to see their past bookings and readings.\n*   **Bookings:** Bookings are stored in `/users/{userId}/bookings/{bookingId}`. This follows the User 1:N Entity pattern, ensuring that each booking is directly associated with a user and owned by them. This structure supports listing all bookings associated with a user and makes it easy to secure using path-based rules.\n*   **Readings:** Readings are stored under `/users/{userId}/readings/{readingId}`. This maintains the hierarchical relationship, associating each reading with a specific user. This structure supports listing all readings associated with a user and makes it easy to secure using path-based rules."
+    "reasoning": "The Firestore structure is designed to securely manage user data, bookings, and reading information for the Sun Tarot application, prioritizing authorization independence and clear access patterns. It leverages path-based ownership and denormalization to eliminate the need for `get()` calls in security rules, ensuring atomic operations and simplifying debugging.\n\n*   **Users:** User profiles are stored in `/users/{userId}`. This adheres to the Private Data access model. Each user can only access their own profile.  This structure supports the requirement of users being able to see their past bookings and readings.\n*   **Bookings:** Bookings are stored in `/users/{userId}/bookings/{bookingId}`. This follows the User 1:N Entity pattern, ensuring that each booking is directly associated with a user and owned by them. This structure supports listing all bookings associated with a user and makes it easy to secure using path-based rules.\n*   **Readings:** Readings are stored under `/users/{userId}/readings/{readingId}`. This maintains the hierarchical relationship, associating each reading with a specific user. This structure supports listing all readings associated with a user and makes it easy to secure using path-based rules."
   }
 }

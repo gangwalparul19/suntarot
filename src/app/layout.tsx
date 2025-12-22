@@ -8,7 +8,7 @@ import { StarryBackground } from '@/components/layout/starry-background';
 import { FirebaseClientProvider } from '@/firebase';
 
 export const metadata: Metadata = {
-  title: 'Mystic Insights',
+  title: 'Sun Tarot',
   description: 'A mystical journey of self-discovery through tarot card readings.',
   manifest: '/manifest.json',
 };
@@ -16,6 +16,11 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   themeColor: '#D4A95D',
 };
+
+import { AudioController } from '@/components/ui/audio-controller';
+import { MagicCursor } from '@/components/ui/magic-cursor';
+import { ScrollProgress } from '@/components/ui/scroll-progress';
+import { ScrollToTop } from '@/components/ui/scroll-to-top';
 
 export default function RootLayout({
   children,
@@ -36,12 +41,16 @@ export default function RootLayout({
         )}
       >
         <FirebaseClientProvider>
+          <MagicCursor />
+          <ScrollProgress />
+          <AudioController />
           <StarryBackground />
           <div className="relative flex min-h-dvh flex-col bg-background/60 backdrop-blur-sm">
             <Header />
             <main className="flex-1">{children}</main>
             <Footer />
           </div>
+          <ScrollToTop />
           <Toaster />
         </FirebaseClientProvider>
       </body>

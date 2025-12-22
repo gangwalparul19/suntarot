@@ -1,5 +1,5 @@
 /**
- * This ruleset enforces a strict user-ownership model for the Mystic Insights application.
+ * This ruleset enforces a strict user-ownership model for the Sun Tarot application.
  *
  * Core Philosophy:
  * All user-generated data, including profiles, bookings, and readings, is considered private.

@@ -252,7 +252,7 @@ export function InteractiveTarotReading() {
             <div className="flex justify-center gap-4 -mb-2">
               {selectedCards.map((card) => (
                 <motion.div key={card.name} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-                  <Image src={card.image.src} alt={card.name} width={60} height={100} className="rounded-md shadow-lg" />
+                  <img src={card.image.src} alt={card.name} width={60} height={100} className="rounded-md shadow-lg" />
                 </motion.div>
               ))}
             </div>

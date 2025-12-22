@@ -43,21 +43,21 @@ type BookingFormValues = z.infer<typeof bookingFormSchema>;
 const pricingTiers = [
   {
     name: 'Quick Insight',
-    price: '$25',
+    price: '₹250',
     description: 'A single card pull for focused guidance on a specific question.',
     features: ['1 Card Reading', '15 Minute Session', 'Email Summary'],
     popular: false,
   },
   {
     name: 'Standard Spread',
-    price: '$60',
+    price: '₹500',
     description: 'A three-card spread to explore the past, present, and future of a situation.',
     features: ['3 Card Reading', '30 Minute Session', 'Email Summary', 'Follow-up Question'],
     popular: true,
   },
   {
     name: 'Deep Dive',
-    price: '$100',
+    price: '₹750',
     description: 'A full Celtic Cross spread for a comprehensive look at your life path.',
     features: ['10 Card Reading', '60 Minute Session', 'Full Recording', 'Detailed PDF Summary'],
     popular: false,
@@ -164,7 +164,7 @@ export default function BookingPage() {
                 alt={profileImage.description}
                 data-ai-hint={profileImage.imageHint}
                 fill
-                className="object-cover"
+                className="object-cover object-top"
               />
             </div>
           )}

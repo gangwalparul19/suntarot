@@ -15,8 +15,8 @@ export function ShareReading({ reading, question }: ShareReadingProps) {
     const [copied, setCopied] = useState(false);
 
     const shareData = {
-        title: 'My Tarot Reading from Mystic Insights',
-        text: `Question: ${question}\n\nReading: ${reading.substring(0, 100)}...\n\nRead the full insight on Mystic Insights.`,
+        title: 'My Tarot Reading from Sun Tarot',
+        text: `Question: ${question}\n\nReading: ${reading.substring(0, 100)}...\n\nRead the full insight on Sun Tarot.`,
         url: window.location.href,
     };
 

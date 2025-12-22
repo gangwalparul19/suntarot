@@ -1,4 +1,4 @@
-# **App Name**: Mystic Insights
+# **App Name**: Sun Tarot
 
 ## Core Features:
 

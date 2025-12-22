@@ -1,6 +1,6 @@
 {
-  "name": "Mystic Insights",
-  "short_name": "Mystic",
+  "name": "Sun Tarot",
+  "short_name": "Sun Tarot",
   "description": "A mystical journey of self-discovery through tarot card readings.",
   "start_url": "/",
   "display": "standalone",
