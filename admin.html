@@ -346,6 +346,7 @@
                     <button class="admin-tab" onclick="showPanel('bookings')">📅 Bookings</button>
                     <button class="admin-tab" onclick="showPanel('availability')">🗓️ Availability</button>
                     <button class="admin-tab" onclick="showPanel('reviews')">⭐ Reviews</button>
+                    <button class="admin-tab" onclick="showPanel('pricing')">💰 Pricing</button>
                 </div>
 
                 <!-- Overview Panel -->
@@ -411,6 +412,19 @@
                     </div>
 
                     <div id="reviewsList">Loading...</div>
+                </div>
+
+                <!-- Pricing Panel -->
+                <div class="admin-panel" id="pricingPanel">
+                    <h2>Manage Pricing</h2>
+                    <p class="text-muted mb-md">Edit service names, prices, and durations. Changes will reflect
+                        immediately on the booking page.</p>
+
+                    <div id="pricingForms">Loading...</div>
+
+                    <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--color-border);">
+                        <button class="btn btn-outline" onclick="resetToDefaults()">Reset All to Defaults</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -485,7 +499,80 @@
                 loadReviewsByStatus('pending');
             } else if (panelName === 'bookings') {
                 loadAllBookings();
+            } else if (panelName === 'pricing') {
+                renderPricingForms();
             }
+        }
+
+        // Pricing functions
+        async function renderPricingForms() {
+            await initServices();
+            const container = document.getElementById('pricingForms');
+
+            container.innerHTML = Object.entries(SERVICES).map(([id, service]) => `
+                <div style="background: var(--color-background); border: 1px solid var(--color-border); border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1rem;">
+                    <h4 class="text-primary" style="margin-bottom: 1rem;">${service.name} ${service.category === 'love' ? '💕' : ''}</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem;">
+                        <div>
+                            <label class="text-muted" style="display: block; margin-bottom: 0.25rem; font-size: 0.875rem;">Service Name</label>
+                            <input type="text" id="name_${id}" value="${service.name}" 
+                                   style="width: 100%; padding: 0.5rem; border: 1px solid var(--color-border); border-radius: 0.25rem; background: var(--color-card); color: var(--color-text);">
+                        </div>
+                        <div>
+                            <label class="text-muted" style="display: block; margin-bottom: 0.25rem; font-size: 0.875rem;">Price (₹)</label>
+                            <input type="number" id="price_${id}" value="${service.price}" min="0"
+                                   style="width: 100%; padding: 0.5rem; border: 1px solid var(--color-border); border-radius: 0.25rem; background: var(--color-card); color: var(--color-text);">
+                        </div>
+                        <div>
+                            <label class="text-muted" style="display: block; margin-bottom: 0.25rem; font-size: 0.875rem;">Duration (min)</label>
+                            <input type="number" id="duration_${id}" value="${service.duration}" min="5" step="5"
+                                   style="width: 100%; padding: 0.5rem; border: 1px solid var(--color-border); border-radius: 0.25rem; background: var(--color-card); color: var(--color-text);">
+                        </div>
+                        <div>
+                            <label class="text-muted" style="display: block; margin-bottom: 0.25rem; font-size: 0.875rem;">Description</label>
+                            <input type="text" id="description_${id}" value="${service.description || ''}" 
+                                   style="width: 100%; padding: 0.5rem; border: 1px solid var(--color-border); border-radius: 0.25rem; background: var(--color-card); color: var(--color-text);">
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveServicePrice('${id}')" style="margin-top: 1rem;">
+                        Save Changes
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        async function saveServicePrice(serviceId) {
+            const name = document.getElementById(`name_${serviceId}`).value;
+            const price = parseInt(document.getElementById(`price_${serviceId}`).value);
+            const duration = parseInt(document.getElementById(`duration_${serviceId}`).value);
+            const description = document.getElementById(`description_${serviceId}`).value;
+
+            const serviceData = {
+                name,
+                price,
+                duration,
+                description,
+                category: SERVICES[serviceId]?.category || null
+            };
+
+            // Remove null category
+            if (!serviceData.category) delete serviceData.category;
+
+            const success = await saveService(serviceId, serviceData);
+            if (success) {
+                alert('✅ Price updated successfully! Changes will appear on the booking page.');
+            }
+        }
+
+        async function resetToDefaults() {
+            if (!confirm('Are you sure you want to reset all prices to defaults?')) return;
+
+            for (const [id, service] of Object.entries(DEFAULT_SERVICES)) {
+                await saveService(id, service);
+            }
+
+            alert('✅ All prices reset to defaults!');
+            renderPricingForms();
         }
 
         // Load dashboard data
