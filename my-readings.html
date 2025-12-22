@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View your past tarot readings and insights.">
+    <title>My Readings - Sun Tarot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .readings-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .reading-card {
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .reading-card:hover {
+            border-color: var(--color-primary);
+        }
+
+        .reading-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .reading-type {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .reading-type.love {
+            background: linear-gradient(135deg, #db7093, #d4a95d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .reading-date {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+        }
+
+        .reading-cards {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .card-mini {
+            width: 60px;
+            height: 90px;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-mini img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-names {
+            color: var(--color-text);
+            font-size: 0.875rem;
+        }
+
+        .reading-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        #userInfo {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stars" id="stars"></div>
+
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo"><span>☀️</span><span>Sun Tarot</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="reading.html">Reading</a></li>
+                <li><a href="love-reading.html">Love</a></li>
+                <li><a href="learn.html">Learn</a></li>
+                <li><a href="spreads.html">Spreads</a></li>
+                <li><a href="booking.html">Book</a></li>
+                <li><a href="my-readings.html" class="active">My Readings</a></li>
+            </ul>
+            <div class="auth-container" id="authContainer">
+                <div id="userInfo"></div>
+                <button class="btn btn-outline" id="loginBtn" onclick="signInWithGoogle()"
+                    style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                    Sign In
+                </button>
+                <button class="btn btn-outline" id="logoutBtn" onclick="signOut()"
+                    style="display: none; padding: 0.5rem 1rem; font-size: 0.875rem;">
+                    Sign Out
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </nav>
+    </header>
+
+    <main class="section" style="padding-top: 120px;">
+        <div class="container readings-container">
+            <div class="section-header">
+                <h1 class="section-title text-primary">My Reading History</h1>
+                <p class="section-subtitle">Revisit your past readings and insights</p>
+            </div>
+
+            <!-- Login Required -->
+            <div class="empty-state" id="loginPrompt">
+                <h3 style="color: var(--color-primary);">Sign In Required</h3>
+                <p class="text-muted" style="margin-bottom: 1.5rem;">Sign in to save and view your reading history.</p>
+                <button class="btn btn-primary" onclick="signInWithGoogle()">🔐 Sign In with Google</button>
+            </div>
+
+            <!-- Readings List -->
+            <div id="readingsContent" style="display: none;">
+                <div id="readingsList">
+                    <p class="text-muted text-center">Loading your readings...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2024 Sun Tarot. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- Environment Config -->
+    <script src="js/env.js" onerror="console.log('env.js not found')"></script>
+
+    <!-- Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/share.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(updateUIState, 500);
+        });
+
+        function updateUIState() {
+            const loginPrompt = document.getElementById('loginPrompt');
+            const readingsContent = document.getElementById('readingsContent');
+
+            if (isLoggedIn()) {
+                loginPrompt.style.display = 'none';
+                readingsContent.style.display = 'block';
+                loadReadings();
+            } else {
+                loginPrompt.style.display = 'block';
+                readingsContent.style.display = 'none';
+            }
+        }
+
+        async function loadReadings() {
+            const readings = await getReadingHistory(50);
+            renderReadings(readings);
+        }
+
+        function renderReadings(readings) {
+            const container = document.getElementById('readingsList');
+
+            if (readings.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3 style="color: var(--color-primary);">No Readings Yet</h3>
+                        <p class="text-muted" style="margin-bottom: 1.5rem;">Start a reading to save it to your history!</p>
+                        <a href="reading.html" class="btn btn-primary">🔮 Get a Reading</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = readings.map(reading => `
+                <div class="reading-card">
+                    <div class="reading-header">
+                        <span class="reading-type ${reading.spreadType === 'love' ? 'love' : ''}">
+                            ${getSpreadLabel(reading.spreadType)}
+                        </span>
+                        <span class="reading-date">${formatReadingDate(reading.createdAt)}</span>
+                    </div>
+                    <div class="reading-cards">
+                        ${reading.cards.map(card => `
+                            <div class="card-mini" title="${card.name}">
+                                ${card.image ? `<img src="${card.image}" alt="${card.name}">` : `<div style="display:flex;align-items:center;justify-content:center;height:100%;background:var(--color-card);">🃏</div>`}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="card-names">
+                        <strong>Cards:</strong> ${reading.cards.map(c => c.name).join(' • ')}
+                    </div>
+                    <div class="reading-actions">
+                        <button class="btn btn-outline" onclick="shareReading(${JSON.stringify(reading.cards).replace(/"/g, '&quot;')}, '${reading.spreadType}')" 
+                                style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                            📤 Share
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getSpreadLabel(type) {
+            const labels = {
+                'reading': '🔮 Past • Present • Future',
+                'love': '💕 Love Reading',
+                'daily': '☀️ Daily Card'
+            };
+            return labels[type] || '🔮 Reading';
+        }
+
+        function formatReadingDate(timestamp) {
+            if (!timestamp) return 'Just now';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            return date.toLocaleDateString('en-IN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Update UI on auth change
+        const originalUpdateAuthUI = window.updateAuthUI;
+        window.updateAuthUI = function (user) {
+            if (originalUpdateAuthUI) originalUpdateAuthUI(user);
+            updateUIState();
+        };
+    </script>
+</body>
+
+</html>

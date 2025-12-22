@@ -265,6 +265,14 @@
                     setTimeout(() => {
                         document.getElementById('readingResult').classList.add('show');
                         document.getElementById('readingResult').scrollIntoView({ behavior: 'smooth' });
+
+                        // Save reading to history
+                        if (typeof saveReadingToHistory === 'function') {
+                            saveReadingToHistory(drawnCards, 'reading');
+                        }
+
+                        // Show share button
+                        showShareButton();
                     }, 800);
                 }
             }
@@ -287,7 +295,30 @@
 
             console.log('Initialization complete!');
         });
+
+        function showShareButton() {
+            const resultDiv = document.getElementById('readingResult');
+            if (!document.getElementById('shareReadingBtn')) {
+                const shareHtml = `
+                    <div id="shareReadingBtn" style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--color-border);">
+                        <p class="text-muted" style="margin-bottom: 1rem;">Share your reading with friends!</p>
+                        <button class="btn btn-primary" onclick="shareReading(drawnCards, 'reading')" style="margin-right: 0.5rem;">📤 Share Reading</button>
+                        <a href="my-readings.html" class="btn btn-outline">📚 View History</a>
+                    </div>
+                `;
+                resultDiv.insertAdjacentHTML('beforeend', shareHtml);
+            }
+        }
     </script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="js/env.js" onerror=""></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/share.js"></script>
 </body>
 
 </html>
