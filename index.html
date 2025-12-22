@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sun Tarot - Discover your path with ancient wisdom and modern insight. Daily tarot readings and spiritual guidance.">
+  <title>Sun Tarot - Ancient Wisdom, Modern Insight</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☀️</text></svg>">
+</head>
+<body>
+  <!-- Scroll Progress -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+  
+  <!-- Starry Background -->
+  <div class="stars" id="stars"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav container">
+      <a href="index.html" class="logo">
+        <span>☀️</span>
+        <span>Sun Tarot</span>
+      </a>
+      
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="learn.html">Learn</a></li>
+        <li><a href="booking.html">Book a Reading</a></li>
+      </ul>
+      
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">☰</button>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <p class="hero-subtitle">Ancient Wisdom • Modern Insight</p>
+      <h1 class="hero-title">Discover Your Path Through the Cards</h1>
+      <p class="hero-description">
+        Let the ancient wisdom of Tarot illuminate your journey. 
+        Receive guidance, clarity, and insight into life's most profound questions.
+      </p>
+      <div class="hero-buttons">
+        <a href="learn.html" class="btn btn-primary">✨ Explore the Cards</a>
+        <a href="booking.html" class="btn btn-outline">Book a Reading</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Deck Showcase -->
+  <section class="section deck-showcase">
+    <div class="deck-track" id="deckTrack">
+      <!-- Cards will be inserted by JavaScript -->
+    </div>
+  </section>
+
+  <!-- Card of the Day -->
+  <section class="section" id="cardOfDay">
+    <div class="container">
+      <div class="section-header">
+        <p class="text-primary">✦ Daily Guidance ✦</p>
+        <h2 class="section-title">Your Card of the Day</h2>
+      </div>
+      
+      <div class="card-of-day">
+        <div class="card-of-day-content">
+          <div class="tarot-card flipped" id="dailyCard">
+            <div class="tarot-card-inner">
+              <div class="tarot-card-back">
+                <img src="https://images.unsplash.com/photo-1628304163832-0a4038f2bd6a?w=300" alt="Card Back">
+              </div>
+              <div class="tarot-card-front">
+                <img id="dailyCardImage" src="" alt="">
+                <span class="card-name" id="dailyCardName"></span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-details">
+            <h3 id="dailyCardTitle" class="text-primary"></h3>
+            <blockquote class="card-meaning" id="dailyCardMeaning"></blockquote>
+            <button class="btn btn-outline" onclick="shareCard()">
+              📤 Share Reading
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="section" id="howItWorks">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">The Journey</h2>
+        <p class="section-subtitle">Three simple steps to unlock the wisdom of the cards</p>
+      </div>
+      
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">🔮</div>
+          <h3 class="pricing-name">Choose Your Path</h3>
+          <p class="text-muted">Select a reading that resonates with your current life situation</p>
+        </div>
+        <div class="pricing-card">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">🃏</div>
+          <h3 class="pricing-name">Draw Your Cards</h3>
+          <p class="text-muted">The cards you choose reveal the energy surrounding your question</p>
+        </div>
+        <div class="pricing-card">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">💫</div>
+          <h3 class="pricing-name">Receive Insight</h3>
+          <p class="text-muted">Gain clarity and guidance to navigate your path forward</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="section" id="about" style="background: var(--color-background-secondary);">
+    <div class="container">
+      <div class="card-of-day-content" style="padding: 2rem;">
+        <div style="width: 200px; height: 200px; border-radius: 50%; overflow: hidden; border: 3px solid var(--color-primary);">
+          <img src="about.png" alt="Sun Tarot Reader" style="width: 100%; height: 100%; object-fit: cover; object-position: top;">
+        </div>
+        <div>
+          <h2 class="section-title">About Sun Tarot</h2>
+          <p class="text-muted" style="font-size: 1.125rem; line-height: 1.8; margin-top: 1rem;">
+            Welcome to Sun Tarot, where ancient wisdom meets modern insight. 
+            With years of experience in tarot reading and spiritual guidance, 
+            I am dedicated to helping you navigate life's challenges and discover your true path.
+          </p>
+          <p class="text-muted" style="font-size: 1.125rem; line-height: 1.8; margin-top: 1rem;">
+            Every reading is a sacred conversation between you and the universe. 
+            Let the cards illuminate the way forward.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section" id="testimonials">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">What Our Seekers Say</h2>
+      </div>
+      
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <p class="text-muted" style="font-style: italic; margin-bottom: 1rem;">
+            "The reading was incredibly accurate and gave me the clarity I needed to make an important decision."
+          </p>
+          <p class="text-primary">— Priya M.</p>
+        </div>
+        <div class="pricing-card">
+          <p class="text-muted" style="font-style: italic; margin-bottom: 1rem;">
+            "A truly transformative experience. I felt understood and guided throughout the entire session."
+          </p>
+          <p class="text-primary">— Rahul K.</p>
+        </div>
+        <div class="pricing-card">
+          <p class="text-muted" style="font-style: italic; margin-bottom: 1rem;">
+            "The insights I received helped me understand myself better. Highly recommend!"
+          </p>
+          <p class="text-primary">— Ananya S.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>Sun Tarot</h4>
+          <p class="text-muted">Ancient wisdom for modern seekers.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Explore</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="learn.html">Learn Tarot</a></li>
+            <li><a href="booking.html">Book a Reading</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Contact</h4>
+          <ul class="footer-links">
+            <li><a href="mailto:hello@suntarot.com">hello@suntarot.com</a></li>
+            <li><a href="https://wa.me/919372776019" target="_blank">WhatsApp</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Legal</h4>
+          <ul class="footer-links">
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="terms.html">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2024 Sun Tarot. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Audio Toggle -->
+  <button class="audio-toggle" id="audioToggle" title="Toggle ambient music">🔇</button>
+  <audio id="ambientAudio" loop>
+    <source src="https://assets.mixkit.co/music/preview/mixkit-stars-635.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Scroll to Top -->
+  <button class="scroll-top" id="scrollTop" title="Back to top">↑</button>
+
+  <!-- Scripts -->
+  <script src="js/cards.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

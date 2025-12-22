@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Tarot - Sun Tarot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="scroll-progress" id="scrollProgress"></div>
+    <div class="stars" id="stars"></div>
+
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo"><span>☀️</span><span>Sun Tarot</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="learn.html" class="active">Learn</a></li>
+                <li><a href="booking.html">Book a Reading</a></li>
+            </ul>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </nav>
+    </header>
+
+    <main class="section" style="padding-top: 120px;">
+        <div class="container">
+            <div class="section-header">
+                <h1 class="section-title text-primary">Explore the Major Arcana</h1>
+                <p class="section-subtitle">Discover the 22 cards representing life's spiritual lessons.</p>
+            </div>
+            <div class="card-grid" id="cardGrid"></div>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="cardModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeCardModal()">✕</button>
+            <div class="modal-content">
+                <div class="modal-image"><img id="modalCardImage" src="" alt=""></div>
+                <div class="modal-details">
+                    <h2 class="modal-title" id="modalCardName"></h2>
+                    <p class="modal-description text-muted" id="modalCardMeaning"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="scroll-top" id="scrollTop">↑</button>
+    <script src="js/cards.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('cardGrid');
+            majorArcana.forEach((card, i) => {
+                const el = document.createElement('div');
+                el.className = 'card-grid-item';
+                el.onclick = () => openCardModal(i);
+                el.innerHTML = `<img src="${card.image}" alt="${card.name}"><span class="card-name">${card.name}</span>`;
+                grid.appendChild(el);
+            });
+        });
+    </script>
+</body>
+
+</html>
