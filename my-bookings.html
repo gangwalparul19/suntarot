@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View and manage your tarot reading appointments.">
+    <title>My Bookings - Sun Tarot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .dashboard-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .booking-card {
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+
+        .booking-card:hover {
+            border-color: var(--color-primary);
+        }
+
+        .booking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .booking-service {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .booking-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .status-confirmed {
+            background: rgba(39, 174, 96, 0.2);
+            color: #27ae60;
+        }
+
+        .status-cancelled {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .status-completed {
+            background: rgba(142, 68, 173, 0.2);
+            color: #8e44ad;
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            color: var(--color-text);
+        }
+
+        .booking-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--color-text);
+        }
+
+        .tab-btn:hover {
+            border-color: var(--color-primary);
+        }
+
+        .tab-btn.active {
+            background: var(--color-primary);
+            color: var(--color-background);
+            border-color: var(--color-primary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+        }
+
+        .empty-state h3 {
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        #userInfo {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stars" id="stars"></div>
+
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo"><span>☀️</span><span>Sun Tarot</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="reading.html">Reading</a></li>
+                <li><a href="love-reading.html">Love</a></li>
+                <li><a href="learn.html">Learn</a></li>
+                <li><a href="spreads.html">Spreads</a></li>
+                <li><a href="booking.html">Book</a></li>
+                <li><a href="my-bookings.html" class="active">My Bookings</a></li>
+            </ul>
+            <div class="auth-container" id="authContainer">
+                <div id="userInfo"></div>
+                <button class="btn btn-outline" id="loginBtn" onclick="signInWithGoogle()"
+                    style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                    Sign In
+                </button>
+                <button class="btn btn-outline" id="logoutBtn" onclick="signOut()"
+                    style="display: none; padding: 0.5rem 1rem; font-size: 0.875rem;">
+                    Sign Out
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </nav>
+    </header>
+
+    <main class="section" style="padding-top: 120px;">
+        <div class="container dashboard-container">
+            <div class="section-header">
+                <h1 class="section-title text-primary">My Bookings</h1>
+                <p class="section-subtitle">View and manage your tarot reading appointments</p>
+            </div>
+
+            <!-- Login Required -->
+            <div class="empty-state" id="loginPrompt">
+                <h3>Sign In Required</h3>
+                <p class="text-muted" style="margin-bottom: 1.5rem;">Please sign in to view your bookings.</p>
+                <button class="btn btn-primary" onclick="signInWithGoogle()">🔐 Sign In with Google</button>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div id="dashboardContent" style="display: none;">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="showBookings('upcoming')">📅 Upcoming</button>
+                    <button class="tab-btn" onclick="showBookings('past')">📚 Past</button>
+                    <button class="tab-btn" onclick="showBookings('cancelled')">❌ Cancelled</button>
+                </div>
+
+                <div id="bookingsList">
+                    <p class="text-muted text-center">Loading your bookings...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2024 Sun Tarot. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- Environment Config -->
+    <script src="js/env.js" onerror="console.log('env.js not found')"></script>
+
+    <!-- Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/booking.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        let allBookings = [];
+        let currentFilter = 'upcoming';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(updateDashboardUI, 500);
+        });
+
+        function updateDashboardUI() {
+            const loginPrompt = document.getElementById('loginPrompt');
+            const dashboardContent = document.getElementById('dashboardContent');
+
+            if (isLoggedIn()) {
+                loginPrompt.style.display = 'none';
+                dashboardContent.style.display = 'block';
+                loadUserBookings();
+            } else {
+                loginPrompt.style.display = 'block';
+                dashboardContent.style.display = 'none';
+            }
+        }
+
+        async function loadUserBookings() {
+            allBookings = await getUserBookings();
+            showBookings(currentFilter);
+        }
+
+        function showBookings(filter) {
+            currentFilter = filter;
+
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+                btn.classList.toggle('active',
+                    (filter === 'upcoming' && i === 0) ||
+                    (filter === 'past' && i === 1) ||
+                    (filter === 'cancelled' && i === 2)
+                );
+            });
+
+            const today = new Date().toISOString().split('T')[0];
+            let filtered = [];
+
+            if (filter === 'upcoming') {
+                filtered = allBookings.filter(b => b.date >= today && b.status !== 'cancelled');
+            } else if (filter === 'past') {
+                filtered = allBookings.filter(b => b.date < today && b.status !== 'cancelled');
+            } else if (filter === 'cancelled') {
+                filtered = allBookings.filter(b => b.status === 'cancelled');
+            }
+
+            renderBookings(filtered);
+        }
+
+        function renderBookings(bookings) {
+            const container = document.getElementById('bookingsList');
+
+            if (bookings.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>${getEmptyMessage()}</h3>
+                        <p class="text-muted" style="margin-bottom: 1.5rem;">
+                            ${currentFilter === 'upcoming' ? 'Ready for your next reading?' : 'No bookings to display.'}
+                        </p>
+                        ${currentFilter === 'upcoming' ? '<a href="booking.html" class="btn btn-primary">Book a Reading</a>' : ''}
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = bookings.map(booking => `
+                <div class="booking-card">
+                    <div class="booking-header">
+                        <span class="booking-service">${booking.serviceName}</span>
+                        <span class="booking-status status-${booking.status}">${booking.status}</span>
+                    </div>
+                    <div class="booking-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Date</span>
+                            <span class="detail-value">${formatBookingDate(booking.date)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Time</span>
+                            <span class="detail-value">${formatTime(booking.time)}</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Duration</span>
+                            <span class="detail-value">${booking.duration} min</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Price</span>
+                            <span class="detail-value">₹${booking.price}</span>
+                        </div>
+                    </div>
+                    ${booking.notes ? `<p class="text-muted" style="font-style: italic; margin-bottom: 1rem;">"${booking.notes}"</p>` : ''}
+                    ${booking.status === 'confirmed' && booking.date >= new Date().toISOString().split('T')[0] ? `
+                        <div class="booking-actions">
+                            <button class="btn btn-outline" onclick="handleCancelBooking('${booking.id}')" style="color: #e74c3c; border-color: #e74c3c;">
+                                Cancel Booking
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function getEmptyMessage() {
+            switch (currentFilter) {
+                case 'upcoming': return 'No Upcoming Bookings';
+                case 'past': return 'No Past Bookings';
+                case 'cancelled': return 'No Cancelled Bookings';
+                default: return 'No Bookings';
+            }
+        }
+
+        function formatBookingDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-IN', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function formatTime(time) {
+            const [hours, minutes] = time.split(':');
+            const hour = parseInt(hours);
+            const ampm = hour >= 12 ? 'PM' : 'AM';
+            const displayHour = hour % 12 || 12;
+            return `${displayHour}:${minutes} ${ampm}`;
+        }
+
+        async function handleCancelBooking(bookingId) {
+            if (!confirm('Are you sure you want to cancel this booking?')) return;
+
+            const success = await cancelBooking(bookingId);
+            if (success) {
+                alert('Booking cancelled successfully.');
+                loadUserBookings();
+            } else {
+                alert('Failed to cancel booking. Please try again.');
+            }
+        }
+
+        // Update UI on auth change
+        const originalUpdateAuthUI = window.updateAuthUI;
+        window.updateAuthUI = function (user) {
+            if (originalUpdateAuthUI) originalUpdateAuthUI(user);
+            updateDashboardUI();
+        };
+    </script>
+</body>
+
+</html>

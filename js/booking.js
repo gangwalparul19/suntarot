@@ -218,39 +218,52 @@ async function createBooking(date, time, serviceId, notes = '') {
     }
 
     try {
-        // Check if slot is still available
-        const existingBooking = await db.collection('bookings')
+        // Check if slot is still available (simplified query to avoid index issues)
+        const existingBookings = await db.collection('bookings')
             .where('date', '==', date)
             .where('time', '==', time)
-            .where('status', '!=', 'cancelled')
             .get();
 
-        if (!existingBooking.empty) {
+        // Check if any non-cancelled booking exists for this slot
+        let slotTaken = false;
+        existingBookings.forEach(doc => {
+            if (doc.data().status !== 'cancelled') {
+                slotTaken = true;
+            }
+        });
+
+        if (slotTaken) {
             alert('Sorry, this slot has just been booked. Please select another time.');
             return null;
         }
 
         // Create the booking
-        const bookingRef = await db.collection('bookings').add({
+        const bookingData = {
             userId: user.uid,
             userEmail: user.email,
-            userName: user.displayName,
+            userName: user.displayName || 'User',
             date: date,
             time: time,
             serviceId: serviceId,
             serviceName: service.name,
             duration: service.duration,
             price: service.price,
-            notes: notes,
+            notes: notes || '',
             status: 'confirmed',
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
+        };
+
+        console.log('Creating booking with data:', bookingData);
+
+        const bookingRef = await db.collection('bookings').add(bookingData);
 
         console.log('Booking created:', bookingRef.id);
         return bookingRef.id;
     } catch (error) {
         console.error('Error creating booking:', error);
-        alert('Failed to create booking. Please try again.');
+        console.error('Error code:', error.code);
+        console.error('Error message:', error.message);
+        alert('Failed to create booking: ' + error.message);
         return null;
     }
 }

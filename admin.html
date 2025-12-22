@@ -360,14 +360,21 @@
                             <div class="stat-label">Total Bookings</div>
                         </div>
                         <div class="stat-card">
+                            <div class="stat-number" id="statRevenue">-</div>
+                            <div class="stat-label">Total Revenue</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="statUpcoming">-</div>
+                            <div class="stat-label">Upcoming Bookings</div>
+                        </div>
+                        <div class="stat-card">
                             <div class="stat-number" id="statPendingReviews">-</div>
                             <div class="stat-label">Pending Reviews</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-number" id="statApprovedReviews">-</div>
-                            <div class="stat-label">Approved Reviews</div>
-                        </div>
                     </div>
+
+                    <h3 class="text-primary mb-md">Popular Services</h3>
+                    <div id="popularServices" style="margin-bottom: 2rem;">Loading...</div>
 
                     <h3 class="text-primary mb-md">Recent Bookings</h3>
                     <div id="recentBookings">Loading...</div>
@@ -375,7 +382,13 @@
 
                 <!-- Bookings Panel -->
                 <div class="admin-panel" id="bookingsPanel">
-                    <h2>All Bookings</h2>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                        <h2 style="margin: 0;">All Bookings</h2>
+                        <button class="btn btn-outline" onclick="exportBookingsCSV()" style="padding: 0.5rem 1rem;">
+                            📥 Export CSV
+                        </button>
+                    </div>
                     <div id="allBookings">Loading...</div>
                 </div>
 
@@ -579,18 +592,95 @@
 
         // Load dashboard data
         async function loadDashboardData() {
-            // Load stats
+            // Load all bookings
             const bookings = await getAllBookings();
-            document.getElementById('statBookings').textContent = bookings.length;
+            const today = new Date().toISOString().split('T')[0];
+
+            // Calculate stats
+            const confirmedBookings = bookings.filter(b => b.status === 'confirmed');
+            const upcomingBookings = confirmedBookings.filter(b => b.date >= today);
+            const totalRevenue = confirmedBookings.reduce((sum, b) => sum + (b.price || 0), 0);
+
+            // Display stats
+            document.getElementById('statBookings').textContent = confirmedBookings.length;
+            document.getElementById('statRevenue').textContent = '₹' + totalRevenue.toLocaleString();
+            document.getElementById('statUpcoming').textContent = upcomingBookings.length;
 
             const pendingReviews = await getAllReviews('pending');
             document.getElementById('statPendingReviews').textContent = pendingReviews.length;
 
-            const approvedReviews = await getAllReviews('approved');
-            document.getElementById('statApprovedReviews').textContent = approvedReviews.length;
+            // Popular services
+            renderPopularServices(confirmedBookings);
 
             // Recent bookings
             renderBookingsTable(bookings.slice(0, 5), 'recentBookings');
+        }
+
+        // Render popular services chart
+        function renderPopularServices(bookings) {
+            const serviceCounts = {};
+            const serviceRevenue = {};
+
+            bookings.forEach(b => {
+                const name = b.serviceName || 'Unknown';
+                serviceCounts[name] = (serviceCounts[name] || 0) + 1;
+                serviceRevenue[name] = (serviceRevenue[name] || 0) + (b.price || 0);
+            });
+
+            const sorted = Object.entries(serviceCounts).sort((a, b) => b[1] - a[1]);
+
+            const container = document.getElementById('popularServices');
+            if (sorted.length === 0) {
+                container.innerHTML = '<p class="text-muted">No booking data yet.</p>';
+                return;
+            }
+
+            const maxCount = sorted[0][1];
+
+            container.innerHTML = sorted.map(([name, count]) => `
+                <div style="margin-bottom: 1rem;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <span>${name}</span>
+                        <span class="text-muted">${count} bookings | ₹${serviceRevenue[name].toLocaleString()}</span>
+                    </div>
+                    <div style="background: var(--color-background); border-radius: 0.25rem; height: 8px; overflow: hidden;">
+                        <div style="width: ${(count / maxCount * 100)}%; background: var(--color-primary); height: 100%;"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Export bookings to CSV
+        function exportBookingsCSV() {
+            getAllBookings().then(bookings => {
+                if (bookings.length === 0) {
+                    alert('No bookings to export.');
+                    return;
+                }
+
+                const headers = ['Date', 'Time', 'Service', 'Customer', 'Email', 'Price', 'Status', 'Notes'];
+                const rows = bookings.map(b => [
+                    b.date,
+                    b.time,
+                    b.serviceName,
+                    b.userName || '',
+                    b.userEmail,
+                    b.price || '',
+                    b.status,
+                    (b.notes || '').replace(/,/g, ';')
+                ]);
+
+                const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `sun-tarot-bookings-${new Date().toISOString().split('T')[0]}.csv`;
+                a.click();
+
+                URL.revokeObjectURL(url);
+            });
         }
 
         // Load all bookings
