@@ -2,107 +2,200 @@
 // =========================
 // Handles appointment booking, availability management
 
-// Default availability settings
-const DEFAULT_SETTINGS = {
-    startHour: 10, // 10 AM
-    endHour: 18,   // 6 PM
+// Availability settings
+// Weekdays (Mon-Fri): 11:00 PM to 1:00 AM (late night slots)
+// Weekends (Sat-Sun): 11:00 AM to 1:00 AM (extended hours)
+const AVAILABILITY = {
+    weekday: {
+        // 11 PM to 1 AM spans two days, so we handle it as 23:00-23:59 on day 1, 00:00-01:00 on day 2
+        slots: [
+            { start: 23, end: 24 },  // 11 PM - 12 AM (same day)
+            { start: 0, end: 1 }     // 12 AM - 1 AM (next day, but we show for booking on current day)
+        ]
+    },
+    weekend: {
+        // 11 AM to 1 AM 
+        slots: [
+            { start: 11, end: 24 },  // 11 AM - 12 AM
+            { start: 0, end: 1 }     // 12 AM - 1 AM (next day)
+        ]
+    },
     slotDuration: 30, // 30 minutes
     timezone: 'Asia/Kolkata'
 };
 
-// Service types with durations
-const SERVICES = {
-    'quick-insight': { name: 'Quick Insight', duration: 15, price: 250 },
-    'soul-journey': { name: 'Soul Journey', duration: 30, price: 500 },
-    'deep-dive': { name: 'Deep Dive', duration: 60, price: 750 },
-    'love-insight': { name: 'Love Insight', duration: 20, price: 350 },
-    'soulmate-reading': { name: 'Soulmate Reading', duration: 40, price: 650 },
-    'relationship-deep-dive': { name: 'Relationship Deep Dive', duration: 60, price: 999 }
+// Default service types (fallback if Firestore is unavailable)
+const DEFAULT_SERVICES = {
+    'quick-insight': { name: 'Quick Insight', duration: 15, price: 250, description: '3-Card Spread' },
+    'soul-journey': { name: 'Soul Journey', duration: 30, price: 500, description: 'Celtic Cross Spread' },
+    'deep-dive': { name: 'Deep Dive', duration: 60, price: 750, description: 'Custom Multi-Spread' },
+    'love-insight': { name: 'Love Insight', duration: 20, price: 350, description: '3-Card Love Spread', category: 'love' },
+    'soulmate-reading': { name: 'Soulmate Reading', duration: 40, price: 650, description: '5-Card Relationship Spread', category: 'love' },
+    'relationship-deep-dive': { name: 'Relationship Deep Dive', duration: 60, price: 999, description: 'Multiple Spreads', category: 'love' }
 };
+
+// Dynamic services (loaded from Firestore)
+let SERVICES = { ...DEFAULT_SERVICES };
+
+// Load services from Firestore
+async function loadServicesFromFirestore() {
+    if (typeof db === 'undefined' || !db) {
+        console.log('Firestore not available, using default services');
+        return DEFAULT_SERVICES;
+    }
+
+    try {
+        const snapshot = await db.collection('services').get();
+
+        if (snapshot.empty) {
+            // Initialize with defaults if no services exist
+            console.log('No services in Firestore, using defaults');
+            return DEFAULT_SERVICES;
+        }
+
+        const services = {};
+        snapshot.forEach(doc => {
+            services[doc.id] = doc.data();
+        });
+
+        SERVICES = services;
+        console.log('Loaded services from Firestore:', services);
+        return services;
+    } catch (error) {
+        console.error('Error loading services:', error);
+        return DEFAULT_SERVICES;
+    }
+}
+
+// Save a service to Firestore (admin only)
+async function saveService(serviceId, serviceData) {
+    if (!isAdmin()) {
+        alert('Admin access required');
+        return false;
+    }
+
+    try {
+        await db.collection('services').doc(serviceId).set(serviceData);
+        SERVICES[serviceId] = serviceData;
+        console.log('Service saved:', serviceId);
+        return true;
+    } catch (error) {
+        console.error('Error saving service:', error);
+        return false;
+    }
+}
+
+// Initialize services from Firestore on load
+async function initServices() {
+    await loadServicesFromFirestore();
+}
+
+// Export for admin
+window.loadServicesFromFirestore = loadServicesFromFirestore;
+window.saveService = saveService;
+window.initServices = initServices;
+window.DEFAULT_SERVICES = DEFAULT_SERVICES;
+
+// Check if a day is weekend (Saturday = 6, Sunday = 0)
+function isWeekend(date) {
+    const day = date.getDay();
+    return day === 0 || day === 6;
+}
 
 // Get available dates for the next N days
 async function getAvailableDates(daysAhead = 30) {
-    if (!db) {
-        console.error('Firestore not initialized');
-        return [];
-    }
-
+    // For now, generate slots without checking Firestore if db is not available
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     const endDate = new Date(today);
     endDate.setDate(endDate.getDate() + daysAhead);
 
-    try {
-        // Get all blocked dates
-        const blockedSnapshot = await db.collection('availability')
-            .where('blocked', '==', true)
-            .get();
+    let blockedDates = new Set();
+    let bookedSlots = {};
 
-        const blockedDates = new Set();
-        blockedSnapshot.forEach(doc => {
-            blockedDates.add(doc.id); // Date in YYYY-MM-DD format
-        });
+    // Try to get blocked dates and booked slots from Firestore
+    if (typeof db !== 'undefined' && db) {
+        try {
+            const blockedSnapshot = await db.collection('availability')
+                .where('blocked', '==', true)
+                .get();
 
-        // Get all booked slots
-        const bookingsSnapshot = await db.collection('bookings')
-            .where('date', '>=', formatDate(today))
-            .where('date', '<=', formatDate(endDate))
-            .where('status', '!=', 'cancelled')
-            .get();
+            blockedSnapshot.forEach(doc => {
+                blockedDates.add(doc.id);
+            });
 
-        const bookedSlots = {};
-        bookingsSnapshot.forEach(doc => {
-            const booking = doc.data();
-            if (!bookedSlots[booking.date]) {
-                bookedSlots[booking.date] = [];
-            }
-            bookedSlots[booking.date].push(booking.time);
-        });
+            const bookingsSnapshot = await db.collection('bookings')
+                .where('date', '>=', formatDate(today))
+                .where('date', '<=', formatDate(endDate))
+                .where('status', '!=', 'cancelled')
+                .get();
 
-        // Generate available dates
-        const availableDates = [];
-        for (let d = new Date(today); d <= endDate; d.setDate(d.getDate() + 1)) {
-            const dateStr = formatDate(d);
+            bookingsSnapshot.forEach(doc => {
+                const booking = doc.data();
+                if (!bookedSlots[booking.date]) {
+                    bookedSlots[booking.date] = [];
+                }
+                bookedSlots[booking.date].push(booking.time);
+            });
+        } catch (error) {
+            console.log('Firestore not available, showing all slots as available:', error.message);
+        }
+    }
 
-            // Skip blocked dates
-            if (blockedDates.has(dateStr)) continue;
+    // Generate available dates
+    const availableDates = [];
+    for (let d = new Date(today); d <= endDate; d.setDate(d.getDate() + 1)) {
+        const dateStr = formatDate(d);
 
-            // Skip Sundays (optional - can be configured)
-            if (d.getDay() === 0) continue;
+        // Skip blocked dates
+        if (blockedDates.has(dateStr)) continue;
 
-            // Calculate available slots for this date
-            const allSlots = generateTimeSlots();
-            const bookedForDate = bookedSlots[dateStr] || [];
-            const availableSlots = allSlots.filter(slot => !bookedForDate.includes(slot));
+        // Calculate available slots for this date based on day type
+        const allSlots = generateTimeSlots(d);
+        const bookedForDate = bookedSlots[dateStr] || [];
+        const availableSlots = allSlots.filter(slot => !bookedForDate.includes(slot.time));
 
-            if (availableSlots.length > 0) {
-                availableDates.push({
-                    date: dateStr,
-                    dayName: d.toLocaleDateString('en-IN', { weekday: 'long' }),
-                    displayDate: d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }),
-                    availableSlots: availableSlots
+        if (availableSlots.length > 0) {
+            availableDates.push({
+                date: dateStr,
+                dayName: d.toLocaleDateString('en-IN', { weekday: 'long' }),
+                displayDate: d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }),
+                availableSlots: availableSlots.map(s => s.time),
+                allSlots: allSlots,
+                bookedSlots: bookedForDate
+            });
+        }
+    }
+
+    return availableDates;
+}
+
+// Generate time slots for a specific day
+function generateTimeSlots(date) {
+    const slots = [];
+    const weekend = isWeekend(date);
+    const schedule = weekend ? AVAILABILITY.weekend.slots : AVAILABILITY.weekday.slots;
+
+    for (const period of schedule) {
+        for (let hour = period.start; hour < period.end; hour++) {
+            for (let min = 0; min < 60; min += AVAILABILITY.slotDuration) {
+                const time = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
+                slots.push({
+                    time: time,
+                    display: formatTimeDisplay(hour, min)
                 });
             }
         }
-
-        return availableDates;
-    } catch (error) {
-        console.error('Error fetching available dates:', error);
-        return [];
-    }
-}
-
-// Generate time slots for a day
-function generateTimeSlots() {
-    const slots = [];
-    for (let hour = DEFAULT_SETTINGS.startHour; hour < DEFAULT_SETTINGS.endHour; hour++) {
-        for (let min = 0; min < 60; min += DEFAULT_SETTINGS.slotDuration) {
-            const time = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
-            slots.push(time);
-        }
     }
     return slots;
+}
+
+// Format time for display (12-hour format)
+function formatTimeDisplay(hour, min) {
+    const period = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${min.toString().padStart(2, '0')} ${period}`;
 }
 
 // Format date as YYYY-MM-DD

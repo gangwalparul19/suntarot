@@ -48,46 +48,10 @@
                 <a href="book-appointment.html" class="btn btn-primary">View Calendar & Book →</a>
             </div>
 
-            <p class="text-center text-muted" style="margin-bottom: 2rem;">— or book via WhatsApp —</p>
+            <p class="text-center text-muted" style="margin-bottom: 2rem;">— Select a package below —</p>
 
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <h3 class="pricing-name">Quick Insight</h3>
-                    <div class="pricing-price">₹250</div>
-                    <ul class="pricing-features">
-                        <li>3-Card Spread</li>
-                        <li>15 minute session</li>
-                        <li>Written summary</li>
-                    </ul>
-                    <a href="https://wa.me/919372776019?text=Hi! I'd like to book a Quick Insight reading (₹250)"
-                        class="btn btn-outline" target="_blank">Book on WhatsApp</a>
-                </div>
-
-                <div class="pricing-card featured">
-                    <h3 class="pricing-name">Soul Journey</h3>
-                    <div class="pricing-price">₹500</div>
-                    <ul class="pricing-features">
-                        <li>Celtic Cross Spread</li>
-                        <li>30 minute session</li>
-                        <li>Detailed written report</li>
-                        <li>Follow-up questions</li>
-                    </ul>
-                    <a href="https://wa.me/919372776019?text=Hi! I'd like to book a Soul Journey reading (₹500)"
-                        class="btn btn-primary" target="_blank">Book on WhatsApp</a>
-                </div>
-
-                <div class="pricing-card">
-                    <h3 class="pricing-name">Deep Dive</h3>
-                    <div class="pricing-price">₹750</div>
-                    <ul class="pricing-features">
-                        <li>Custom Multi-Spread</li>
-                        <li>60 minute session</li>
-                        <li>Comprehensive report</li>
-                        <li>7-day follow-up support</li>
-                    </ul>
-                    <a href="https://wa.me/919372776019?text=Hi! I'd like to book a Deep Dive reading (₹750)"
-                        class="btn btn-outline" target="_blank">Book on WhatsApp</a>
-                </div>
+            <div class="pricing-grid" id="regularPricingGrid">
+                <p class="text-muted text-center">Loading prices...</p>
             </div>
 
             <div class="section" style="margin-top: 4rem;">
@@ -108,45 +72,8 @@
                     <p class="section-subtitle">Specialized readings for matters of the heart</p>
                 </div>
 
-                <div class="pricing-grid">
-                    <div class="pricing-card" style="border-color: rgba(219, 112, 147, 0.3);">
-                        <h3 class="pricing-name">Love Insight</h3>
-                        <div class="pricing-price" style="color: #db7093;">₹350</div>
-                        <ul class="pricing-features">
-                            <li>3-Card Love Spread</li>
-                            <li>20 minute session</li>
-                            <li>Written summary</li>
-                        </ul>
-                        <a href="https://wa.me/919372776019?text=Hi! I'd like to book a Love Insight reading (₹350)"
-                            class="btn btn-outline" target="_blank">Book on WhatsApp</a>
-                    </div>
-
-                    <div class="pricing-card featured" style="border-color: #db7093;">
-                        <h3 class="pricing-name">Soulmate Reading</h3>
-                        <div class="pricing-price" style="color: #db7093;">₹650</div>
-                        <ul class="pricing-features">
-                            <li>5-Card Relationship Spread</li>
-                            <li>40 minute session</li>
-                            <li>Detailed relationship report</li>
-                            <li>Follow-up questions</li>
-                        </ul>
-                        <a href="https://wa.me/919372776019?text=Hi! I'd like to book a Soulmate Reading (₹650)"
-                            class="btn btn-primary" target="_blank"
-                            style="background: linear-gradient(135deg, #db7093, #d4a95d);">Book on WhatsApp</a>
-                    </div>
-
-                    <div class="pricing-card" style="border-color: rgba(219, 112, 147, 0.3);">
-                        <h3 class="pricing-name">Relationship Deep Dive</h3>
-                        <div class="pricing-price" style="color: #db7093;">₹999</div>
-                        <ul class="pricing-features">
-                            <li>Multiple Spreads</li>
-                            <li>60 minute session</li>
-                            <li>Compatibility analysis</li>
-                            <li>7-day support</li>
-                        </ul>
-                        <a href="https://wa.me/919372776019?text=Hi! I'd like to book a Relationship Deep Dive (₹999)"
-                            class="btn btn-outline" target="_blank">Book on WhatsApp</a>
-                    </div>
+                <div class="pricing-grid" id="lovePricingGrid">
+                    <p class="text-muted text-center">Loading prices...</p>
                 </div>
             </div>
         </div>
@@ -161,7 +88,78 @@
     </footer>
 
     <button class="scroll-top" id="scrollTop">↑</button>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- Environment Config -->
+    <script src="js/env.js" onerror="console.log('env.js not found - using defaults')"></script>
+
+    <!-- Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/booking.js"></script>
     <script src="js/main.js"></script>
+
+    <script>
+        // Load and render prices dynamically
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Wait for Firebase to initialize
+            setTimeout(async () => {
+                await initServices();
+                renderPricingCards();
+            }, 500);
+        });
+
+        function renderPricingCards() {
+            const regularGrid = document.getElementById('regularPricingGrid');
+            const loveGrid = document.getElementById('lovePricingGrid');
+
+            const regularServices = [];
+            const loveServices = [];
+
+            Object.entries(SERVICES).forEach(([id, service]) => {
+                if (service.category === 'love') {
+                    loveServices.push({ id, ...service });
+                } else {
+                    regularServices.push({ id, ...service });
+                }
+            });
+
+            // Render regular services
+            regularGrid.innerHTML = regularServices.map((s, i) => `
+                <div class="pricing-card ${i === 1 ? 'featured' : ''}">
+                    <h3 class="pricing-name">${s.name}</h3>
+                    <div class="pricing-price">₹${s.price}</div>
+                    <ul class="pricing-features">
+                        <li>${s.description || ''}</li>
+                        <li>${s.duration} minute session</li>
+                        <li>Written summary</li>
+                    </ul>
+                    <a href="book-appointment.html?service=${s.id}" class="btn ${i === 1 ? 'btn-primary' : 'btn-outline'}">Book Now</a>
+                </div>
+            `).join('');
+
+            // Render love services
+            loveGrid.innerHTML = loveServices.map((s, i) => `
+                <div class="pricing-card ${i === 1 ? 'featured' : ''}" style="border-color: ${i === 1 ? '#db7093' : 'rgba(219, 112, 147, 0.3)'};">
+                    <h3 class="pricing-name">${s.name}</h3>
+                    <div class="pricing-price" style="color: #db7093;">₹${s.price}</div>
+                    <ul class="pricing-features">
+                        <li>${s.description || ''}</li>
+                        <li>${s.duration} minute session</li>
+                        <li>Written summary</li>
+                    </ul>
+                    <a href="book-appointment.html?service=${s.id}" 
+                       class="btn ${i === 1 ? 'btn-primary' : 'btn-outline'}"
+                       ${i === 1 ? 'style="background: linear-gradient(135deg, #db7093, #d4a95d);"' : ''}
+                    >Book Now</a>
+                </div>
+            `).join('');
+        }
+    </script>
 </body>
 
 </html>

@@ -453,6 +453,13 @@
             setTimeout(async () => {
                 updateBookingUI();
                 renderServices();
+
+                // Check for service in URL query parameter
+                const urlParams = new URLSearchParams(window.location.search);
+                const serviceFromUrl = urlParams.get('service');
+                if (serviceFromUrl && SERVICES[serviceFromUrl]) {
+                    selectService(serviceFromUrl);
+                }
             }, 500);
         });
 
