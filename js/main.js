@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initScrollProgress();
     initScrollToTop();
-    initAudioToggle();
     initCardOfDay();
     initDeckShowcase();
     initSpotlight();
@@ -164,50 +163,7 @@ function initScrollToTop() {
     });
 }
 
-// ========================================
-// Audio Toggle
-// ========================================
-function initAudioToggle() {
-    const audioToggle = document.getElementById('audioToggle');
-    const audio = document.getElementById('ambientAudio');
 
-    if (!audioToggle || !audio) return;
-
-    audio.volume = 0.5;
-    let isToggling = false; // Prevent rapid clicks causing race condition
-
-    audioToggle.addEventListener('click', async () => {
-        // Prevent rapid clicks
-        if (isToggling) return;
-        isToggling = true;
-
-        try {
-            if (audio.paused) {
-                // Try to play
-                await audio.play();
-                audioToggle.textContent = '🔊';
-                audioToggle.classList.add('playing');
-            } else {
-                // Pause
-                audio.pause();
-                audioToggle.textContent = '🔇';
-                audioToggle.classList.remove('playing');
-            }
-        } catch (err) {
-            // Handle autoplay restrictions or other errors
-            console.log('Audio toggle:', err.name);
-            if (err.name === 'NotAllowedError') {
-                // User needs to interact first - this is expected on mobile
-                audioToggle.textContent = '🔇';
-            }
-        } finally {
-            // Allow clicks again after a short delay
-            setTimeout(() => {
-                isToggling = false;
-            }, 300);
-        }
-    });
-}
 
 // ========================================
 // Card of the Day
