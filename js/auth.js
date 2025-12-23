@@ -57,6 +57,7 @@ async function signInWithGoogle() {
     try {
         const result = await auth.signInWithPopup(provider);
         console.log('Signed in as:', result.user.email);
+        toastSuccess(`Welcome, ${result.user.displayName}!`);
         return result.user;
     } catch (error) {
         console.error('Sign in error:', error);
@@ -77,6 +78,7 @@ async function signOut() {
     try {
         await auth.signOut();
         console.log('Signed out successfully');
+        toastInfo('Signed out successfully');
     } catch (error) {
         console.error('Sign out error:', error);
     }
@@ -121,25 +123,6 @@ function updateAuthUI(user) {
                     </div>
                 </div>
             `;
-
-            // Update or Create Welcome Banner
-            let banner = document.getElementById('welcomeBanner');
-            if (!banner) {
-                banner = document.createElement('div');
-                banner.id = 'welcomeBanner';
-                document.body.appendChild(banner); // Append to body, CSS positions it fixed
-            }
-
-            // Get first name
-            const firstName = (user.displayName || 'Friend').split(' ')[0];
-            banner.innerHTML = `Welcome, <span>${firstName}</span>`;
-            banner.style.display = 'block';
-
-            // Adjust main padding if banner is visible
-            const main = document.querySelector('main');
-            if (main) {
-                main.style.paddingTop = '120px'; // Ensure space for banner
-            }
         }
 
         // Hide separate admin link since it's in dropdown now
@@ -155,24 +138,11 @@ function updateAuthUI(user) {
             userInfo.innerHTML = '';
         }
 
-        // Hide welcome banner
-        const banner = document.getElementById('welcomeBanner');
-        if (banner) {
-            banner.style.display = 'none';
-        }
-
-        // Reset main padding
-        const main = document.querySelector('main');
-        if (main) {
-            main.style.paddingTop = '120px'; // Reset to default
-        }
-
         // Hide separate admin link since it's in dropdown now
         if (adminLink) {
             adminLink.style.display = 'none';
         }
     }
-    if (adminLink) adminLink.style.display = 'none';
 }
 
 // Toggle user dropdown menu
