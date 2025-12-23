@@ -198,6 +198,8 @@ a:hover {
   color: var(--color-text);
   font-size: 1.5rem;
   cursor: pointer;
+  z-index: 102;
+  /* Ensure above nav-links */
 }
 
 @media (max-width: 768px) {
@@ -211,6 +213,8 @@ a:hover {
     background: var(--color-background);
     padding: var(--spacing-md);
     border-bottom: 1px solid var(--color-border);
+    border-top: 1px solid var(--color-border);
+    /* Separator */
   }
 
   .nav-links.active {
@@ -219,13 +223,26 @@ a:hover {
 
   .mobile-menu-btn {
     display: block;
+    order: 2;
+    /* Force to right */
+  }
+
+  .auth-container {
+    order: 1;
+    margin-left: auto;
+    /* Push to right, next to hamburger */
+    margin-right: 1rem;
   }
 }
 
 /* User Profile Styles */
 .user-avatar {
-  width: 36px;
-  height: 36px;
+  width: 35px;
+  /* Strict size */
+  height: 35px;
+  /* Strict size */
+  min-width: 35px;
+  /* Prevent squishing */
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--color-primary);
@@ -239,13 +256,44 @@ a:hover {
 }
 
 .user-name {
-  color: var(--color-text);
-  font-size: 0.875rem;
-  font-weight: 500;
-  max-width: 80px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: none;
+  /* Hide name in header by default as requested */
+}
+
+/* Welcome Banner */
+#welcomeBanner {
+  background: linear-gradient(to right, rgba(10, 10, 10, 0.95), rgba(20, 20, 20, 0.95));
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.5rem var(--spacing-sm);
+  text-align: center;
+  position: fixed;
+  top: 70px;
+  /* Below header (approx header height) */
+  left: 0;
+  right: 0;
+  z-index: 90;
+  backdrop-filter: blur(5px);
+  display: none;
+  /* Hidden by default */
+  animation: slideDown 0.3s ease-out;
+}
+
+#welcomeBanner span {
+  color: var(--color-primary);
+  font-family: var(--font-headline);
+  letter-spacing: 0.5px;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 /* User Dropdown */
