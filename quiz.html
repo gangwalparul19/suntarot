@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarot Quiz - Sun Tarot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Quiz Page Styles */
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-header h1 {
+            font-family: var(--font-headline);
+            font-size: 2.5rem;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .quiz-header p {
+            color: var(--color-text-muted);
+        }
+
+        /* Quiz Type Selection */
+        .quiz-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .quiz-type-card {
+            background: linear-gradient(135deg, rgba(212, 169, 93, 0.1) 0%, rgba(30, 30, 30, 0.8) 100%);
+            border: 2px solid var(--color-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-type-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 0%, rgba(212, 169, 93, 0.15) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .quiz-type-card:hover {
+            border-color: var(--color-primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(212, 169, 93, 0.2);
+        }
+
+        .quiz-type-card:hover::before {
+            opacity: 1;
+        }
+
+        .quiz-type-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .quiz-type-card h3 {
+            color: var(--color-primary);
+            font-family: var(--font-headline);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .quiz-type-card p {
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Quiz Section */
+        .quiz-section {
+            display: none;
+        }
+
+        .quiz-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin-bottom: 2rem;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            color: var(--color-text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: var(--color-border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+
+        /* Question Card */
+        .question-card {
+            background: rgba(30, 30, 30, 0.8);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .question-card::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 1rem;
+            background: linear-gradient(135deg, var(--color-primary), transparent, var(--color-primary));
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .question-number {
+            color: var(--color-primary);
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            color: var(--color-text);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        /* Answer Options */
+        .answer-options {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .answer-option {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: rgba(212, 169, 93, 0.05);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .answer-option:hover {
+            border-color: var(--color-primary);
+            background: rgba(212, 169, 93, 0.15);
+            transform: translateX(5px);
+        }
+
+        .answer-option.selected {
+            border-color: var(--color-primary);
+            background: rgba(212, 169, 93, 0.2);
+            box-shadow: 0 0 20px rgba(212, 169, 93, 0.2);
+        }
+
+        .answer-option.correct {
+            border-color: #27ae60;
+            background: rgba(39, 174, 96, 0.2);
+        }
+
+        .answer-option.incorrect {
+            border-color: #e74c3c;
+            background: rgba(231, 76, 60, 0.2);
+        }
+
+        .answer-icon {
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(212, 169, 93, 0.1);
+            border-radius: 50%;
+        }
+
+        .answer-text {
+            flex: 1;
+            color: var(--color-text);
+        }
+
+        /* Quiz Navigation */
+        .quiz-nav {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        /* Result Section */
+        .result-container {
+            text-align: center;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .result-card-reveal {
+            margin: 2rem auto;
+            perspective: 1000px;
+        }
+
+        .result-card {
+            width: 200px;
+            height: 330px;
+            margin: 0 auto;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: revealCard 1.5s ease forwards;
+        }
+
+        @keyframes revealCard {
+            0% {
+                transform: rotateY(0deg) scale(0.8);
+                opacity: 0;
+            }
+
+            50% {
+                transform: rotateY(180deg) scale(1.1);
+            }
+
+            100% {
+                transform: rotateY(360deg) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .result-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.75rem;
+            border: 3px solid var(--color-primary);
+            box-shadow: 0 0 40px rgba(212, 169, 93, 0.5);
+        }
+
+        .result-title {
+            font-family: var(--font-headline);
+            font-size: 2rem;
+            color: var(--color-primary);
+            margin: 1.5rem 0 0.5rem;
+        }
+
+        .result-description {
+            color: var(--color-text-muted);
+            line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .result-score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .result-score-label {
+            color: var(--color-text-muted);
+            margin-bottom: 2rem;
+        }
+
+        /* Badges Section */
+        .badges-section {
+            background: rgba(30, 30, 30, 0.6);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .badges-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .badges-header h3 {
+            color: var(--color-primary);
+            font-size: 1.25rem;
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 1rem;
+        }
+
+        .badge-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(212, 169, 93, 0.05);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            transition: all 0.3s;
+        }
+
+        .badge-item.earned {
+            border-color: var(--color-primary);
+            background: rgba(212, 169, 93, 0.15);
+        }
+
+        .badge-item.locked {
+            opacity: 0.5;
+            filter: grayscale(1);
+        }
+
+        .badge-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-name {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .badge-item.earned .badge-name {
+            color: var(--color-primary);
+        }
+
+        /* New Badge Animation */
+        @keyframes badgeEarned {
+            0% {
+                transform: scale(0) rotate(-180deg);
+            }
+
+            50% {
+                transform: scale(1.3) rotate(10deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .badge-item.new-earned {
+            animation: badgeEarned 0.6s ease forwards;
+        }
+
+        .badge-item.new-earned::after {
+            content: 'NEW!';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e74c3c;
+            color: white;
+            font-size: 0.6rem;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .quiz-header h1 {
+                font-size: 1.75rem;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .quiz-types {
+                grid-template-columns: 1fr;
+            }
+
+            .result-card {
+                width: 160px;
+                height: 264px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stars" id="stars"></div>
+
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">☀️</span>
+                <span class="logo-text">Sun<br>Tarot</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="reading.html">Reading</a></li>
+                <li><a href="love-reading.html">Love</a></li>
+                <li><a href="learn.html">Learn</a></li>
+                <li><a href="quiz.html" class="active">Quiz</a></li>
+                <li><a href="booking.html">Book</a></li>
+            </ul>
+            <div id="authContainer" style="display: flex; align-items: center; gap: 0.75rem;">
+                <div id="userInfo" style="display: none;"></div>
+                <button class="btn btn-outline" id="loginBtn" onclick="signInWithGoogle()"
+                    style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                    Sign In
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </nav>
+    </header>
+
+    <main class="section" style="padding-top: 120px;">
+        <div class="quiz-container">
+            <!-- Quiz Selection -->
+            <div id="quizSelection" class="quiz-section active">
+                <div class="quiz-header">
+                    <h1>✨ Tarot Quiz</h1>
+                    <p>Test your knowledge or discover which card represents you!</p>
+                </div>
+
+                <div class="quiz-types">
+                    <div class="quiz-type-card" onclick="startQuiz('personality')">
+                        <div class="quiz-type-icon">🔮</div>
+                        <h3>Which Card Are You?</h3>
+                        <p>Answer 8 questions to discover which Major Arcana card represents your personality</p>
+                    </div>
+
+                    <div class="quiz-type-card" onclick="startQuiz('knowledge')">
+                        <div class="quiz-type-icon">📚</div>
+                        <h3>Card Knowledge Quiz</h3>
+                        <p>Test your knowledge of tarot card meanings and symbolism</p>
+                    </div>
+                </div>
+
+                <!-- Badges Section -->
+                <div class="badges-section">
+                    <div class="badges-header">
+                        <h3>🏆 Your Badges</h3>
+                        <span class="text-muted" id="badgeCount">0/6 earned</span>
+                    </div>
+                    <div class="badges-grid" id="badgesGrid">
+                        <!-- Badges will be rendered here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Personality Quiz -->
+            <div id="personalityQuiz" class="quiz-section">
+                <div class="progress-container">
+                    <div class="progress-text">
+                        <span id="personalityProgress">Question 1 of 8</span>
+                        <span id="personalityPercent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="personalityProgressFill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-number" id="personalityQuestionNum">Question 1</div>
+                    <div class="question-text" id="personalityQuestionText"></div>
+                    <div class="answer-options" id="personalityOptions"></div>
+                </div>
+
+                <div class="quiz-nav">
+                    <button class="btn btn-outline" onclick="goBack()">← Back</button>
+                    <button class="btn btn-primary" id="personalityNextBtn" onclick="nextQuestion()" disabled>
+                        Next →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Knowledge Quiz -->
+            <div id="knowledgeQuiz" class="quiz-section">
+                <div class="progress-container">
+                    <div class="progress-text">
+                        <span id="knowledgeProgress">Question 1 of 10</span>
+                        <span id="knowledgeScore">Score: 0</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="knowledgeProgressFill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="question-card">
+                    <div class="question-number" id="knowledgeQuestionNum">Question 1</div>
+                    <div class="question-text" id="knowledgeQuestionText"></div>
+                    <div class="answer-options" id="knowledgeOptions"></div>
+                </div>
+
+                <div class="quiz-nav">
+                    <button class="btn btn-outline" onclick="goBack()">← Quit</button>
+                    <button class="btn btn-primary" id="knowledgeNextBtn" onclick="nextKnowledgeQuestion()"
+                        style="display: none;">
+                        Next →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="quizResults" class="quiz-section">
+                <div class="result-container" id="resultContent">
+                    <!-- Results will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2025 Sun Tarot. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/cards.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        // ========================================
+        // Quiz Data
+        // ========================================
+
+        // Personality Quiz Questions
+        const personalityQuestions = [
+            {
+                question: "When facing a difficult decision, you usually...",
+                options: [
+                    { text: "Trust your intuition", icon: "👁️", cards: ["High Priestess", "Moon"] },
+                    { text: "Analyze all possibilities", icon: "🧠", cards: ["Magician", "Justice"] },
+                    { text: "Seek advice from others", icon: "👥", cards: ["Hierophant", "Lovers"] },
+                    { text: "Take immediate action", icon: "⚡", cards: ["Chariot", "Tower"] }
+                ]
+            },
+            {
+                question: "What brings you the most joy?",
+                options: [
+                    { text: "Creating something new", icon: "🎨", cards: ["Empress", "Magician"] },
+                    { text: "Helping others", icon: "💝", cards: ["Star", "Strength"] },
+                    { text: "Achieving success", icon: "🏆", cards: ["Sun", "Chariot"] },
+                    { text: "Inner peace and wisdom", icon: "🧘", cards: ["Hermit", "High Priestess"] }
+                ]
+            },
+            {
+                question: "How do you handle unexpected changes?",
+                options: [
+                    { text: "Embrace them as opportunities", icon: "🌟", cards: ["Wheel of Fortune", "Fool"] },
+                    { text: "Resist and try to maintain control", icon: "🛡️", cards: ["Emperor", "Hierophant"] },
+                    { text: "Adapt slowly but surely", icon: "🐢", cards: ["Hermit", "Justice"] },
+                    { text: "Let emotions guide the way", icon: "💫", cards: ["Moon", "Star"] }
+                ]
+            },
+            {
+                question: "What role do you play in your friend group?",
+                options: [
+                    { text: "The leader who takes charge", icon: "👑", cards: ["Emperor", "Chariot"] },
+                    { text: "The wise advisor", icon: "🦉", cards: ["Hierophant", "Hermit"] },
+                    { text: "The creative dreamer", icon: "✨", cards: ["Star", "Moon"] },
+                    { text: "The nurturing supporter", icon: "🌸", cards: ["Empress", "Strength"] }
+                ]
+            },
+            {
+                question: "What is your greatest strength?",
+                options: [
+                    { text: "Courage and determination", icon: "🦁", cards: ["Strength", "Chariot"] },
+                    { text: "Intuition and insight", icon: "🔮", cards: ["High Priestess", "Moon"] },
+                    { text: "Creativity and inspiration", icon: "🎭", cards: ["Magician", "Star"] },
+                    { text: "Patience and wisdom", icon: "⏳", cards: ["Hermit", "Justice"] }
+                ]
+            },
+            {
+                question: "How do you view endings and new beginnings?",
+                options: [
+                    { text: "Endings make way for better things", icon: "🌅", cards: ["Death", "Sun"] },
+                    { text: "Change is scary but necessary", icon: "🌙", cards: ["Tower", "Moon"] },
+                    { text: "Every ending is a lesson learned", icon: "📖", cards: ["Judgement", "World"] },
+                    { text: "I prefer stability over change", icon: "🏠", cards: ["Emperor", "Hierophant"] }
+                ]
+            },
+            {
+                question: "What drives your ambitions?",
+                options: [
+                    { text: "Freedom and adventure", icon: "🌍", cards: ["Fool", "Chariot"] },
+                    { text: "Love and connection", icon: "💕", cards: ["Lovers", "Empress"] },
+                    { text: "Knowledge and truth", icon: "📚", cards: ["High Priestess", "Hermit"] },
+                    { text: "Power and achievement", icon: "⚔️", cards: ["Emperor", "Magician"] }
+                ]
+            },
+            {
+                question: "How do you express yourself?",
+                options: [
+                    { text: "Through actions and deeds", icon: "🎯", cards: ["Chariot", "Strength"] },
+                    { text: "Through art and creativity", icon: "🎨", cards: ["Star", "Empress"] },
+                    { text: "Through words and communication", icon: "💬", cards: ["Magician", "Hierophant"] },
+                    { text: "Through silence and reflection", icon: "🌌", cards: ["Hermit", "High Priestess"] }
+                ]
+            }
+        ];
+
+        // Knowledge Quiz Questions
+        const knowledgeQuestions = [
+            {
+                question: "What number is The Fool in the Major Arcana?",
+                options: ["0", "1", "21", "22"],
+                correct: 0,
+                cardHint: "The Fool"
+            },
+            {
+                question: "Which card represents new beginnings and infinite potential?",
+                options: ["The World", "The Tower", "The Fool", "Death"],
+                correct: 2,
+                cardHint: "The Fool"
+            },
+            {
+                question: "The High Priestess is associated with which quality?",
+                options: ["Action", "Intuition", "Wealth", "Travel"],
+                correct: 1,
+                cardHint: "The High Priestess"
+            },
+            {
+                question: "Which card is commonly associated with major transformation?",
+                options: ["The Star", "The Sun", "Death", "The Lovers"],
+                correct: 2,
+                cardHint: "Death"
+            },
+            {
+                question: "The Empress represents which element?",
+                options: ["Fire", "Water", "Earth", "Air"],
+                correct: 2,
+                cardHint: "The Empress"
+            },
+            {
+                question: "Which card symbolizes balance and fair judgement?",
+                options: ["The Chariot", "Justice", "The Tower", "The Moon"],
+                correct: 1,
+                cardHint: "Justice"
+            },
+            {
+                question: "What does The Tower generally signify?",
+                options: ["Slow growth", "Sudden upheaval", "Romance", "Financial gain"],
+                correct: 1,
+                cardHint: "The Tower"
+            },
+            {
+                question: "Which card is associated with hope and inspiration?",
+                options: ["The Moon", "The Star", "The Devil", "The Emperor"],
+                correct: 1,
+                cardHint: "The Star"
+            },
+            {
+                question: "The World card represents...",
+                options: ["Endings only", "Beginnings only", "Completion and achievement", "Confusion"],
+                correct: 2,
+                cardHint: "The World"
+            },
+            {
+                question: "Which card often represents willpower and success through determination?",
+                options: ["The Hermit", "The Chariot", "The Moon", "The Hanged Man"],
+                correct: 1,
+                cardHint: "The Chariot"
+            }
+        ];
+
+        // Badges Definition
+        const quizBadges = [
+            { id: 'mystic', name: 'Mystic', icon: '🔮', description: 'Find your card' },
+            { id: 'scholar', name: 'Scholar', icon: '📚', description: 'Score 70%+ on knowledge' },
+            { id: 'master', name: 'Master', icon: '🎓', description: 'Score 100% on knowledge' },
+            { id: 'seeker', name: 'Seeker', icon: '🌟', description: 'Complete 3 quizzes' },
+            { id: 'explorer', name: 'Explorer', icon: '🧭', description: 'Try both quiz types' },
+            { id: 'dedicated', name: 'Dedicated', icon: '🏆', description: 'Complete 10 quizzes' }
+        ];
+
+        // Card descriptions for personality results
+        const cardDescriptions = {
+            "Fool": "You are The Fool - A free spirit full of wonder and unlimited potential. You approach life with curiosity and aren't afraid to take leaps of faith. Your optimism and spontaneity inspire others to embrace new beginnings.",
+            "Magician": "You are The Magician - A powerful manifestor with all the tools you need for success. You're resourceful, skilled, and know how to turn ideas into reality. Your willpower and focus make anything possible.",
+            "High Priestess": "You are The High Priestess - Deeply intuitive with access to hidden knowledge. You trust your inner voice and understand mysteries that others cannot see. Your wisdom comes from within.",
+            "Empress": "You are The Empress - Nurturing, creative, and abundant. You bring beauty and growth wherever you go. Your maternal energy creates and sustains life in all its forms.",
+            "Emperor": "You are The Emperor - A natural leader with authority and structure. You create order from chaos and others look to you for guidance. Your stability is your greatest strength.",
+            "Hierophant": "You are The Hierophant - A keeper of traditions and spiritual wisdom. You bridge the gap between the divine and earthly realms, sharing knowledge with those who seek it.",
+            "Lovers": "You are The Lovers - You value deep connections and harmony in relationships. Your choices are guided by love, and you understand the power of union between opposing forces.",
+            "Chariot": "You are The Chariot - Driven, determined, and always moving forward. You have the willpower to overcome any obstacle. Victory comes through focus and self-discipline.",
+            "Strength": "You are Strength - You possess quiet courage and inner power. Rather than force, you use patience and compassion to achieve your goals. Your gentle strength moves mountains.",
+            "Hermit": "You are The Hermit - A seeker of truth and inner wisdom. You find answers through introspection and aren't afraid to walk your path alone. Your light guides others from within.",
+            "Wheel of Fortune": "You are The Wheel of Fortune - You understand life's cycles and embrace change. Fortune favors you, and you know that every turn brings new opportunities.",
+            "Justice": "You are Justice - Fair, balanced, and truthful. You see clearly and judge wisely. Your commitment to truth and fairness creates harmony in your world.",
+            "Death": "You are Death - A master of transformation. You understand that endings create space for new beginnings. Your ability to let go opens doors others cannot see.",
+            "Star": "You are The Star - A beacon of hope and inspiration. Your faith never wavers, and you bring healing and renewal wherever you go. You are divinely guided.",
+            "Moon": "You are The Moon - Deeply connected to the subconscious and dream realms. You navigate uncertainty with grace and understand the hidden side of reality.",
+            "Sun": "You are The Sun - Radiant, joyful, and full of vitality. Your positivity is contagious, and success comes naturally to you. You bring warmth to everyone around you.",
+            "Judgement": "You are Judgement - Called to a higher purpose, you are experiencing awakening and rebirth. You evaluate your life with clarity and answer your true calling.",
+            "World": "You are The World - Complete, fulfilled, and integrated. You have achieved a level of wholeness that allows you to celebrate life fully. The universe is within you.",
+            "Tower": "You are The Tower - A catalyst for necessary change. Though your energy can be disruptive, it clears away what no longer serves to make way for truth and liberation.",
+            "Hanged Man": "You are The Hanged Man - You see the world from unique perspectives. Your willingness to pause and surrender leads to profound insights and enlightenment.",
+            "Devil": "You are The Devil - You understand shadow work and material desires. Your power lies in facing what others fear to acknowledge about themselves.",
+            "Temperance": "You are Temperance - Balanced, patient, and harmonious. You blend opposites with grace and find the middle path through any challenge."
+        };
+
+        // ========================================
+        // Quiz State
+        // ========================================
+        let currentQuizType = null;
+        let currentQuestion = 0;
+        let personalityAnswers = [];
+        let knowledgeScore = 0;
+        let quizStats = JSON.parse(localStorage.getItem('quizStats')) || {
+            personalityCompleted: 0,
+            knowledgeCompleted: 0,
+            highestKnowledgeScore: 0,
+            earnedBadges: [],
+            typesPlayed: []
+        };
+
+        // ========================================
+        // Quiz Functions
+        // ========================================
+
+        function startQuiz(type) {
+            currentQuizType = type;
+            currentQuestion = 0;
+
+            if (type === 'personality') {
+                personalityAnswers = [];
+                showSection('personalityQuiz');
+                renderPersonalityQuestion();
+            } else if (type === 'knowledge') {
+                knowledgeScore = 0;
+                // Shuffle knowledge questions
+                shuffleArray(knowledgeQuestions);
+                showSection('knowledgeQuiz');
+                renderKnowledgeQuestion();
+            }
+
+            // Track quiz type for badge
+            if (!quizStats.typesPlayed.includes(type)) {
+                quizStats.typesPlayed.push(type);
+                saveQuizStats();
+            }
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.quiz-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function goBack() {
+            if (currentQuestion > 0 && currentQuizType === 'personality') {
+                currentQuestion--;
+                personalityAnswers.pop();
+                renderPersonalityQuestion();
+            } else {
+                showSection('quizSelection');
+                currentQuizType = null;
+            }
+        }
+
+        // ========================================
+        // Personality Quiz
+        // ========================================
+
+        function renderPersonalityQuestion() {
+            const q = personalityQuestions[currentQuestion];
+            const total = personalityQuestions.length;
+            const percent = Math.round((currentQuestion / total) * 100);
+
+            document.getElementById('personalityProgress').textContent = `Question ${currentQuestion + 1} of ${total}`;
+            document.getElementById('personalityPercent').textContent = `${percent}%`;
+            document.getElementById('personalityProgressFill').style.width = `${percent}%`;
+            document.getElementById('personalityQuestionNum').textContent = `Question ${currentQuestion + 1}`;
+            document.getElementById('personalityQuestionText').textContent = q.question;
+
+            const optionsHtml = q.options.map((opt, i) => `
+                <div class="answer-option" onclick="selectPersonalityAnswer(${i})">
+                    <span class="answer-icon">${opt.icon}</span>
+                    <span class="answer-text">${opt.text}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('personalityOptions').innerHTML = optionsHtml;
+            document.getElementById('personalityNextBtn').disabled = true;
+            document.getElementById('personalityNextBtn').textContent =
+                currentQuestion === total - 1 ? 'See Your Card ✨' : 'Next →';
+        }
+
+        function selectPersonalityAnswer(index) {
+            const options = document.querySelectorAll('#personalityOptions .answer-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            options[index].classList.add('selected');
+
+            personalityAnswers[currentQuestion] = index;
+            document.getElementById('personalityNextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < personalityQuestions.length - 1) {
+                currentQuestion++;
+                renderPersonalityQuestion();
+            } else {
+                calculatePersonalityResult();
+            }
+        }
+
+        function calculatePersonalityResult() {
+            // Count card mentions
+            const cardCounts = {};
+
+            personalityAnswers.forEach((answerIndex, questionIndex) => {
+                const cards = personalityQuestions[questionIndex].options[answerIndex].cards;
+                cards.forEach(card => {
+                    cardCounts[card] = (cardCounts[card] || 0) + 1;
+                });
+            });
+
+            // Find the most mentioned card
+            let resultCard = Object.keys(cardCounts).reduce((a, b) =>
+                cardCounts[a] > cardCounts[b] ? a : b
+            );
+
+            // Find the card in majorArcana
+            const cardData = majorArcana.find(c => c.name.includes(resultCard)) || majorArcana[0];
+
+            // Update stats
+            quizStats.personalityCompleted++;
+            checkBadges();
+            saveQuizStats();
+
+            // Render result
+            showPersonalityResult(cardData, resultCard);
+        }
+
+        function showPersonalityResult(cardData, cardName) {
+            const description = cardDescriptions[cardName] || `You are ${cardData.name}! ${cardData.meaning}`;
+
+            document.getElementById('resultContent').innerHTML = `
+                <h2 style="color: var(--color-primary); margin-bottom: 1rem;">Your Card Has Been Revealed!</h2>
+                <div class="result-card-reveal">
+                    <div class="result-card">
+                        <img src="${cardData.image}" alt="${cardData.name}">
+                    </div>
+                </div>
+                <h3 class="result-title">${cardData.name}</h3>
+                <p class="result-description">${description}</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="shareResult('${cardData.name}')">📤 Share Result</button>
+                    <button class="btn btn-outline" onclick="startQuiz('personality')">🔄 Take Again</button>
+                    <button class="btn btn-outline" onclick="showSection('quizSelection')">← Back to Quizzes</button>
+                </div>
+            `;
+
+            showSection('quizResults');
+        }
+
+        // ========================================
+        // Knowledge Quiz
+        // ========================================
+
+        function renderKnowledgeQuestion() {
+            const q = knowledgeQuestions[currentQuestion];
+            const total = knowledgeQuestions.length;
+            const percent = Math.round((currentQuestion / total) * 100);
+
+            document.getElementById('knowledgeProgress').textContent = `Question ${currentQuestion + 1} of ${total}`;
+            document.getElementById('knowledgeScore').textContent = `Score: ${knowledgeScore}/${currentQuestion}`;
+            document.getElementById('knowledgeProgressFill').style.width = `${percent}%`;
+            document.getElementById('knowledgeQuestionNum').textContent = `Question ${currentQuestion + 1}`;
+            document.getElementById('knowledgeQuestionText').textContent = q.question;
+
+            const optionsHtml = q.options.map((opt, i) => `
+                <div class="answer-option" onclick="selectKnowledgeAnswer(${i})">
+                    <span class="answer-text">${opt}</span>
+                </div>
+            `).join('');
+
+            document.getElementById('knowledgeOptions').innerHTML = optionsHtml;
+            document.getElementById('knowledgeNextBtn').style.display = 'none';
+        }
+
+        function selectKnowledgeAnswer(index) {
+            const q = knowledgeQuestions[currentQuestion];
+            const options = document.querySelectorAll('#knowledgeOptions .answer-option');
+
+            // Disable all options
+            options.forEach((opt, i) => {
+                opt.style.pointerEvents = 'none';
+                if (i === q.correct) {
+                    opt.classList.add('correct');
+                } else if (i === index && i !== q.correct) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            if (index === q.correct) {
+                knowledgeScore++;
+            }
+
+            // Show next button
+            const nextBtn = document.getElementById('knowledgeNextBtn');
+            nextBtn.style.display = 'block';
+            nextBtn.textContent = currentQuestion === knowledgeQuestions.length - 1 ? 'See Results' : 'Next →';
+        }
+
+        function nextKnowledgeQuestion() {
+            if (currentQuestion < knowledgeQuestions.length - 1) {
+                currentQuestion++;
+                renderKnowledgeQuestion();
+            } else {
+                showKnowledgeResult();
+            }
+        }
+
+        function showKnowledgeResult() {
+            const total = knowledgeQuestions.length;
+            const percent = Math.round((knowledgeScore / total) * 100);
+
+            let message, emoji;
+            if (percent === 100) {
+                message = "Perfect! You're a Tarot Master! 🎓";
+                emoji = "🏆";
+            } else if (percent >= 80) {
+                message = "Excellent! You really know your cards!";
+                emoji = "🌟";
+            } else if (percent >= 60) {
+                message = "Good job! Keep studying the cards!";
+                emoji = "📚";
+            } else if (percent >= 40) {
+                message = "Not bad! Practice makes perfect!";
+                emoji = "💪";
+            } else {
+                message = "Keep learning! The cards have much to teach.";
+                emoji = "🌱";
+            }
+
+            // Update stats
+            quizStats.knowledgeCompleted++;
+            if (percent > quizStats.highestKnowledgeScore) {
+                quizStats.highestKnowledgeScore = percent;
+            }
+            checkBadges();
+            saveQuizStats();
+
+            document.getElementById('resultContent').innerHTML = `
+                <h2 style="color: var(--color-primary); margin-bottom: 1rem;">Quiz Complete!</h2>
+                <div class="result-score">${emoji} ${knowledgeScore}/${total}</div>
+                <p class="result-score-label">${percent}% Correct</p>
+                <p class="result-description">${message}</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="startQuiz('knowledge')">🔄 Try Again</button>
+                    <button class="btn btn-outline" onclick="showSection('quizSelection')">← Back to Quizzes</button>
+                </div>
+            `;
+
+            showSection('quizResults');
+        }
+
+        // ========================================
+        // Badge System
+        // ========================================
+
+        function checkBadges() {
+            const newBadges = [];
+
+            // Mystic - completed personality quiz
+            if (quizStats.personalityCompleted >= 1 && !quizStats.earnedBadges.includes('mystic')) {
+                quizStats.earnedBadges.push('mystic');
+                newBadges.push('mystic');
+            }
+
+            // Scholar - 70%+ on knowledge quiz
+            if (quizStats.highestKnowledgeScore >= 70 && !quizStats.earnedBadges.includes('scholar')) {
+                quizStats.earnedBadges.push('scholar');
+                newBadges.push('scholar');
+            }
+
+            // Master - 100% on knowledge quiz
+            if (quizStats.highestKnowledgeScore >= 100 && !quizStats.earnedBadges.includes('master')) {
+                quizStats.earnedBadges.push('master');
+                newBadges.push('master');
+            }
+
+            // Seeker - 3 total quizzes
+            const totalQuizzes = quizStats.personalityCompleted + quizStats.knowledgeCompleted;
+            if (totalQuizzes >= 3 && !quizStats.earnedBadges.includes('seeker')) {
+                quizStats.earnedBadges.push('seeker');
+                newBadges.push('seeker');
+            }
+
+            // Explorer - both quiz types
+            if (quizStats.typesPlayed.length >= 2 && !quizStats.earnedBadges.includes('explorer')) {
+                quizStats.earnedBadges.push('explorer');
+                newBadges.push('explorer');
+            }
+
+            // Dedicated - 10 total quizzes
+            if (totalQuizzes >= 10 && !quizStats.earnedBadges.includes('dedicated')) {
+                quizStats.earnedBadges.push('dedicated');
+                newBadges.push('dedicated');
+            }
+
+            // Show notification for new badges
+            if (newBadges.length > 0 && typeof toastSuccess === 'function') {
+                const badgeName = quizBadges.find(b => b.id === newBadges[0])?.name;
+                toastSuccess(`🏆 Badge Earned: ${badgeName}!`);
+            }
+        }
+
+        function renderBadges() {
+            const grid = document.getElementById('badgesGrid');
+            const earned = quizStats.earnedBadges.length;
+
+            document.getElementById('badgeCount').textContent = `${earned}/${quizBadges.length} earned`;
+
+            grid.innerHTML = quizBadges.map(badge => {
+                const isEarned = quizStats.earnedBadges.includes(badge.id);
+                return `
+                    <div class="badge-item ${isEarned ? 'earned' : 'locked'}" title="${badge.description}">
+                        <div class="badge-icon">${badge.icon}</div>
+                        <div class="badge-name">${badge.name}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function saveQuizStats() {
+            localStorage.setItem('quizStats', JSON.stringify(quizStats));
+        }
+
+        // ========================================
+        // Utilities
+        // ========================================
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function shareResult(cardName) {
+            const text = `✨ I took the Sun Tarot personality quiz and my card is ${cardName}! 🔮\n\nDiscover which card represents YOU at Sun Tarot!`;
+
+            if (navigator.share) {
+                navigator.share({ title: 'My Tarot Card', text: text, url: window.location.href });
+            } else {
+                navigator.clipboard.writeText(text);
+                if (typeof toastSuccess === 'function') {
+                    toastSuccess('Result copied to clipboard!');
+                }
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderBadges();
+        });
+    </script>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="js/env.js" onerror=""></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/toast.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+
+</html>
