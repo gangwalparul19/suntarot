@@ -25,13 +25,14 @@ const AVAILABILITY = {
 };
 
 // Default service types (fallback if Firestore is unavailable)
+// All services are 30 minutes duration
 const DEFAULT_SERVICES = {
-    'quick-insight': { name: 'Quick Insight', duration: 15, price: 250, description: '3-Card Spread' },
+    'quick-insight': { name: 'Quick Insight', duration: 30, price: 250, description: '3-Card Spread' },
     'soul-journey': { name: 'Soul Journey', duration: 30, price: 500, description: 'Celtic Cross Spread' },
-    'deep-dive': { name: 'Deep Dive', duration: 60, price: 750, description: 'Custom Multi-Spread' },
-    'love-insight': { name: 'Love Insight', duration: 20, price: 350, description: '3-Card Love Spread', category: 'love' },
-    'soulmate-reading': { name: 'Soulmate Reading', duration: 40, price: 650, description: '5-Card Relationship Spread', category: 'love' },
-    'relationship-deep-dive': { name: 'Relationship Deep Dive', duration: 60, price: 999, description: 'Multiple Spreads', category: 'love' }
+    'deep-dive': { name: 'Deep Dive', duration: 30, price: 750, description: 'Custom Multi-Spread' },
+    'love-insight': { name: 'Love Insight', duration: 30, price: 350, description: '3-Card Love Spread', category: 'love' },
+    'soulmate-reading': { name: 'Soulmate Reading', duration: 30, price: 650, description: '5-Card Relationship Spread', category: 'love' },
+    'relationship-deep-dive': { name: 'Relationship Deep Dive', duration: 30, price: 999, description: 'Multiple Spreads', category: 'love' }
 };
 
 // Dynamic services (loaded from Firestore)
