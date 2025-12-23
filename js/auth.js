@@ -89,14 +89,19 @@ function updateAuthUI(user) {
         if (userInfo) {
             userInfo.style.display = 'flex';
             const isUserAdmin = ADMIN_EMAILS.includes(user.email);
+
+            // Header Profile: Only Avatar
             userInfo.innerHTML = `
                 <div class="user-dropdown">
                     <img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.displayName || 'U')}" 
-                         alt="${user.displayName}" 
+                         alt="Profile" 
                          class="user-avatar"
                          onclick="toggleUserDropdown()">
-                    <span class="user-name">${user.displayName?.split(' ')[0] || 'User'}</span>
                     <div class="user-dropdown-menu" id="userDropdownMenu">
+                        <div style="padding: 0.5rem 1rem; border-bottom: 1px solid var(--color-border); color: var(--color-text-muted); font-size: 0.8rem;">
+                            Signed in as<br>
+                            <strong style="color: var(--color-text); font-size: 0.9rem;">${user.displayName || 'User'}</strong>
+                        </div>
                         <a href="profile.html">👤 My Profile</a>
                         <a href="my-readings.html">📚 My Readings</a>
                         <a href="my-bookings.html">📅 My Bookings</a>
@@ -106,6 +111,25 @@ function updateAuthUI(user) {
                     </div>
                 </div>
             `;
+
+            // Update or Create Welcome Banner
+            let banner = document.getElementById('welcomeBanner');
+            if (!banner) {
+                banner = document.createElement('div');
+                banner.id = 'welcomeBanner';
+                document.body.appendChild(banner); // Append to body, CSS positions it fixed
+            }
+
+            // Get first name
+            const firstName = (user.displayName || 'Friend').split(' ')[0];
+            banner.innerHTML = `Welcome, <span>${firstName}</span>`;
+            banner.style.display = 'block';
+
+            // Adjust main padding if banner is visible
+            const main = document.querySelector('main');
+            if (main) {
+                main.style.paddingTop = '120px'; // Ensure space for banner
+            }
         }
 
         // Hide separate admin link since it's in dropdown now
@@ -120,8 +144,25 @@ function updateAuthUI(user) {
             userInfo.style.display = 'none';
             userInfo.innerHTML = '';
         }
-        if (adminLink) adminLink.style.display = 'none';
+
+        // Hide welcome banner
+        const banner = document.getElementById('welcomeBanner');
+        if (banner) {
+            banner.style.display = 'none';
+        }
+
+        // Reset main padding
+        const main = document.querySelector('main');
+        if (main) {
+            main.style.paddingTop = '120px'; // Reset to default
+        }
+
+        // Hide separate admin link since it's in dropdown now
+        if (adminLink) {
+            adminLink.style.display = 'none';
+        }
     }
+    if (adminLink) adminLink.style.display = 'none';
 }
 
 // Toggle user dropdown menu
