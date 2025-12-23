@@ -1457,6 +1457,16 @@ a:hover {
   font-size: 0.875rem;
 }
 
+/* Single Row Footer Variant */
+.footer-single-row {
+  padding: var(--spacing-md) 0;
+}
+
+.footer-single-row .footer-bottom {
+  border-top: none;
+  padding-top: 0;
+}
+
 /* ========================================
    Utilities
    ======================================== */
