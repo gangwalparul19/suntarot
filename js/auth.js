@@ -20,7 +20,7 @@ function initAuth() {
     }
 
     // Listen for auth state changes
-    auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged(async (user) => {
         currentUser = user;
         updateAuthUI(user);
 
@@ -28,6 +28,23 @@ function initAuth() {
             console.log('User signed in:', user.email);
             // Check if user is admin and store in localStorage
             localStorage.setItem('isAdmin', ADMIN_EMAILS.includes(user.email));
+
+            // Sync user to Firestore
+            if (typeof db !== 'undefined' && db) {
+                try {
+                    const userRef = db.collection('users').doc(user.uid);
+                    await userRef.set({
+                        email: user.email,
+                        displayName: user.displayName || 'User',
+                        photoURL: user.photoURL || null,
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                        // Build profile if new
+                    }, { merge: true });
+                    console.log('User profile synced to Firestore');
+                } catch (e) {
+                    console.error('Error syncing user profile:', e);
+                }
+            }
 
             // Load Daily Card
             if (typeof loadDailyCard === 'function') {
