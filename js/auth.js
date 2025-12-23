@@ -7,7 +7,8 @@ let currentUser = null;
 
 // Admin email addresses (add your admin emails here)
 const ADMIN_EMAILS = [
-    'gangwalparul19@gmail.com'
+    'gangwalparul19@gmail.com',
+    'tarotsun555666@gmail.com'
     // Add more admin emails as needed
 ];
 
