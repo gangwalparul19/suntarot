@@ -1,0 +1,869 @@
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.admin-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.admin-tab {
+    padding: 0.75rem 1.5rem;
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    color: var(--color-text);
+}
+
+.admin-tab:hover {
+    border-color: var(--color-primary);
+}
+
+.admin-tab.active {
+    background: var(--color-primary);
+    color: var(--color-background);
+    border-color: var(--color-primary);
+}
+
+.admin-panel {
+    display: none;
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    padding: 2rem;
+}
+
+.admin-panel.active {
+    display: block;
+}
+
+.admin-panel h2 {
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+}
+
+/* Stats Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+.stat-label {
+    color: var(--color-text-muted);
+    margin-top: 0.5rem;
+}
+
+/* Table Styles */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.admin-table th {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.admin-table tr:hover {
+    background: rgba(212, 169, 93, 0.05);
+}
+
+/* Status Badges */
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.status-confirmed {
+    background: rgba(39, 174, 96, 0.2);
+    color: #27ae60;
+}
+
+.status-pending {
+    background: rgba(241, 196, 15, 0.2);
+    color: #f1c40f;
+}
+
+.status-cancelled {
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+}
+
+.status-approved {
+    background: rgba(39, 174, 96, 0.2);
+    color: #27ae60;
+}
+
+.status-rejected {
+    background: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+}
+
+/* Action Buttons */
+.action-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.3s;
+}
+
+.action-btn-approve {
+    background: #27ae60;
+    color: white;
+}
+
+.action-btn-reject {
+    background: #e74c3c;
+    color: white;
+}
+
+.action-btn-block {
+    background: #e74c3c;
+    color: white;
+}
+
+.action-btn-unblock {
+    background: #27ae60;
+    color: white;
+}
+
+.action-btn:hover {
+    opacity: 0.8;
+}
+
+/* Calendar Grid */
+.availability-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+}
+
+.calendar-day {
+    padding: 1rem;
+    text-align: center;
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.calendar-day:hover {
+    border-color: var(--color-primary);
+}
+
+.calendar-day.blocked {
+    background: rgba(231, 76, 60, 0.2);
+    border-color: #e74c3c;
+}
+
+.calendar-day.has-bookings {
+    background: rgba(39, 174, 96, 0.2);
+    border-color: #27ae60;
+}
+
+.calendar-day-header {
+    padding: 0.5rem;
+    text-align: center;
+    font-weight: bold;
+    color: var(--color-text-muted);
+}
+
+/* Review Card */
+.review-card {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 1rem;
+}
+
+.review-user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.review-user img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.review-text {
+    color: var(--color-text-muted);
+    font-style: italic;
+    line-height: 1.6;
+}
+
+.review-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+/* Access Denied */
+.access-denied {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+/* Auth Container */
+.auth-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-name {
+    color: var(--color-text);
+    font-size: 0.875rem;
+}
+
+#userInfo {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .admin-table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+
+/* Charts */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.chart-card {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+}
+
+.chart-card h4 {
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 200px;
+}
+
+/* Customer Cards */
+.customer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+}
+
+.customer-card {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.customer-card:hover {
+    border-color: var(--color-primary);
+}
+
+.customer-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.customer-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.customer-name {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.customer-email {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.vip-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #d4a95d, #f1c40f);
+    color: var(--color-background);
+    padding: 0.15rem 0.5rem;
+    border-radius: 1rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+.customer-stats {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.customer-stat {
+    text-align: center;
+}
+
+.customer-stat-value {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--color-primary);
+}
+
+.customer-stat-label {
+    font-size: 0.65rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+}
+
+/* Modal */
+.admin-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.admin-modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    padding: 2rem;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    color: var(--color-text);
+}
+
+/* Bulk Actions */
+.bulk-actions {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.bulk-actions h4 {
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+}
+
+.bulk-form {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.bulk-input-group {
+    flex: 1;
+    min-width: 120px;
+}
+
+.bulk-input-group label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.bulk-input-group input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    background: var(--color-card);
+    color: var(--color-text);
+}
+
+.weekday-checkboxes {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.weekday-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.weekday-checkbox input:checked+span {
+    color: var(--color-primary);
+}
+
+/* Notes textarea */
+.notes-textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    background: var(--color-background);
+    color: var(--color-text);
+    font-family: inherit;
+    resize: vertical;
+}
+
+/* Search Box */
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    background: var(--color-background);
+    color: var(--color-text);
+    margin-bottom: 1rem;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+/* Review buttons */
+.review-btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8rem;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+
+    /* Container */
+    .admin-container {
+        padding: 0.5rem;
+    }
+
+    .section-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .section-title {
+        font-size: 1.25rem !important;
+    }
+
+    /* Panels */
+    .admin-panel {
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+    }
+
+    .admin-panel h2 {
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Tabs - horizontal scroll on mobile */
+    .admin-tabs {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        gap: 0.25rem;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .admin-tab {
+        padding: 0.5rem 0.6rem;
+        font-size: 0.7rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-card {
+        padding: 0.75rem;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.65rem;
+    }
+
+    /* Tables - wrap in scrollable container */
+    .admin-table-container,
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 -0.75rem;
+        padding: 0 0.75rem;
+    }
+
+    .admin-table {
+        min-width: 500px;
+        font-size: 0.75rem;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 0.5rem 0.4rem;
+    }
+
+    /* Status badges */
+    .status-badge {
+        padding: 0.15rem 0.4rem;
+        font-size: 0.65rem;
+    }
+
+    /* Action buttons in tables */
+    .action-btn {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.7rem;
+        margin: 0.1rem;
+    }
+
+    /* Booking Cards */
+    .booking-card,
+    .customer-card {
+        padding: 0.75rem !important;
+        margin-bottom: 0.5rem;
+    }
+
+    .booking-card h4,
+    .customer-card h4 {
+        font-size: 0.9rem;
+    }
+
+    .booking-card p,
+    .customer-card p {
+        font-size: 0.8rem;
+        margin: 0.25rem 0;
+    }
+
+    /* Review cards */
+    .review-card {
+        padding: 0.75rem !important;
+    }
+
+    .review-btn {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.65rem;
+    }
+
+    /* Calendar/Availability */
+    .availability-grid {
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.15rem;
+    }
+
+    .calendar-day {
+        padding: 0.2rem;
+        font-size: 0.6rem;
+        min-height: 45px;
+    }
+
+    .calendar-day-date {
+        font-size: 0.7rem;
+    }
+
+    .calendar-header {
+        font-size: 0.9rem;
+    }
+
+    .calendar-nav button {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    /* Bulk Actions */
+    .bulk-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .bulk-input-group {
+        min-width: 100%;
+    }
+
+    .bulk-input-group label {
+        font-size: 0.7rem;
+    }
+
+    .bulk-input-group input {
+        padding: 0.4rem;
+        font-size: 0.8rem;
+    }
+
+    .weekday-checkboxes {
+        justify-content: flex-start;
+    }
+
+    .weekday-checkbox {
+        padding: 0.2rem 0.3rem;
+        font-size: 0.65rem;
+    }
+
+    /* Form inputs */
+    .search-input {
+        padding: 0.5rem 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    .notes-textarea {
+        min-height: 60px;
+        font-size: 0.85rem;
+    }
+
+    /* Pricing Forms */
+    #pricingForms>div {
+        padding: 0.75rem !important;
+        margin-bottom: 0.5rem;
+    }
+
+    #pricingForms h4 {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    #pricingForms input {
+        padding: 0.4rem;
+        font-size: 0.8rem;
+    }
+
+    #pricingForms label {
+        font-size: 0.7rem;
+    }
+
+    /* Charts */
+    .chart-container {
+        height: 200px !important;
+        margin-bottom: 1rem;
+    }
+
+    canvas {
+        max-height: 200px !important;
+    }
+
+    /* Modals */
+    .admin-modal {
+        padding: 0.5rem;
+    }
+
+    .modal-content {
+        margin: 0;
+        padding: 0.75rem;
+        max-height: 95vh;
+        overflow-y: auto;
+        border-radius: 0.5rem;
+    }
+
+    .modal-header {
+        padding-bottom: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .modal-header h3 {
+        font-size: 1rem;
+    }
+
+    .modal-close {
+        font-size: 1.25rem;
+        padding: 0.25rem;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.75rem;
+    }
+
+    .btn-primary,
+    .btn-outline {
+        width: auto;
+        min-width: auto;
+    }
+
+    /* Popular services */
+    .popular-services {
+        gap: 0.5rem;
+    }
+
+    .service-card {
+        padding: 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    /* Customer details in modal */
+    #customerModalContent {
+        font-size: 0.85rem;
+    }
+
+    #customerModalContent h4 {
+        font-size: 0.9rem;
+    }
+
+    /* Reschedule modal */
+    #rescheduleModalContent select,
+    #rescheduleModalContent input {
+        font-size: 0.85rem;
+        padding: 0.5rem;
+    }
+}
+
+/* Very small screens (< 480px) */
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .stat-number {
+        font-size: 1.25rem;
+    }
+
+    .stat-label {
+        font-size: 0.6rem;
+    }
+
+    .admin-tab {
+        padding: 0.35rem 0.45rem;
+        font-size: 0.6rem;
+    }
+
+    .admin-panel {
+        padding: 0.5rem;
+    }
+
+    .admin-panel h2 {
+        font-size: 1rem;
+    }
+
+    /* Calendar even smaller */
+    .availability-grid {
+        gap: 0.1rem;
+    }
+
+    .calendar-day {
+        padding: 0.15rem;
+        font-size: 0.5rem;
+        min-height: 40px;
+    }
+
+    /* Buttons stack */
+    .review-actions {
+        flex-wrap: wrap;
+    }
+
+    .action-btn {
+        width: 100%;
+        margin-bottom: 0.25rem;
+    }
+}

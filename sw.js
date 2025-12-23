@@ -2,7 +2,7 @@
 // ============================
 // Provides offline support, caching, and faster page loads
 
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v5';
 const STATIC_CACHE = `sun-tarot-static-${CACHE_VERSION}`;
 const DYNAMIC_CACHE = `sun-tarot-dynamic-${CACHE_VERSION}`;
 const IMAGE_CACHE = `sun-tarot-images-${CACHE_VERSION}`;
