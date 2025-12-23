@@ -28,9 +28,19 @@ function initAuth() {
             console.log('User signed in:', user.email);
             // Check if user is admin and store in localStorage
             localStorage.setItem('isAdmin', ADMIN_EMAILS.includes(user.email));
+
+            // Load Daily Card
+            if (typeof loadDailyCard === 'function') {
+                loadDailyCard(user);
+            }
         } else {
             console.log('User signed out');
             localStorage.removeItem('isAdmin');
+
+            // Hide Daily Card
+            if (typeof loadDailyCard === 'function') {
+                loadDailyCard(null);
+            }
         }
     });
 }

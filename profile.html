@@ -20,7 +20,8 @@
 
     <header class="header">
         <nav class="nav container">
-            <a href="index.html" class="logo"><img src="images/logo.png" alt="Sun Tarot" class="logo-img"><span>Sun Tarot</span></a>
+            <a href="index.html" class="logo"><img src="images/logo.png" alt="Sun Tarot" class="logo-img"><span>Sun
+                    Tarot</span></a>
             <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="reading.html">Reading</a></li>
@@ -225,14 +226,16 @@
             try {
                 const snapshot = await db.collection('readings')
                     .where('userId', '==', auth.currentUser.uid)
-                    .orderBy('createdAt', 'desc')
                     .get();
 
-                return snapshot.docs.map(doc => ({
+                const readings = snapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data(),
                     createdAt: doc.data().createdAt?.toDate()
                 }));
+
+                // Client-side sort
+                return readings.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
             } catch (error) {
                 console.error('Error loading readings:', error);
                 return [];
