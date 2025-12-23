@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Sun Tarot</title>
+    <meta name="description" content="Your Sun Tarot profile, reading stats, and achievements.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .profile-header {
+            text-align: center;
+            padding: 3rem 0;
+            border-bottom: 1px solid var(--color-border);
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid var(--color-primary);
+            object-fit: cover;
+            margin-bottom: 1rem;
+        }
+
+        .profile-name {
+            font-family: var(--font-headline);
+            font-size: 2rem;
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-email {
+            color: var(--color-text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .profile-badges {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .profile-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(212, 169, 93, 0.1);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            color: var(--color-primary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .stat-label {
+            color: var(--color-text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* Streak Section */
+        .streak-section {
+            background: linear-gradient(135deg, rgba(212, 169, 93, 0.1), rgba(212, 169, 93, 0.05));
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .streak-flame {
+            font-size: 4rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .streak-count {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .streak-label {
+            color: var(--color-text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .streak-calendar {
+            display: flex;
+            justify-content: center;
+            gap: 0.25rem;
+            margin-top: 1rem;
+        }
+
+        .streak-day {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+        }
+
+        .streak-day.active {
+            background: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        .streak-day.today {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 2px rgba(212, 169, 93, 0.3);
+        }
+
+        /* Favorite Cards */
+        .favorite-cards {
+            margin-bottom: 2rem;
+        }
+
+        .favorite-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 1rem;
+        }
+
+        .favorite-card {
+            text-align: center;
+        }
+
+        .favorite-card img {
+            width: 100%;
+            border-radius: 0.5rem;
+            border: 2px solid var(--color-border);
+            transition: transform 0.3s;
+        }
+
+        .favorite-card img:hover {
+            transform: scale(1.05);
+        }
+
+        .favorite-card-name {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            margin-top: 0.5rem;
+        }
+
+        .favorite-card-count {
+            font-size: 0.65rem;
+            color: var(--color-primary);
+        }
+
+        /* Achievements */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+
+        .achievement {
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            text-align: center;
+            opacity: 0.5;
+            transition: all 0.3s;
+        }
+
+        .achievement.unlocked {
+            opacity: 1;
+            border-color: var(--color-primary);
+        }
+
+        .achievement-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .achievement-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .achievement-desc {
+            font-size: 0.65rem;
+            color: var(--color-text-muted);
+        }
+
+        /* Login Prompt */
+        .login-prompt {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        .login-prompt h2 {
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stars" id="stars"></div>
+
+    <header class="header">
+        <nav class="nav container">
+            <a href="index.html" class="logo"><span>☀️</span><span>Sun Tarot</span></a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="reading.html">Reading</a></li>
+                <li><a href="love-reading.html">Love</a></li>
+                <li><a href="learn.html">Learn</a></li>
+                <li><a href="booking.html">Book</a></li>
+            </ul>
+            <div class="auth-container" id="authContainer">
+                <div id="userInfo"></div>
+                <button class="btn btn-outline" id="loginBtn" onclick="signInWithGoogle()"
+                    style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                    Sign In
+                </button>
+                <button class="btn btn-outline" id="logoutBtn" onclick="signOut()"
+                    style="display: none; padding: 0.5rem 1rem; font-size: 0.875rem;">
+                    Sign Out
+                </button>
+            </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </nav>
+    </header>
+
+    <main class="section" style="padding-top: 120px;">
+        <div class="container">
+            <!-- Login Required -->
+            <div class="login-prompt" id="loginPrompt">
+                <h2>Sign In to View Your Profile</h2>
+                <p class="text-muted mb-md">Track your reading journey, streaks, and achievements.</p>
+                <button class="btn btn-primary" onclick="signInWithGoogle()">Sign In with Google</button>
+            </div>
+
+            <!-- Profile Content -->
+            <div id="profileContent" style="display: none;">
+                <!-- Profile Header -->
+                <div class="profile-header">
+                    <img id="profileAvatar" class="profile-avatar" src="" alt="Profile">
+                    <h1 id="profileName" class="profile-name"></h1>
+                    <p id="profileEmail" class="profile-email"></p>
+                    <div class="profile-badges" id="profileBadges"></div>
+                </div>
+
+                <!-- Streak Section -->
+                <div class="streak-section">
+                    <div class="streak-flame">🔥</div>
+                    <div class="streak-count" id="streakCount">0</div>
+                    <div class="streak-label">Day Reading Streak</div>
+                    <p class="text-muted" id="streakMessage">Start your streak today!</p>
+                    <div class="streak-calendar" id="streakCalendar"></div>
+                </div>
+
+                <!-- Stats Grid -->
+                <h2 class="section-subtitle text-primary mb-md">📊 Your Stats</h2>
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card">
+                        <div class="stat-icon">🎴</div>
+                        <div class="stat-value" id="totalReadings">0</div>
+                        <div class="stat-label">Total Readings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💕</div>
+                        <div class="stat-value" id="loveReadings">0</div>
+                        <div class="stat-label">Love Readings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-value" id="daysActive">0</div>
+                        <div class="stat-label">Days Active</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🔄</div>
+                        <div class="stat-value" id="reversedCards">0%</div>
+                        <div class="stat-label">Reversed Cards</div>
+                    </div>
+                </div>
+
+                <!-- Favorite Cards -->
+                <h2 class="section-subtitle text-primary mb-md">⭐ Most Drawn Cards</h2>
+                <div class="favorite-cards">
+                    <div class="favorite-cards-grid" id="favoriteCards">
+                        <p class="text-muted">Do more readings to see your patterns!</p>
+                    </div>
+                </div>
+
+                <!-- Achievements -->
+                <h2 class="section-subtitle text-primary mb-md">🏆 Achievements</h2>
+                <div class="achievements-grid" id="achievements"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>© 2025 Sun Tarot. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- Environment Config (generated by build) -->
+    <script src="js/env.js" onerror="console.log('env.js not found - using placeholder config')"></script>
+
+    <!-- App Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/toast.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/cards.js"></script>
+    <script src="js/main.js"></script>
+
+    <script>
+        // Achievement definitions
+        const ACHIEVEMENTS = [
+            { id: 'first_reading', icon: '🎴', name: 'First Steps', desc: 'Complete your first reading', check: (s) => s.totalReadings >= 1 },
+            { id: '10_readings', icon: '🌟', name: 'Seeker', desc: 'Complete 10 readings', check: (s) => s.totalReadings >= 10 },
+            { id: '50_readings', icon: '✨', name: 'Devoted', desc: 'Complete 50 readings', check: (s) => s.totalReadings >= 50 },
+            { id: '100_readings', icon: '🔮', name: 'Oracle', desc: 'Complete 100 readings', check: (s) => s.totalReadings >= 100 },
+            { id: '3_streak', icon: '🔥', name: 'On Fire', desc: '3-day reading streak', check: (s) => s.maxStreak >= 3 },
+            { id: '7_streak', icon: '💫', name: 'Dedicated', desc: '7-day reading streak', check: (s) => s.maxStreak >= 7 },
+            { id: '30_streak', icon: '🌙', name: 'Lunar Cycle', desc: '30-day reading streak', check: (s) => s.maxStreak >= 30 },
+            { id: 'love_reader', icon: '💕', name: 'Romantic', desc: 'Complete 5 love readings', check: (s) => s.loveReadings >= 5 },
+            { id: 'all_major', icon: '🎯', name: 'Collector', desc: 'Draw all 22 Major Arcana', check: (s) => s.uniqueCards >= 22 },
+            { id: 'night_owl', icon: '🦉', name: 'Night Owl', desc: 'Read after midnight', check: (s) => s.hasNightReading },
+            { id: 'early_bird', icon: '🌅', name: 'Early Bird', desc: 'Read before 6am', check: (s) => s.hasEarlyReading },
+            { id: 'reversed_master', icon: '🔄', name: 'Reversal Master', desc: 'Get 10 reversed cards', check: (s) => s.reversedCount >= 10 }
+        ];
+
+        // Load profile data
+        async function loadProfile() {
+            const loginPrompt = document.getElementById('loginPrompt');
+            const profileContent = document.getElementById('profileContent');
+
+            if (!isLoggedIn()) {
+                loginPrompt.style.display = 'block';
+                profileContent.style.display = 'none';
+                return;
+            }
+
+            loginPrompt.style.display = 'none';
+            profileContent.style.display = 'block';
+
+            const user = auth.currentUser;
+
+            // Set profile info
+            document.getElementById('profileAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'User')}`;
+            document.getElementById('profileName').textContent = user.displayName || 'Tarot Reader';
+            document.getElementById('profileEmail').textContent = user.email;
+
+            // Load readings
+            const readings = await loadReadings();
+            const stats = calculateStats(readings);
+
+            // Update stats
+            document.getElementById('totalReadings').textContent = stats.totalReadings;
+            document.getElementById('loveReadings').textContent = stats.loveReadings;
+            document.getElementById('daysActive').textContent = stats.uniqueDays;
+            document.getElementById('reversedCards').textContent = stats.reversedPercent + '%';
+
+            // Update streak
+            document.getElementById('streakCount').textContent = stats.currentStreak;
+            updateStreakMessage(stats.currentStreak);
+            renderStreakCalendar(readings);
+
+            // Render favorite cards
+            renderFavoriteCards(stats.cardCounts);
+
+            // Render achievements
+            renderAchievements(stats);
+
+            // Render badges
+            renderBadges(stats);
+        }
+
+        async function loadReadings() {
+            try {
+                const snapshot = await db.collection('readings')
+                    .where('userId', '==', auth.currentUser.uid)
+                    .orderBy('createdAt', 'desc')
+                    .get();
+
+                return snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data(),
+                    createdAt: doc.data().createdAt?.toDate()
+                }));
+            } catch (error) {
+                console.error('Error loading readings:', error);
+                return [];
+            }
+        }
+
+        function calculateStats(readings) {
+            const stats = {
+                totalReadings: readings.length,
+                loveReadings: 0,
+                uniqueDays: new Set(),
+                cardCounts: {},
+                reversedCount: 0,
+                uniqueCards: new Set(),
+                currentStreak: 0,
+                maxStreak: 0,
+                hasNightReading: false,
+                hasEarlyReading: false,
+                reversedPercent: 0
+            };
+
+            let totalCards = 0;
+
+            readings.forEach(reading => {
+                if (reading.type === 'love') stats.loveReadings++;
+
+                if (reading.createdAt) {
+                    const dateStr = reading.createdAt.toISOString().split('T')[0];
+                    stats.uniqueDays.add(dateStr);
+
+                    const hour = reading.createdAt.getHours();
+                    if (hour >= 0 && hour < 6) stats.hasEarlyReading = true;
+                    if (hour >= 0 && hour < 5) stats.hasNightReading = true;
+                }
+
+                if (reading.cards) {
+                    reading.cards.forEach(card => {
+                        stats.cardCounts[card.name] = (stats.cardCounts[card.name] || 0) + 1;
+                        stats.uniqueCards.add(card.name);
+                        totalCards++;
+                        if (card.isReversed) stats.reversedCount++;
+                    });
+                }
+            });
+
+            stats.uniqueDays = stats.uniqueDays.size;
+            stats.uniqueCards = stats.uniqueCards.size;
+            stats.reversedPercent = totalCards > 0 ? Math.round((stats.reversedCount / totalCards) * 100) : 0;
+
+            // Calculate streak
+            const today = new Date().toISOString().split('T')[0];
+            const readingDates = new Set(readings.map(r => r.createdAt?.toISOString().split('T')[0]).filter(Boolean));
+
+            let streak = 0;
+            let date = new Date();
+            while (true) {
+                const dateStr = date.toISOString().split('T')[0];
+                if (readingDates.has(dateStr)) {
+                    streak++;
+                    date.setDate(date.getDate() - 1);
+                } else if (dateStr === today) {
+                    // Today hasn't happened yet, check yesterday
+                    date.setDate(date.getDate() - 1);
+                } else {
+                    break;
+                }
+            }
+            stats.currentStreak = streak;
+
+            // Calculate max streak
+            const sortedDates = Array.from(readingDates).sort();
+            let maxStreak = 0;
+            let currentMax = 0;
+            let prevDate = null;
+
+            sortedDates.forEach(dateStr => {
+                const date = new Date(dateStr);
+                if (prevDate) {
+                    const diff = (date - prevDate) / (1000 * 60 * 60 * 24);
+                    if (diff === 1) {
+                        currentMax++;
+                    } else {
+                        currentMax = 1;
+                    }
+                } else {
+                    currentMax = 1;
+                }
+                maxStreak = Math.max(maxStreak, currentMax);
+                prevDate = date;
+            });
+            stats.maxStreak = maxStreak;
+
+            return stats;
+        }
+
+        function updateStreakMessage(streak) {
+            const msg = document.getElementById('streakMessage');
+            if (streak === 0) {
+                msg.textContent = 'Do a reading today to start your streak!';
+            } else if (streak < 3) {
+                msg.textContent = 'Keep it going! A few more days to unlock achievements.';
+            } else if (streak < 7) {
+                msg.textContent = 'Great progress! You\'re building a habit.';
+            } else if (streak < 30) {
+                msg.textContent = 'Amazing dedication! Keep the flame alive.';
+            } else {
+                msg.textContent = 'Incredible! You\'re a true oracle.';
+            }
+        }
+
+        function renderStreakCalendar(readings) {
+            const calendar = document.getElementById('streakCalendar');
+            const readingDates = new Set(readings.map(r => r.createdAt?.toISOString().split('T')[0]).filter(Boolean));
+
+            let html = '';
+            const today = new Date();
+
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                const isActive = readingDates.has(dateStr);
+                const isToday = i === 0;
+
+                html += `<div class="streak-day ${isActive ? 'active' : ''} ${isToday ? 'today' : ''}" 
+                              title="${date.toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' })}"></div>`;
+            }
+
+            calendar.innerHTML = html;
+        }
+
+        function renderFavoriteCards(cardCounts) {
+            const container = document.getElementById('favoriteCards');
+            const sorted = Object.entries(cardCounts).sort((a, b) => b[1] - a[1]).slice(0, 6);
+
+            if (sorted.length === 0) {
+                container.innerHTML = '<p class="text-muted">Do more readings to see your patterns!</p>';
+                return;
+            }
+
+            container.innerHTML = sorted.map(([name, count]) => {
+                const card = majorArcana.find(c => c.name === name);
+                return `
+                    <div class="favorite-card">
+                        <img src="${card?.image || ''}" alt="${name}" loading="lazy">
+                        <div class="favorite-card-name">${name}</div>
+                        <div class="favorite-card-count">${count} times</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderAchievements(stats) {
+            const container = document.getElementById('achievements');
+
+            container.innerHTML = ACHIEVEMENTS.map(ach => {
+                const unlocked = ach.check(stats);
+                return `
+                    <div class="achievement ${unlocked ? 'unlocked' : ''}">
+                        <div class="achievement-icon">${ach.icon}</div>
+                        <div class="achievement-name">${ach.name}</div>
+                        <div class="achievement-desc">${ach.desc}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderBadges(stats) {
+            const container = document.getElementById('profileBadges');
+            const badges = [];
+
+            if (stats.totalReadings >= 100) badges.push({ icon: '🔮', text: 'Oracle' });
+            else if (stats.totalReadings >= 50) badges.push({ icon: '✨', text: 'Devoted' });
+            else if (stats.totalReadings >= 10) badges.push({ icon: '🌟', text: 'Seeker' });
+
+            if (stats.maxStreak >= 30) badges.push({ icon: '🌙', text: 'Monthly Streak' });
+            else if (stats.maxStreak >= 7) badges.push({ icon: '💫', text: 'Weekly Streak' });
+
+            if (stats.uniqueCards >= 22) badges.push({ icon: '🎯', text: 'Collector' });
+
+            container.innerHTML = badges.map(b =>
+                `<span class="profile-badge">${b.icon} ${b.text}</span>`
+            ).join('');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(loadProfile, 500);
+        });
+
+        // Update on auth change
+        const originalUpdateAuthUI = window.updateAuthUI;
+        window.updateAuthUI = function (user) {
+            if (originalUpdateAuthUI) originalUpdateAuthUI(user);
+            loadProfile();
+        };
+    </script>
+</body>
+
+</html>

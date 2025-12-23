@@ -73,4 +73,4 @@ npx serve
 
 ## 📝 License
 
-© 2024 Sun Tarot. All rights reserved.
+© 2025 Sun Tarot. All rights reserved.

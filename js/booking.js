@@ -71,7 +71,7 @@ async function loadServicesFromFirestore() {
 // Save a service to Firestore (admin only)
 async function saveService(serviceId, serviceData) {
     if (!isAdmin()) {
-        alert('Admin access required');
+        toastError('Admin access required');
         return false;
     }
 
@@ -214,7 +214,7 @@ async function createBooking(date, time, serviceId, notes = '') {
     const service = SERVICES[serviceId];
 
     if (!service) {
-        alert('Invalid service selected');
+        toastError('Invalid service selected');
         return null;
     }
 
@@ -234,7 +234,7 @@ async function createBooking(date, time, serviceId, notes = '') {
         });
 
         if (slotTaken) {
-            alert('Sorry, this slot has just been booked. Please select another time.');
+            toastWarning('Sorry, this slot has just been booked. Please select another time.');
             return null;
         }
 
@@ -264,7 +264,7 @@ async function createBooking(date, time, serviceId, notes = '') {
         console.error('Error creating booking:', error);
         console.error('Error code:', error.code);
         console.error('Error message:', error.message);
-        alert('Failed to create booking: ' + error.message);
+        toastError('Failed to create booking: ' + error.message);
         return null;
     }
 }
@@ -313,7 +313,7 @@ async function cancelBooking(bookingId) {
 // Admin: Block a date
 async function blockDate(date, reason = '') {
     if (!isAdmin()) {
-        alert('Admin access required');
+        toastError('Admin access required');
         return false;
     }
 
@@ -334,7 +334,7 @@ async function blockDate(date, reason = '') {
 // Admin: Unblock a date
 async function unblockDate(date) {
     if (!isAdmin()) {
-        alert('Admin access required');
+        toastError('Admin access required');
         return false;
     }
 

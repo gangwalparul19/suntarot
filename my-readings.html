@@ -18,6 +18,92 @@
             margin: 0 auto;
         }
 
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.25rem;
+        }
+
+        /* Filter Tabs */
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-tab {
+            padding: 0.5rem 1.25rem;
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 2rem;
+            cursor: pointer;
+            color: var(--color-text);
+            font-size: 0.875rem;
+            transition: all 0.3s;
+        }
+
+        .filter-tab:hover {
+            border-color: var(--color-primary);
+        }
+
+        .filter-tab.active {
+            background: var(--color-primary);
+            color: var(--color-background);
+            border-color: var(--color-primary);
+        }
+
+        /* Search Box */
+        .search-box {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            color: var(--color-text);
+            font-size: 0.875rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .search-input::placeholder {
+            color: var(--color-text-muted);
+        }
+
+        /* Reading Cards */
         .reading-card {
             background: var(--color-card);
             border: 1px solid var(--color-border);
@@ -25,6 +111,7 @@
             padding: 1.5rem;
             margin-bottom: 1.5rem;
             transition: all 0.3s;
+            position: relative;
         }
 
         .reading-card:hover {
@@ -71,12 +158,28 @@
             border-radius: 0.5rem;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            position: relative;
         }
 
         .card-mini img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+
+        .card-mini.reversed img {
+            transform: rotate(180deg);
+        }
+
+        .card-mini .reversed-indicator {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            background: rgba(231, 76, 60, 0.9);
+            color: white;
+            font-size: 0.6rem;
+            padding: 1px 3px;
+            border-radius: 2px;
         }
 
         .card-names {
@@ -90,12 +193,52 @@
             margin-top: 1rem;
         }
 
+        .delete-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--color-text-muted);
+            cursor: pointer;
+            font-size: 1rem;
+            opacity: 0.5;
+            transition: all 0.3s;
+        }
+
+        .delete-btn:hover {
+            opacity: 1;
+            color: #e74c3c;
+        }
+
         .empty-state {
             text-align: center;
             padding: 3rem;
             background: var(--color-card);
             border: 1px solid var(--color-border);
             border-radius: 1rem;
+        }
+
+        /* Timeline */
+        .timeline-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--color-primary);
+        }
+
+        .timeline-date {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         /* Auth Container */
@@ -164,8 +307,43 @@
                 <button class="btn btn-primary" onclick="signInWithGoogle()">🔐 Sign In with Google</button>
             </div>
 
-            <!-- Readings List -->
+            <!-- Readings Content -->
             <div id="readingsContent" style="display: none;">
+
+                <!-- Statistics -->
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="statTotal">0</div>
+                        <div class="stat-label">Total Readings</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statMostCard">-</div>
+                        <div class="stat-label">Most Drawn</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statStreak">0</div>
+                        <div class="stat-label">Day Streak</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="statLastReading">-</div>
+                        <div class="stat-label">Last Reading</div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filter-tabs">
+                    <button class="filter-tab active" onclick="filterReadings('all')">All</button>
+                    <button class="filter-tab" onclick="filterReadings('reading')">🔮 Regular</button>
+                    <button class="filter-tab" onclick="filterReadings('love')">💕 Love</button>
+                </div>
+
+                <!-- Search -->
+                <div class="search-box">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search by card name..."
+                        oninput="searchReadings(this.value)">
+                </div>
+
+                <!-- Readings List -->
                 <div id="readingsList">
                     <p class="text-muted text-center">Loading your readings...</p>
                 </div>
@@ -176,7 +354,7 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-bottom">
-                <p>© 2024 Sun Tarot. All rights reserved.</p>
+                <p>© 2025 Sun Tarot. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -193,11 +371,16 @@
 
     <!-- Scripts -->
     <script src="js/firebase-config.js"></script>
+    <script src="js/toast.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/share.js"></script>
     <script src="js/main.js"></script>
 
     <script>
+        let allReadings = [];
+        let currentFilter = 'all';
+        let searchQuery = '';
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             setTimeout(updateUIState, 500);
@@ -218,8 +401,108 @@
         }
 
         async function loadReadings() {
-            const readings = await getReadingHistory(50);
-            renderReadings(readings);
+            allReadings = await getReadingHistory(100);
+            updateStats();
+            renderReadings(getFilteredReadings());
+        }
+
+        function getFilteredReadings() {
+            let filtered = allReadings;
+
+            // Apply type filter
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(r => r.spreadType === currentFilter);
+            }
+
+            // Apply search filter
+            if (searchQuery.trim()) {
+                const query = searchQuery.toLowerCase();
+                filtered = filtered.filter(r =>
+                    r.cards.some(c => c.name.toLowerCase().includes(query))
+                );
+            }
+
+            return filtered;
+        }
+
+        function filterReadings(type) {
+            currentFilter = type;
+
+            // Update tabs
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            renderReadings(getFilteredReadings());
+        }
+
+        function searchReadings(query) {
+            searchQuery = query;
+            renderReadings(getFilteredReadings());
+        }
+
+        function updateStats() {
+            // Total readings
+            document.getElementById('statTotal').textContent = allReadings.length;
+
+            // Most drawn card
+            const cardCounts = {};
+            allReadings.forEach(r => {
+                r.cards.forEach(c => {
+                    cardCounts[c.name] = (cardCounts[c.name] || 0) + 1;
+                });
+            });
+            const mostDrawn = Object.entries(cardCounts).sort((a, b) => b[1] - a[1])[0];
+            document.getElementById('statMostCard').textContent = mostDrawn
+                ? mostDrawn[0].split(' ').pop() // Get last word (e.g., "Fool" from "The Fool")
+                : '-';
+
+            // Calculate streak
+            const streak = calculateStreak();
+            document.getElementById('statStreak').textContent = streak;
+
+            // Last reading
+            if (allReadings.length > 0) {
+                const lastReading = allReadings[0];
+                const date = lastReading.createdAt?.toDate ? lastReading.createdAt.toDate() : new Date(lastReading.createdAt);
+                const daysAgo = Math.floor((new Date() - date) / (1000 * 60 * 60 * 24));
+                document.getElementById('statLastReading').textContent = daysAgo === 0 ? 'Today' : `${daysAgo}d ago`;
+            }
+        }
+
+        function calculateStreak() {
+            if (allReadings.length === 0) return 0;
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Get unique dates
+            const dates = [...new Set(allReadings.map(r => {
+                const date = r.createdAt?.toDate ? r.createdAt.toDate() : new Date(r.createdAt);
+                date.setHours(0, 0, 0, 0);
+                return date.getTime();
+            }))].sort((a, b) => b - a);
+
+            let streak = 0;
+            let checkDate = today.getTime();
+
+            for (const dateTime of dates) {
+                if (dateTime === checkDate) {
+                    streak++;
+                    checkDate -= 24 * 60 * 60 * 1000; // Go back one day
+                } else if (dateTime < checkDate) {
+                    // Missed a day, but check if first reading is today
+                    if (streak === 0 && dateTime === today.getTime() - 24 * 60 * 60 * 1000) {
+                        streak = 1;
+                        checkDate = dateTime - 24 * 60 * 60 * 1000;
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            return streak;
         }
 
         function renderReadings(readings) {
@@ -228,40 +511,79 @@
             if (readings.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <h3 style="color: var(--color-primary);">No Readings Yet</h3>
-                        <p class="text-muted" style="margin-bottom: 1.5rem;">Start a reading to save it to your history!</p>
-                        <a href="reading.html" class="btn btn-primary">🔮 Get a Reading</a>
+                        <h3 style="color: var(--color-primary);">${searchQuery ? 'No Matching Readings' : 'No Readings Yet'}</h3>
+                        <p class="text-muted" style="margin-bottom: 1.5rem;">
+                            ${searchQuery ? 'Try a different search term.' : 'Start a reading to save it to your history!'}
+                        </p>
+                        ${!searchQuery ? '<a href="reading.html" class="btn btn-primary">🔮 Get a Reading</a>' : ''}
                     </div>
                 `;
                 return;
             }
 
-            container.innerHTML = readings.map(reading => `
-                <div class="reading-card">
-                    <div class="reading-header">
-                        <span class="reading-type ${reading.spreadType === 'love' ? 'love' : ''}">
-                            ${getSpreadLabel(reading.spreadType)}
-                        </span>
-                        <span class="reading-date">${formatReadingDate(reading.createdAt)}</span>
+            // Group by date for timeline
+            let lastDateStr = '';
+
+            container.innerHTML = readings.map(reading => {
+                const date = reading.createdAt?.toDate ? reading.createdAt.toDate() : new Date(reading.createdAt);
+                const dateStr = date.toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' });
+
+                let timelineHtml = '';
+                if (dateStr !== lastDateStr) {
+                    lastDateStr = dateStr;
+                    timelineHtml = `
+                        <div class="timeline-indicator">
+                            <div class="timeline-dot"></div>
+                            <span class="timeline-date">${dateStr}</span>
+                        </div>
+                    `;
+                }
+
+                return `
+                    ${timelineHtml}
+                    <div class="reading-card">
+                        <button class="delete-btn" onclick="deleteReadingItem('${reading.id}')" title="Delete reading">🗑️</button>
+                        <div class="reading-header">
+                            <span class="reading-type ${reading.spreadType === 'love' ? 'love' : ''}">
+                                ${getSpreadLabel(reading.spreadType)}
+                            </span>
+                            <span class="reading-date">${formatReadingTime(reading.createdAt)}</span>
+                        </div>
+                        <div class="reading-cards">
+                            ${reading.cards.map(card => `
+                                <div class="card-mini ${card.isReversed ? 'reversed' : ''}" title="${card.name}${card.isReversed ? ' (Reversed)' : ''}">
+                                    ${card.image ? `<img src="${card.image}" alt="${card.name}">` : `<div style="display:flex;align-items:center;justify-content:center;height:100%;background:var(--color-card);">🃏</div>`}
+                                    ${card.isReversed ? '<span class="reversed-indicator">R</span>' : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="card-names">
+                            <strong>Cards:</strong> ${reading.cards.map(c => c.name + (c.isReversed ? ' ↺' : '')).join(' • ')}
+                        </div>
+                        <div class="reading-actions">
+                            <button class="btn btn-outline" onclick='shareReading(${JSON.stringify(reading.cards).replace(/'/g, "\\'")},"${reading.spreadType}")' 
+                                    style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                📤 Share
+                            </button>
+                        </div>
                     </div>
-                    <div class="reading-cards">
-                        ${reading.cards.map(card => `
-                            <div class="card-mini" title="${card.name}">
-                                ${card.image ? `<img src="${card.image}" alt="${card.name}">` : `<div style="display:flex;align-items:center;justify-content:center;height:100%;background:var(--color-card);">🃏</div>`}
-                            </div>
-                        `).join('')}
-                    </div>
-                    <div class="card-names">
-                        <strong>Cards:</strong> ${reading.cards.map(c => c.name).join(' • ')}
-                    </div>
-                    <div class="reading-actions">
-                        <button class="btn btn-outline" onclick="shareReading(${JSON.stringify(reading.cards).replace(/"/g, '&quot;')}, '${reading.spreadType}')" 
-                                style="padding: 0.5rem 1rem; font-size: 0.875rem;">
-                            📤 Share
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+        }
+
+        async function deleteReadingItem(readingId) {
+            if (!confirm('Delete this reading from your history?')) return;
+
+            try {
+                if (typeof db !== 'undefined' && db) {
+                    await db.collection('readings').doc(readingId).delete();
+                    toastSuccess('Reading deleted');
+                    loadReadings();
+                }
+            } catch (error) {
+                console.error('Error deleting reading:', error);
+                toastError('Failed to delete reading');
+            }
         }
 
         function getSpreadLabel(type) {
@@ -273,13 +595,10 @@
             return labels[type] || '🔮 Reading';
         }
 
-        function formatReadingDate(timestamp) {
+        function formatReadingTime(timestamp) {
             if (!timestamp) return 'Just now';
             const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-            return date.toLocaleDateString('en-IN', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
+            return date.toLocaleTimeString('en-IN', {
                 hour: '2-digit',
                 minute: '2-digit'
             });

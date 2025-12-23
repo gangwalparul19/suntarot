@@ -294,6 +294,252 @@
                 overflow-x: auto;
             }
         }
+
+        /* Charts */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: var(--color-background);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+        }
+
+        .chart-card h4 {
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 200px;
+        }
+
+        /* Customer Cards */
+        .customer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .customer-card {
+            background: var(--color-background);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .customer-card:hover {
+            border-color: var(--color-primary);
+        }
+
+        .customer-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .customer-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .customer-name {
+            font-weight: 600;
+            color: var(--color-text);
+        }
+
+        .customer-email {
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+        }
+
+        .vip-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #d4a95d, #f1c40f);
+            color: var(--color-background);
+            padding: 0.15rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .customer-stats {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 1rem;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .customer-stat {
+            text-align: center;
+        }
+
+        .customer-stat-value {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .customer-stat-label {
+            font-size: 0.65rem;
+            color: var(--color-text-muted);
+            text-transform: uppercase;
+        }
+
+        /* Modal */
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .admin-modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--color-text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: var(--color-text);
+        }
+
+        /* Bulk Actions */
+        .bulk-actions {
+            background: var(--color-background);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .bulk-actions h4 {
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+
+        .bulk-form {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .bulk-input-group {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .bulk-input-group label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            margin-bottom: 0.25rem;
+        }
+
+        .bulk-input-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--color-border);
+            border-radius: 0.25rem;
+            background: var(--color-card);
+            color: var(--color-text);
+        }
+
+        .weekday-checkboxes {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .weekday-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .weekday-checkbox input:checked+span {
+            color: var(--color-primary);
+        }
+
+        /* Notes textarea */
+        .notes-textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 0.75rem;
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            background: var(--color-background);
+            color: var(--color-text);
+            font-family: inherit;
+            resize: vertical;
+        }
+
+        /* Search Box */
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            background: var(--color-background);
+            color: var(--color-text);
+            margin-bottom: 1rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
     </style>
 </head>
 
@@ -346,6 +592,7 @@
                 <div class="admin-tabs">
                     <button class="admin-tab active" onclick="showPanel('overview')">📊 Overview</button>
                     <button class="admin-tab" onclick="showPanel('bookings')">📅 Bookings</button>
+                    <button class="admin-tab" onclick="showPanel('customers')">👥 Customers</button>
                     <button class="admin-tab" onclick="showPanel('availability')">🗓️ Availability</button>
                     <button class="admin-tab" onclick="showPanel('reviews')">⭐ Reviews</button>
                     <button class="admin-tab" onclick="showPanel('pricing')">💰 Pricing</button>
@@ -371,6 +618,33 @@
                             <div class="stat-number" id="statPendingReviews">-</div>
                             <div class="stat-label">Pending Reviews</div>
                         </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="statCustomers">-</div>
+                            <div class="stat-label">Unique Customers</div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Section -->
+                    <h3 class="text-primary mb-md">📈 Analytics</h3>
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <h4>Booking Trends (Last 30 Days)</h4>
+                            <div class="chart-container">
+                                <canvas id="bookingTrendsChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <h4>Revenue by Service</h4>
+                            <div class="chart-container">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <h4>Popular Time Slots</h4>
+                            <div class="chart-container">
+                                <canvas id="timeSlotsChart"></canvas>
+                            </div>
+                        </div>
                     </div>
 
                     <h3 class="text-primary mb-md">Popular Services</h3>
@@ -392,11 +666,67 @@
                     <div id="allBookings">Loading...</div>
                 </div>
 
+                <!-- Customers Panel -->
+                <div class="admin-panel" id="customersPanel">
+                    <h2>Customer Management</h2>
+                    <p class="text-muted mb-md">View customer profiles, booking history, and add notes.</p>
+
+                    <input type="text" class="search-input" id="customerSearch"
+                        placeholder="🔍 Search customers by name or email..." oninput="searchCustomers(this.value)">
+
+                    <div class="customer-grid" id="customerGrid">Loading...</div>
+                </div>
+
                 <!-- Availability Panel -->
                 <div class="admin-panel" id="availabilityPanel">
                     <h2>Manage Availability</h2>
                     <p class="text-muted mb-md">Click on a date to block/unblock it. Blocked dates won't be available
                         for booking.</p>
+
+                    <!-- Bulk Actions -->
+                    <div class="bulk-actions">
+                        <h4>📅 Bulk Date Blocking</h4>
+                        <div class="bulk-form">
+                            <div class="bulk-input-group">
+                                <label>From Date</label>
+                                <input type="date" id="bulkFromDate">
+                            </div>
+                            <div class="bulk-input-group">
+                                <label>To Date</label>
+                                <input type="date" id="bulkToDate">
+                            </div>
+                            <button class="btn btn-primary" onclick="blockDateRange()" style="padding: 0.5rem 1rem;">
+                                🚫 Block Range
+                            </button>
+                            <button class="btn btn-outline" onclick="unblockDateRange()" style="padding: 0.5rem 1rem;">
+                                ✓ Unblock Range
+                            </button>
+                        </div>
+
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--color-border);">
+                            <label class="text-muted" style="font-size: 0.875rem;">Block recurring weekdays:</label>
+                            <div class="weekday-checkboxes">
+                                <label class="weekday-checkbox"><input type="checkbox"
+                                        value="0"><span>Sun</span></label>
+                                <label class="weekday-checkbox"><input type="checkbox"
+                                        value="1"><span>Mon</span></label>
+                                <label class="weekday-checkbox"><input type="checkbox"
+                                        value="2"><span>Tue</span></label>
+                                <label class="weekday-checkbox"><input type="checkbox"
+                                        value="3"><span>Wed</span></label>
+                                <label class="weekday-checkbox"><input type="checkbox"
+                                        value="4"><span>Thu</span></label>
+                                <label class="weekday-checkbox"><input type="checkbox"
+                                        value="5"><span>Fri</span></label>
+                                <label class="weekday-checkbox"><input type="checkbox"
+                                        value="6"><span>Sat</span></label>
+                                <button class="btn btn-outline" onclick="blockRecurringDays()"
+                                    style="padding: 0.25rem 0.75rem; font-size: 0.75rem;">
+                                    Apply (Next 90 days)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
                     <div style="display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap;">
                         <button class="btn btn-outline" onclick="changeMonth(-1)">← Previous</button>
@@ -445,10 +775,48 @@
         </div>
     </main>
 
+    <!-- Customer Detail Modal -->
+    <div class="admin-modal" id="customerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-primary" id="customerModalTitle">Customer Details</h3>
+                <button class="modal-close" onclick="closeCustomerModal()">×</button>
+            </div>
+            <div id="customerModalContent">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Reschedule Modal -->
+    <div class="admin-modal" id="rescheduleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-primary">Reschedule Appointment</h3>
+                <button class="modal-close" onclick="closeRescheduleModal()">×</button>
+            </div>
+            <div id="rescheduleModalContent">
+                <input type="hidden" id="rescheduleBookingId">
+                <div style="margin-bottom: 1rem;">
+                    <label class="text-muted" style="display: block; margin-bottom: 0.5rem;">New Date</label>
+                    <input type="date" id="rescheduleDate" class="search-input" style="margin-bottom: 0;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label class="text-muted" style="display: block; margin-bottom: 0.5rem;">New Time</label>
+                    <select id="rescheduleTime" class="search-input" style="margin-bottom: 0;">
+                        <option value="">Select a time...</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-primary" onclick="confirmReschedule()">Save Changes</button>
+                    <button class="btn btn-outline" onclick="closeRescheduleModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="footer">
         <div class="container">
             <div class="footer-bottom">
-                <p>© 2024 Sun Tarot. All rights reserved.</p>
+                <p>© 2025 Sun Tarot. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -458,11 +826,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
+    <!-- Chart.js for Analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
     <!-- Environment Config (generated by build) -->
     <script src="js/env.js" onerror="console.log('env.js not found - using placeholder config')"></script>
 
     <!-- App Scripts -->
     <script src="js/firebase-config.js"></script>
+    <script src="js/toast.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/booking.js"></script>
     <script src="js/reviews.js"></script>
@@ -516,6 +888,8 @@
                 loadAllBookings();
             } else if (panelName === 'pricing') {
                 renderPricingForms();
+            } else if (panelName === 'customers') {
+                loadCustomers();
             }
         }
 
@@ -575,7 +949,7 @@
 
             const success = await saveService(serviceId, serviceData);
             if (success) {
-                alert('✅ Price updated successfully! Changes will appear on the booking page.');
+                toastSuccess('Price updated successfully! Changes will appear on the booking page.');
             }
         }
 
@@ -586,7 +960,7 @@
                 await saveService(id, service);
             }
 
-            alert('✅ All prices reset to defaults!');
+            toastSuccess('All prices reset to defaults!');
             renderPricingForms();
         }
 
@@ -601,13 +975,20 @@
             const upcomingBookings = confirmedBookings.filter(b => b.date >= today);
             const totalRevenue = confirmedBookings.reduce((sum, b) => sum + (b.price || 0), 0);
 
+            // Unique customers
+            const uniqueEmails = new Set(confirmedBookings.map(b => b.userEmail).filter(Boolean));
+
             // Display stats
             document.getElementById('statBookings').textContent = confirmedBookings.length;
             document.getElementById('statRevenue').textContent = '₹' + totalRevenue.toLocaleString();
             document.getElementById('statUpcoming').textContent = upcomingBookings.length;
+            document.getElementById('statCustomers').textContent = uniqueEmails.size;
 
             const pendingReviews = await getAllReviews('pending');
             document.getElementById('statPendingReviews').textContent = pendingReviews.length;
+
+            // Render charts
+            renderCharts(bookings);
 
             // Popular services
             renderPopularServices(confirmedBookings);
@@ -654,7 +1035,7 @@
         function exportBookingsCSV() {
             getAllBookings().then(bookings => {
                 if (bookings.length === 0) {
-                    alert('No bookings to export.');
+                    toastWarning('No bookings to export.');
                     return;
                 }
 
@@ -692,6 +1073,7 @@
         // Render bookings table
         function renderBookingsTable(bookings, containerId) {
             const container = document.getElementById(containerId);
+            const showActions = containerId === 'allBookings';
 
             if (bookings.length === 0) {
                 container.innerHTML = '<p class="text-muted">No bookings found.</p>';
@@ -707,6 +1089,7 @@
                             <th>Service</th>
                             <th>Customer</th>
                             <th>Status</th>
+                            ${showActions ? '<th>Actions</th>' : ''}
                         </tr>
                     </thead>
                     <tbody>
@@ -717,6 +1100,14 @@
                                 <td>${b.serviceName}</td>
                                 <td>${b.userName || b.userEmail}</td>
                                 <td><span class="status-badge status-${b.status}">${b.status}</span></td>
+                                ${showActions ? `
+                                    <td>
+                                        <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" 
+                                                onclick="openRescheduleModal('${b.id}', '${b.date}')">
+                                            📅 Reschedule
+                                        </button>
+                                    </td>
+                                ` : ''}
                             </tr>
                         `).join('')}
                     </tbody>
@@ -855,6 +1246,411 @@
             if (await rejectReview(reviewId)) {
                 loadReviewsByStatus('pending');
             }
+        }
+
+        // ========================================
+        // ANALYTICS CHARTS
+        // ========================================
+        let bookingTrendsChart = null;
+        let revenueChart = null;
+        let timeSlotsChart = null;
+
+        function renderCharts(bookings) {
+            const confirmedBookings = bookings.filter(b => b.status === 'confirmed');
+
+            // Destroy existing charts
+            if (bookingTrendsChart) bookingTrendsChart.destroy();
+            if (revenueChart) revenueChart.destroy();
+            if (timeSlotsChart) timeSlotsChart.destroy();
+
+            // Booking Trends - last 30 days
+            const trendData = {};
+            const today = new Date();
+            for (let i = 29; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                trendData[dateStr] = 0;
+            }
+            confirmedBookings.forEach(b => {
+                if (trendData.hasOwnProperty(b.date)) {
+                    trendData[b.date]++;
+                }
+            });
+
+            const ctx1 = document.getElementById('bookingTrendsChart').getContext('2d');
+            bookingTrendsChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(trendData).map(d => new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })),
+                    datasets: [{
+                        label: 'Bookings',
+                        data: Object.values(trendData),
+                        borderColor: '#d4a95d',
+                        backgroundColor: 'rgba(212, 169, 93, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                        x: { ticks: { maxTicksLimit: 7 } }
+                    }
+                }
+            });
+
+            // Revenue by Service
+            const revenueData = {};
+            confirmedBookings.forEach(b => {
+                const name = b.serviceName || 'Other';
+                revenueData[name] = (revenueData[name] || 0) + (b.price || 0);
+            });
+
+            const ctx2 = document.getElementById('revenueChart').getContext('2d');
+            revenueChart = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(revenueData),
+                    datasets: [{
+                        data: Object.values(revenueData),
+                        backgroundColor: ['#d4a95d', '#db7093', '#27ae60', '#3498db', '#9b59b6', '#e74c3c']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#aaa', font: { size: 10 } } }
+                    }
+                }
+            });
+
+            // Popular Time Slots
+            const timeData = {};
+            confirmedBookings.forEach(b => {
+                if (b.time) {
+                    const hour = b.time.split(':')[0];
+                    const displayTime = `${hour}:00`;
+                    timeData[displayTime] = (timeData[displayTime] || 0) + 1;
+                }
+            });
+            const sortedTimes = Object.entries(timeData).sort((a, b) => a[0].localeCompare(b[0]));
+
+            const ctx3 = document.getElementById('timeSlotsChart').getContext('2d');
+            timeSlotsChart = new Chart(ctx3, {
+                type: 'bar',
+                data: {
+                    labels: sortedTimes.map(t => t[0]),
+                    datasets: [{
+                        label: 'Bookings',
+                        data: sortedTimes.map(t => t[1]),
+                        backgroundColor: '#d4a95d'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+                }
+            });
+        }
+
+        // ========================================
+        // CUSTOMER MANAGEMENT
+        // ========================================
+        let allCustomers = [];
+
+        async function loadCustomers() {
+            const bookings = await getAllBookings();
+            const customerMap = {};
+
+            bookings.forEach(b => {
+                const email = b.userEmail;
+                if (!email) return;
+
+                if (!customerMap[email]) {
+                    customerMap[email] = {
+                        email,
+                        name: b.userName || email.split('@')[0],
+                        photo: b.userPhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(b.userName || 'User')}`,
+                        bookings: [],
+                        totalSpent: 0
+                    };
+                }
+                customerMap[email].bookings.push(b);
+                customerMap[email].totalSpent += (b.price || 0);
+            });
+
+            // Load admin notes
+            try {
+                const notesSnapshot = await db.collection('customerNotes').get();
+                notesSnapshot.forEach(doc => {
+                    if (customerMap[doc.id]) {
+                        customerMap[doc.id].notes = doc.data().notes || '';
+                    }
+                });
+            } catch (e) {
+                console.log('No customer notes collection yet');
+            }
+
+            allCustomers = Object.values(customerMap).sort((a, b) => b.bookings.length - a.bookings.length);
+            renderCustomers(allCustomers);
+        }
+
+        function renderCustomers(customers) {
+            const grid = document.getElementById('customerGrid');
+
+            if (customers.length === 0) {
+                grid.innerHTML = '<p class="text-muted">No customers found.</p>';
+                return;
+            }
+
+            grid.innerHTML = customers.map(c => `
+                <div class="customer-card" onclick="openCustomerModal('${c.email}')">
+                    <div class="customer-header">
+                        <img src="${c.photo}" alt="${c.name}" class="customer-avatar">
+                        <div>
+                            <div class="customer-name">
+                                ${c.name}
+                                ${c.bookings.length >= 3 ? '<span class="vip-badge">⭐ VIP</span>' : ''}
+                            </div>
+                            <div class="customer-email">${c.email}</div>
+                        </div>
+                    </div>
+                    <div class="customer-stats">
+                        <div class="customer-stat">
+                            <div class="customer-stat-value">${c.bookings.length}</div>
+                            <div class="customer-stat-label">Bookings</div>
+                        </div>
+                        <div class="customer-stat">
+                            <div class="customer-stat-value">₹${c.totalSpent.toLocaleString()}</div>
+                            <div class="customer-stat-label">Total Spent</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function searchCustomers(query) {
+            const q = query.toLowerCase();
+            const filtered = allCustomers.filter(c =>
+                c.name.toLowerCase().includes(q) ||
+                c.email.toLowerCase().includes(q)
+            );
+            renderCustomers(filtered);
+        }
+
+        function openCustomerModal(email) {
+            const customer = allCustomers.find(c => c.email === email);
+            if (!customer) return;
+
+            document.getElementById('customerModalTitle').textContent = customer.name;
+            document.getElementById('customerModal').classList.add('show');
+
+            const content = document.getElementById('customerModalContent');
+            content.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                    <img src="${customer.photo}" alt="${customer.name}" style="width: 64px; height: 64px; border-radius: 50%;">
+                    <div>
+                        <div style="font-weight: 600;">${customer.name} ${customer.bookings.length >= 3 ? '<span class="vip-badge">⭐ VIP</span>' : ''}</div>
+                        <div class="text-muted">${customer.email}</div>
+                        <div class="text-primary">₹${customer.totalSpent.toLocaleString()} total | ${customer.bookings.length} bookings</div>
+                    </div>
+                </div>
+
+                <h4 class="text-primary" style="margin-bottom: 0.5rem;">📝 Admin Notes</h4>
+                <textarea class="notes-textarea" id="customerNotes" placeholder="Add notes about this customer...">${customer.notes || ''}</textarea>
+                <button class="btn btn-primary" style="margin-top: 0.5rem; margin-bottom: 1.5rem;" onclick="saveCustomerNotes('${email}')">Save Notes</button>
+
+                <h4 class="text-primary" style="margin-bottom: 0.5rem;">📅 Booking History</h4>
+                <table class="admin-table">
+                    <thead>
+                        <tr><th>Date</th><th>Time</th><th>Service</th><th>Amount</th></tr>
+                    </thead>
+                    <tbody>
+                        ${customer.bookings.map(b => `
+                            <tr>
+                                <td>${b.date}</td>
+                                <td>${b.time}</td>
+                                <td>${b.serviceName || '-'}</td>
+                                <td>₹${b.price || 0}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function closeCustomerModal() {
+            document.getElementById('customerModal').classList.remove('show');
+        }
+
+        async function saveCustomerNotes(email) {
+            const notes = document.getElementById('customerNotes').value;
+            try {
+                await db.collection('customerNotes').doc(email).set({ notes, updatedAt: new Date() });
+                toastSuccess('Notes saved!');
+
+                // Update local data
+                const customer = allCustomers.find(c => c.email === email);
+                if (customer) customer.notes = notes;
+            } catch (error) {
+                console.error('Error saving notes:', error);
+                toastError('Failed to save notes');
+            }
+        }
+
+        // ========================================
+        // APPOINTMENT RESCHEDULING
+        // ========================================
+        function openRescheduleModal(bookingId, currentDate) {
+            document.getElementById('rescheduleBookingId').value = bookingId;
+            document.getElementById('rescheduleDate').value = currentDate || '';
+            document.getElementById('rescheduleTime').innerHTML = '<option value="">Select a date first...</option>';
+            document.getElementById('rescheduleModal').classList.add('show');
+
+            // Load time slots when date changes
+            document.getElementById('rescheduleDate').onchange = async function () {
+                const dateStr = this.value;
+                const select = document.getElementById('rescheduleTime');
+                select.innerHTML = '<option value="">Loading...</option>';
+
+                const dates = await getAvailableDates(60);
+                const dateInfo = dates.find(d => d.date === dateStr);
+
+                if (!dateInfo || dateInfo.slots.length === 0) {
+                    select.innerHTML = '<option value="">No slots available</option>';
+                    return;
+                }
+
+                select.innerHTML = '<option value="">Select a time...</option>' +
+                    dateInfo.slots.map(s => `<option value="${s.time}">${s.display}</option>`).join('');
+            };
+        }
+
+        function closeRescheduleModal() {
+            document.getElementById('rescheduleModal').classList.remove('show');
+        }
+
+        async function confirmReschedule() {
+            const bookingId = document.getElementById('rescheduleBookingId').value;
+            const newDate = document.getElementById('rescheduleDate').value;
+            const newTime = document.getElementById('rescheduleTime').value;
+
+            if (!newDate || !newTime) {
+                toastWarning('Please select both date and time');
+                return;
+            }
+
+            try {
+                await db.collection('bookings').doc(bookingId).update({
+                    date: newDate,
+                    time: newTime,
+                    updatedAt: new Date(),
+                    rescheduledAt: new Date()
+                });
+
+                toastSuccess('Appointment rescheduled!');
+                closeRescheduleModal();
+                loadAllBookings();
+                loadDashboardData();
+            } catch (error) {
+                console.error('Error rescheduling:', error);
+                toastError('Failed to reschedule');
+            }
+        }
+
+        // ========================================
+        // BULK DATE BLOCKING
+        // ========================================
+        async function blockDateRange() {
+            const fromDate = document.getElementById('bulkFromDate').value;
+            const toDate = document.getElementById('bulkToDate').value;
+
+            if (!fromDate || !toDate) {
+                toastWarning('Please select both from and to dates');
+                return;
+            }
+
+            const start = new Date(fromDate);
+            const end = new Date(toDate);
+
+            if (start > end) {
+                toastWarning('From date must be before To date');
+                return;
+            }
+
+            let count = 0;
+            const dates = [];
+            for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                dates.push(d.toISOString().split('T')[0]);
+            }
+
+            for (const dateStr of dates) {
+                if (await blockDate(dateStr, 'Bulk blocked')) {
+                    count++;
+                }
+            }
+
+            toastSuccess(`Blocked ${count} dates!`);
+            renderCalendar();
+        }
+
+        async function unblockDateRange() {
+            const fromDate = document.getElementById('bulkFromDate').value;
+            const toDate = document.getElementById('bulkToDate').value;
+
+            if (!fromDate || !toDate) {
+                toastWarning('Please select both from and to dates');
+                return;
+            }
+
+            const start = new Date(fromDate);
+            const end = new Date(toDate);
+
+            let count = 0;
+            for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+                const dateStr = d.toISOString().split('T')[0];
+                if (await unblockDate(dateStr)) {
+                    count++;
+                }
+            }
+
+            toastSuccess(`Unblocked ${count} dates!`);
+            renderCalendar();
+        }
+
+        async function blockRecurringDays() {
+            const checkboxes = document.querySelectorAll('.weekday-checkbox input:checked');
+            const selectedDays = Array.from(checkboxes).map(cb => parseInt(cb.value));
+
+            if (selectedDays.length === 0) {
+                toastWarning('Select at least one weekday');
+                return;
+            }
+
+            const today = new Date();
+            let count = 0;
+
+            for (let i = 0; i < 90; i++) {
+                const date = new Date(today);
+                date.setDate(date.getDate() + i);
+
+                if (selectedDays.includes(date.getDay())) {
+                    const dateStr = date.toISOString().split('T')[0];
+                    if (await blockDate(dateStr, 'Recurring block')) {
+                        count++;
+                    }
+                }
+            }
+
+            toastSuccess(`Blocked ${count} dates for next 90 days!`);
+            renderCalendar();
         }
 
         // Initialize
