@@ -423,32 +423,38 @@
 </head>
 
 <body>
-    <div class="stars" id="stars"></div>
-
     <header class="header">
         <nav class="nav container">
             <a href="index.html" class="logo">
-                <span class="logo-icon">☀️</span>
-                <span class="logo-text">Sun<br>Tarot</span>
+                <img src="images/logo.png" alt="Sun Tarot" class="logo-img">
+                <span>Sun Tarot</span>
             </a>
+
             <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="reading.html">Reading</a></li>
                 <li><a href="love-reading.html">Love</a></li>
                 <li><a href="learn.html">Learn</a></li>
                 <li><a href="quiz.html" class="active">Quiz</a></li>
+                <li><a href="spreads.html">Spreads</a></li>
+                <li><a href="faq.html">FAQ</a></li>
                 <li><a href="booking.html">Book</a></li>
             </ul>
-            <div id="authContainer" style="display: flex; align-items: center; gap: 0.75rem;">
-                <div id="userInfo" style="display: none;"></div>
+
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">☰</button>
+            <div class="auth-container" id="authContainer" style="display: flex; align-items: center; gap: 1rem;">
+                <div id="userInfo" style="display: none; align-items: center; gap: 0.5rem;"></div>
                 <button class="btn btn-outline" id="loginBtn" onclick="signInWithGoogle()"
-                    style="padding: 0.5rem 1rem; font-size: 0.875rem;">
-                    Sign In
-                </button>
+                    style="padding: 0.5rem 1rem; font-size: 0.875rem;">Sign In</button>
+                <button class="btn btn-outline" id="logoutBtn" onclick="signOut()"
+                    style="display: none; padding: 0.5rem 1rem; font-size: 0.875rem;">Sign Out</button>
+                <a href="admin.html" id="adminLink"
+                    style="display: none; color: var(--color-primary); font-size: 0.875rem;">Admin</a>
             </div>
-            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
         </nav>
     </header>
+
+
 
     <main class="section" style="padding-top: 120px;">
         <div class="quiz-container">

@@ -268,41 +268,7 @@ a:hover {
   /* Hide name in header by default as requested */
 }
 
-/* Welcome Banner */
-#welcomeBanner {
-  background: linear-gradient(to right, rgba(10, 10, 10, 0.95), rgba(20, 20, 20, 0.95));
-  border-bottom: 1px solid var(--color-border);
-  padding: 0.5rem var(--spacing-sm);
-  text-align: center;
-  position: fixed;
-  top: 70px;
-  /* Below header (approx header height) */
-  left: 0;
-  right: 0;
-  z-index: 90;
-  backdrop-filter: blur(5px);
-  display: none;
-  /* Hidden by default */
-  animation: slideDown 0.3s ease-out;
-}
 
-#welcomeBanner span {
-  color: var(--color-primary);
-  font-family: var(--font-headline);
-  letter-spacing: 0.5px;
-}
-
-@keyframes slideDown {
-  from {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
 
 /* User Dropdown */
 .user-dropdown {

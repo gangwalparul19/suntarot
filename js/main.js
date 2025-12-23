@@ -217,24 +217,43 @@ async function loadDailyCard(user) {
 function renderDailyCard(index, user) {
     const card = majorArcana[index];
     const container = document.getElementById('dailyCardContainer');
-    const message = document.getElementById('dailyCardMessage');
+    const message = document.getElementById('dailyCardMessage'); // We might not need this if we inject everything into container
 
     if (container) {
+        // Recreate the rich structure: Card (Flipped) + Details
         container.innerHTML = `
-            <div class="tarot-card" onclick="openCardModal(${index})" style="cursor: pointer; max-width: 200px; margin: 0 auto;">
-                <img src="${card.image}" alt="${card.name}">
+            <div class="card-of-day-content" style="display: flex; flex-direction: column; align-items: center; gap: 2rem;">
+                <!-- Card (Flipped State) -->
+                <div class="tarot-card flipped" style="cursor: default;">
+                    <div class="tarot-card-inner">
+                        <div class="tarot-card-back">
+                            <img src="https://images.unsplash.com/photo-1628304163832-0a4038f2bd6a?w=300" alt="Card Back">
+                        </div>
+                        <div class="tarot-card-front">
+                            <img src="${card.image}" alt="${card.name}">
+                            <span class="card-name">${card.name}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Details -->
+                <div class="card-details" style="text-align: center; max-width: 600px;">
+                    <h3 class="text-primary" style="margin-bottom: 1rem; font-size: 1.5rem;">${card.name}</h3>
+                    <blockquote class="card-meaning" style="font-style: italic; color: var(--color-text-muted); margin-bottom: 1.5rem; line-height: 1.6;">
+                        "${card.meaning}"
+                    </blockquote>
+                    <button onclick="shareDailyCard(${index})" class="btn btn-outline">
+                        📤 Share Reading
+                    </button>
+                </div>
             </div>
-            <h3 style="margin-top: 1rem; color: var(--color-primary);">${card.name}</h3>
         `;
     }
 
+    // Clear separate message container if it exists, as we included it above
     if (message) {
-        message.innerHTML = `
-            <p>"${card.meaning}"</p>
-            <button onclick="shareDailyCard(${index})" class="btn btn-outline" style="margin-top: 1rem; font-size: 0.9rem;">
-                Share Reading 📤
-            </button>
-        `;
+        message.innerHTML = '';
+        message.style.display = 'none';
     }
 }
 
@@ -249,7 +268,11 @@ function shareDailyCard(index) {
         });
     } else {
         navigator.clipboard.writeText(text).then(() => {
-            alert('Reading copied to clipboard!');
+            if (typeof toastSuccess === 'function') {
+                toastSuccess('Reading copied to clipboard!');
+            } else {
+                console.log('Reading copied to clipboard!');
+            }
         });
     }
 }
