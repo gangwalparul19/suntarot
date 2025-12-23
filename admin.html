@@ -964,6 +964,122 @@
             renderPricingForms();
         }
 
+        // ========================================
+        // Reviews Management
+        // ========================================
+        let currentReviewStatus = 'pending';
+
+        async function loadReviewsByStatus(status) {
+            currentReviewStatus = status;
+            const container = document.getElementById('reviewsList');
+            container.innerHTML = '<p class="text-muted">Loading reviews...</p>';
+
+            // Update tab active state
+            document.querySelectorAll('#reviewsPanel .admin-tabs .admin-tab').forEach((tab, index) => {
+                tab.classList.remove('active');
+                if ((status === 'pending' && index === 0) ||
+                    (status === 'approved' && index === 1) ||
+                    (status === 'rejected' && index === 2)) {
+                    tab.classList.add('active');
+                }
+            });
+
+            try {
+                const reviews = await getAllReviews(status);
+
+                if (reviews.length === 0) {
+                    container.innerHTML = `<p class="text-muted">No ${status} reviews found.</p>`;
+                    return;
+                }
+
+                container.innerHTML = reviews.map(review => `
+                    <div style="background: var(--color-background); border: 1px solid var(--color-border); border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <img src="${review.userPhoto || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(review.userName || 'User')}" 
+                                     alt="${review.userName || 'User'}"
+                                     style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
+                                <div>
+                                    <p class="text-primary" style="margin: 0; font-weight: 600;">${review.userName || 'Anonymous'}</p>
+                                    <small class="text-muted">${review.userEmail || ''}</small>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="color: gold;">${'⭐'.repeat(review.rating || 5)}</div>
+                                <small class="text-muted">${formatDate(review.createdAt)}</small>
+                            </div>
+                        </div>
+                        <p style="margin: 1rem 0; font-style: italic; color: var(--color-text);">"${review.text}"</p>
+                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            ${status === 'pending' ? `
+                                <button class="btn btn-primary" onclick="handleApproveReview('${review.id}')" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                    ✓ Approve
+                                </button>
+                                <button class="btn btn-outline" onclick="handleRejectReview('${review.id}')" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                    ✗ Reject
+                                </button>
+                            ` : ''}
+                            <button class="btn btn-outline" onclick="handleDeleteReview('${review.id}')" style="padding: 0.5rem 1rem; font-size: 0.875rem; color: #e74c3c;">
+                                🗑️ Delete
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading reviews:', error);
+                container.innerHTML = '<p class="text-muted">Error loading reviews. Please try again.</p>';
+            }
+        }
+
+        async function handleApproveReview(reviewId) {
+            const success = await approveReview(reviewId);
+            if (success) {
+                toastSuccess('Review approved! It will now appear on the home page.');
+                loadReviewsByStatus(currentReviewStatus);
+                // Update pending count
+                const pendingReviews = await getAllReviews('pending');
+                document.getElementById('statPendingReviews').textContent = pendingReviews.length;
+            } else {
+                toastError('Failed to approve review');
+            }
+        }
+
+        async function handleRejectReview(reviewId) {
+            const reason = prompt('Reason for rejection (optional):');
+            const success = await rejectReview(reviewId, reason || '');
+            if (success) {
+                toastInfo('Review rejected');
+                loadReviewsByStatus(currentReviewStatus);
+                // Update pending count
+                const pendingReviews = await getAllReviews('pending');
+                document.getElementById('statPendingReviews').textContent = pendingReviews.length;
+            } else {
+                toastError('Failed to reject review');
+            }
+        }
+
+        async function handleDeleteReview(reviewId) {
+            if (!confirm('Are you sure you want to delete this review?')) return;
+
+            const success = await deleteReview(reviewId);
+            if (success) {
+                toastSuccess('Review deleted');
+                loadReviewsByStatus(currentReviewStatus);
+            } else {
+                toastError('Failed to delete review');
+            }
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return 'Unknown';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            return date.toLocaleDateString('en-IN', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
         // Load dashboard data
         async function loadDashboardData() {
             // Load all bookings
