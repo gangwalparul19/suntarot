@@ -174,19 +174,37 @@ function initAudioToggle() {
     if (!audioToggle || !audio) return;
 
     audio.volume = 0.5;
+    let isToggling = false; // Prevent rapid clicks causing race condition
 
-    audioToggle.addEventListener('click', () => {
-        if (audio.paused) {
-            audio.play().then(() => {
+    audioToggle.addEventListener('click', async () => {
+        // Prevent rapid clicks
+        if (isToggling) return;
+        isToggling = true;
+
+        try {
+            if (audio.paused) {
+                // Try to play
+                await audio.play();
                 audioToggle.textContent = '🔊';
                 audioToggle.classList.add('playing');
-            }).catch(err => {
-                console.error('Audio playback failed:', err);
-            });
-        } else {
-            audio.pause();
-            audioToggle.textContent = '🔇';
-            audioToggle.classList.remove('playing');
+            } else {
+                // Pause
+                audio.pause();
+                audioToggle.textContent = '🔇';
+                audioToggle.classList.remove('playing');
+            }
+        } catch (err) {
+            // Handle autoplay restrictions or other errors
+            console.log('Audio toggle:', err.name);
+            if (err.name === 'NotAllowedError') {
+                // User needs to interact first - this is expected on mobile
+                audioToggle.textContent = '🔇';
+            }
+        } finally {
+            // Allow clicks again after a short delay
+            setTimeout(() => {
+                isToggling = false;
+            }, 300);
         }
     });
 }

@@ -84,20 +84,32 @@ function updateAuthUI(user) {
     if (user) {
         // User is signed in
         if (loginBtn) loginBtn.style.display = 'none';
-        if (logoutBtn) logoutBtn.style.display = 'inline-flex';
+        if (logoutBtn) logoutBtn.style.display = 'none'; // Hide old logout btn
         if (userInfo) {
             userInfo.style.display = 'flex';
+            const isUserAdmin = ADMIN_EMAILS.includes(user.email);
             userInfo.innerHTML = `
-                <img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.displayName || 'U')}" 
-                     alt="${user.displayName}" 
-                     class="user-avatar">
-                <span class="user-name">${user.displayName?.split(' ')[0] || 'User'}</span>
+                <div class="user-dropdown">
+                    <img src="${user.photoURL || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(user.displayName || 'U')}" 
+                         alt="${user.displayName}" 
+                         class="user-avatar"
+                         onclick="toggleUserDropdown()">
+                    <span class="user-name">${user.displayName?.split(' ')[0] || 'User'}</span>
+                    <div class="user-dropdown-menu" id="userDropdownMenu">
+                        <a href="profile.html">👤 My Profile</a>
+                        <a href="my-readings.html">📚 My Readings</a>
+                        <a href="my-bookings.html">📅 My Bookings</a>
+                        ${isUserAdmin ? '<a href="admin.html">⚙️ Admin Panel</a>' : ''}
+                        <hr>
+                        <a href="#" onclick="signOut(); return false;">🚪 Sign Out</a>
+                    </div>
+                </div>
             `;
         }
 
-        // Show admin link if user is admin
+        // Hide separate admin link since it's in dropdown now
         if (adminLink) {
-            adminLink.style.display = ADMIN_EMAILS.includes(user.email) ? 'inline-block' : 'none';
+            adminLink.style.display = 'none';
         }
     } else {
         // User is signed out
@@ -110,6 +122,23 @@ function updateAuthUI(user) {
         if (adminLink) adminLink.style.display = 'none';
     }
 }
+
+// Toggle user dropdown menu
+function toggleUserDropdown() {
+    const menu = document.getElementById('userDropdownMenu');
+    if (menu) {
+        menu.classList.toggle('active');
+    }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    const dropdown = document.querySelector('.user-dropdown');
+    const menu = document.getElementById('userDropdownMenu');
+    if (menu && dropdown && !dropdown.contains(e.target)) {
+        menu.classList.remove('active');
+    }
+});
 
 // Get current user
 function getCurrentUser() {
@@ -149,3 +178,4 @@ window.getCurrentUser = getCurrentUser;
 window.isAdmin = isAdmin;
 window.isLoggedIn = isLoggedIn;
 window.requireLogin = requireLogin;
+window.toggleUserDropdown = toggleUserDropdown;

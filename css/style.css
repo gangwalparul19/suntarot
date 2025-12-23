@@ -222,6 +222,95 @@ a:hover {
   }
 }
 
+/* User Profile Styles */
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--color-primary);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.user-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(212, 169, 93, 0.5);
+}
+
+.user-name {
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-weight: 500;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* User Dropdown */
+.user-dropdown {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0;
+  min-width: 150px;
+  display: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  z-index: 200;
+}
+
+.user-dropdown-menu.active {
+  display: block;
+}
+
+.user-dropdown-menu a {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: background 0.2s;
+}
+
+.user-dropdown-menu a:hover {
+  background: rgba(212, 169, 93, 0.1);
+  color: var(--color-primary);
+}
+
+.user-dropdown-menu hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 0.25rem 0;
+}
+
+/* Mobile profile adjustments */
+@media (max-width: 768px) {
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .user-name {
+    display: none;
+  }
+
+  .user-dropdown-menu {
+    right: -0.5rem;
+  }
+}
+
 /* ========================================
    Hero Section
    ======================================== */
@@ -381,82 +470,122 @@ a:hover {
    Card Animations
    ======================================== */
 
-/* Shuffle Animation */
+/* Shuffle Animation - More dramatic */
 @keyframes shuffleCards {
   0% {
-    transform: translateX(0) rotate(0deg);
+    transform: translateX(0) translateY(0) rotate(0deg) scale(1);
   }
 
-  25% {
-    transform: translateX(-20px) rotate(-5deg);
+  15% {
+    transform: translateX(-30px) translateY(-10px) rotate(-8deg) scale(0.95);
   }
 
-  50% {
-    transform: translateX(20px) rotate(5deg);
+  30% {
+    transform: translateX(25px) translateY(5px) rotate(6deg) scale(1.02);
+  }
+
+  45% {
+    transform: translateX(-20px) translateY(-5px) rotate(-4deg) scale(0.98);
+  }
+
+  60% {
+    transform: translateX(15px) translateY(3px) rotate(3deg) scale(1.01);
   }
 
   75% {
-    transform: translateX(-10px) rotate(-3deg);
+    transform: translateX(-8px) translateY(-2px) rotate(-2deg) scale(0.99);
+  }
+
+  90% {
+    transform: translateX(4px) translateY(1px) rotate(1deg) scale(1);
   }
 
   100% {
-    transform: translateX(0) rotate(0deg);
+    transform: translateX(0) translateY(0) rotate(0deg) scale(1);
+  }
+}
+
+/* Golden glow pulse during shuffle */
+@keyframes shuffleGlow {
+
+  0%,
+  100% {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(212, 169, 93, 0.6), 0 0 60px rgba(212, 169, 93, 0.3);
   }
 }
 
 .tarot-card.shuffling {
-  animation: shuffleCards 0.6s ease-in-out;
+  animation: shuffleCards 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Deal Animation */
+.tarot-card.shuffling .tarot-card-inner {
+  animation: shuffleGlow 0.7s ease-in-out;
+}
+
+/* Deal Animation - Cards fly in from above */
 @keyframes dealCard {
   0% {
     opacity: 0;
-    transform: translateY(-100px) scale(0.5) rotate(-10deg);
+    transform: translateY(-200px) translateX(50px) scale(0.3) rotate(-25deg);
+    filter: blur(4px);
+  }
+
+  40% {
+    opacity: 0.8;
+    transform: translateY(20px) translateX(-10px) scale(1.1) rotate(5deg);
+    filter: blur(0);
   }
 
   60% {
-    opacity: 1;
-    transform: translateY(10px) scale(1.02) rotate(2deg);
+    transform: translateY(-10px) translateX(5px) scale(0.95) rotate(-2deg);
+  }
+
+  80% {
+    transform: translateY(5px) translateX(-2px) scale(1.02) rotate(1deg);
   }
 
   100% {
     opacity: 1;
-    transform: translateY(0) scale(1) rotate(0deg);
+    transform: translateY(0) translateX(0) scale(1) rotate(0deg);
   }
 }
 
 .tarot-card.dealing {
-  animation: dealCard 0.5s ease-out forwards;
+  animation: dealCard 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 /* Staggered delays for multiple cards */
-.tarot-card.dealing:nth-child(1) {
+.reading-card:nth-child(1) .tarot-card.dealing {
   animation-delay: 0ms;
 }
 
-.tarot-card.dealing:nth-child(2) {
-  animation-delay: 150ms;
+.reading-card:nth-child(2) .tarot-card.dealing {
+  animation-delay: 200ms;
 }
 
-.tarot-card.dealing:nth-child(3) {
-  animation-delay: 300ms;
+.reading-card:nth-child(3) .tarot-card.dealing {
+  animation-delay: 400ms;
 }
 
-.tarot-card.dealing:nth-child(4) {
-  animation-delay: 450ms;
-}
-
-.tarot-card.dealing:nth-child(5) {
+.reading-card:nth-child(4) .tarot-card.dealing {
   animation-delay: 600ms;
 }
 
-/* Enhanced 3D Flip */
+.reading-card:nth-child(5) .tarot-card.dealing {
+  animation-delay: 800ms;
+}
+
+/* Enhanced 3D Flip with Spring Effect */
 .tarot-card-inner {
   position: relative;
   width: 100%;
   height: 100%;
-  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    box-shadow 0.4s ease;
   transform-style: preserve-3d;
 }
 
@@ -464,9 +593,135 @@ a:hover {
   transform: rotateY(180deg);
 }
 
-/* Glow effect when flipping */
+/* Magical glow during flip */
+@keyframes flipGlow {
+  0% {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  30% {
+    box-shadow: 0 0 50px rgba(212, 169, 93, 0.8),
+      0 0 80px rgba(212, 169, 93, 0.4),
+      0 0 120px rgba(212, 169, 93, 0.2);
+  }
+
+  100% {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+}
+
 .tarot-card.flipping .tarot-card-inner {
-  box-shadow: 0 0 30px rgba(212, 169, 93, 0.5);
+  animation: flipGlow 0.9s ease-out;
+}
+
+/* 3D Tilt effect on hover */
+.tarot-card {
+  transition: transform 0.3s ease;
+}
+
+.tarot-card:hover:not(.flipped) {
+  transform: perspective(1000px) rotateX(5deg) rotateY(-5deg) translateY(-5px);
+}
+
+.tarot-card:hover .tarot-card-inner {
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(212, 169, 93, 0.2);
+}
+
+/* Card reveal sparkle effect */
+@keyframes sparkle {
+
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+}
+
+.tarot-card.revealed::before {
+  content: '✨';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+  animation: sparkle 0.6s ease-out forwards;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Floating idle animation for unflipped cards */
+@keyframes cardFloat {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(0.5deg);
+  }
+}
+
+.tarot-card:not(.flipped):not(.shuffling):not(.dealing) {
+  animation: cardFloat 3s ease-in-out infinite;
+}
+
+/* Pause animation on hover for better UX */
+.tarot-card:hover {
+  animation-play-state: paused;
+}
+
+/* Card click ripple effect */
+@keyframes cardRipple {
+  0% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.tarot-card.clicked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(212, 169, 93, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  animation: cardRipple 0.5s ease-out forwards;
+  pointer-events: none;
+}
+
+/* Magical particles background for cards during interactions */
+@keyframes magicParticle {
+  0% {
+    transform: translateY(0) scale(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-50px) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Golden border glow for revealed cards */
+.tarot-card.flipped .tarot-card-front {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 20px rgba(212, 169, 93, 0.4),
+    inset 0 0 20px rgba(212, 169, 93, 0.1);
 }
 
 /* ========================================
