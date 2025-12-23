@@ -724,9 +724,240 @@ a:hover {
     inset 0 0 20px rgba(212, 169, 93, 0.1);
 }
 
+
 /* ========================================
-   Card Hover Preview (Learn Page)
+   Profile Page Styles
    ======================================== */
+.profile-header {
+  text-align: center;
+  padding: 3rem 0;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 2rem;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 3px solid var(--color-primary);
+  object-fit: cover;
+  margin-bottom: 1rem;
+  background-color: var(--color-card);
+  /* Fallback background */
+}
+
+.profile-name {
+  font-family: var(--font-headline);
+  font-size: 2rem;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+}
+
+.profile-email {
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+}
+
+.profile-badges {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.profile-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.75rem;
+  background: rgba(212, 169, 93, 0.1);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  color: var(--color-primary);
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.stat-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+.stat-label {
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+/* Streak Section */
+.streak-section {
+  background: linear-gradient(135deg, rgba(212, 169, 93, 0.1), rgba(212, 169, 93, 0.05));
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  padding: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.streak-flame {
+  font-size: 4rem;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.streak-count {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+.streak-label {
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+}
+
+.streak-calendar {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-top: 1rem;
+}
+
+.streak-day {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+}
+
+.streak-day.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.streak-day.today {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(212, 169, 93, 0.3);
+}
+
+/* Favorite Cards */
+.favorite-cards {
+  margin-bottom: 2rem;
+}
+
+.favorite-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 1rem;
+}
+
+.favorite-card {
+  text-align: center;
+}
+
+.favorite-card img {
+  width: 100%;
+  border-radius: 0.5rem;
+  border: 2px solid var(--color-border);
+  transition: transform 0.3s;
+}
+
+.favorite-card img:hover {
+  transform: scale(1.05);
+}
+
+.favorite-card-name {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 0.5rem;
+}
+
+.favorite-card-count {
+  font-size: 0.65rem;
+  color: var(--color-primary);
+}
+
+/* Achievements */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.achievement {
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  text-align: center;
+  opacity: 0.5;
+  transition: all 0.3s;
+}
+
+.achievement.unlocked {
+  opacity: 1;
+  border-color: var(--color-primary);
+}
+
+.achievement-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.achievement-name {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.achievement-desc {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+}
+
+/* Login Prompt */
+.login-prompt {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.login-prompt h2 {
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
 .card-grid-item {
   position: relative;
 }
@@ -1734,5 +1965,20 @@ img[loading="lazy"]:not([src=""]) {
 /* Optimized card images */
 .tarot-card img {
   will-change: transform;
-  backface-visibility: hidden;
+}
+
+/* Mobile adjustments for achievements */
+@media (max-width: 480px) {
+  .achievements-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 0.5rem;
+  }
+
+  .achievement {
+    padding: 0.5rem;
+  }
+
+  .achievement-icon {
+    font-size: 1.5rem;
+  }
 }

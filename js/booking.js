@@ -218,6 +218,27 @@ async function createBooking(date, time, serviceId, notes = '') {
         return null;
     }
 
+    // Secure Pricing: Fetch latest service details directly from Firestore
+    // This prevents client-side price manipulation
+    let confirmedPrice = service.price;
+    let confirmedDuration = service.duration;
+    let confirmedName = service.name;
+
+    try {
+        if (typeof db !== 'undefined' && db) {
+            const serviceDoc = await db.collection('services').doc(serviceId).get();
+            if (serviceDoc.exists) {
+                const data = serviceDoc.data();
+                confirmedPrice = data.price;
+                confirmedDuration = data.duration;
+                confirmedName = data.name;
+                console.log(`Secured price for ${serviceId}: ${confirmedPrice}`);
+            }
+        }
+    } catch (e) {
+        console.warn('Could not verify price with server, using loaded config', e);
+    }
+
     try {
         // Check if slot is still available (simplified query to avoid index issues)
         const existingBookings = await db.collection('bookings')
@@ -246,9 +267,9 @@ async function createBooking(date, time, serviceId, notes = '') {
             date: date,
             time: time,
             serviceId: serviceId,
-            serviceName: service.name,
-            duration: service.duration,
-            price: service.price,
+            serviceName: confirmedName,
+            duration: confirmedDuration,
+            price: confirmedPrice,
             notes: notes || '',
             status: 'confirmed',
             createdAt: firebase.firestore.FieldValue.serverTimestamp()

@@ -12,235 +12,7 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        .profile-header {
-            text-align: center;
-            padding: 3rem 0;
-            border-bottom: 1px solid var(--color-border);
-            margin-bottom: 2rem;
-        }
-
-        .profile-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 3px solid var(--color-primary);
-            object-fit: cover;
-            margin-bottom: 1rem;
-        }
-
-        .profile-name {
-            font-family: var(--font-headline);
-            font-size: 2rem;
-            color: var(--color-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .profile-email {
-            color: var(--color-text-muted);
-            margin-bottom: 1rem;
-        }
-
-        .profile-badges {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .profile-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.25rem;
-            padding: 0.25rem 0.75rem;
-            background: rgba(212, 169, 93, 0.1);
-            border: 1px solid var(--color-border);
-            border-radius: 1rem;
-            font-size: 0.75rem;
-            color: var(--color-primary);
-        }
-
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--color-card);
-            border: 1px solid var(--color-border);
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            text-align: center;
-        }
-
-        .stat-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--color-primary);
-        }
-
-        .stat-label {
-            color: var(--color-text-muted);
-            font-size: 0.875rem;
-        }
-
-        /* Streak Section */
-        .streak-section {
-            background: linear-gradient(135deg, rgba(212, 169, 93, 0.1), rgba(212, 169, 93, 0.05));
-            border: 1px solid var(--color-border);
-            border-radius: 1rem;
-            padding: 2rem;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .streak-flame {
-            font-size: 4rem;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.1);
-            }
-        }
-
-        .streak-count {
-            font-size: 3rem;
-            font-weight: bold;
-            color: var(--color-primary);
-        }
-
-        .streak-label {
-            color: var(--color-text-muted);
-            margin-bottom: 1rem;
-        }
-
-        .streak-calendar {
-            display: flex;
-            justify-content: center;
-            gap: 0.25rem;
-            margin-top: 1rem;
-        }
-
-        .streak-day {
-            width: 24px;
-            height: 24px;
-            border-radius: 4px;
-            background: var(--color-card);
-            border: 1px solid var(--color-border);
-        }
-
-        .streak-day.active {
-            background: var(--color-primary);
-            border-color: var(--color-primary);
-        }
-
-        .streak-day.today {
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 2px rgba(212, 169, 93, 0.3);
-        }
-
-        /* Favorite Cards */
-        .favorite-cards {
-            margin-bottom: 2rem;
-        }
-
-        .favorite-cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 1rem;
-        }
-
-        .favorite-card {
-            text-align: center;
-        }
-
-        .favorite-card img {
-            width: 100%;
-            border-radius: 0.5rem;
-            border: 2px solid var(--color-border);
-            transition: transform 0.3s;
-        }
-
-        .favorite-card img:hover {
-            transform: scale(1.05);
-        }
-
-        .favorite-card-name {
-            font-size: 0.75rem;
-            color: var(--color-text-muted);
-            margin-top: 0.5rem;
-        }
-
-        .favorite-card-count {
-            font-size: 0.65rem;
-            color: var(--color-primary);
-        }
-
-        /* Achievements */
-        .achievements-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 1rem;
-        }
-
-        .achievement {
-            background: var(--color-card);
-            border: 1px solid var(--color-border);
-            border-radius: 0.75rem;
-            padding: 1rem;
-            text-align: center;
-            opacity: 0.5;
-            transition: all 0.3s;
-        }
-
-        .achievement.unlocked {
-            opacity: 1;
-            border-color: var(--color-primary);
-        }
-
-        .achievement-icon {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .achievement-name {
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .achievement-desc {
-            font-size: 0.65rem;
-            color: var(--color-text-muted);
-        }
-
-        /* Login Prompt */
-        .login-prompt {
-            text-align: center;
-            padding: 4rem 2rem;
-        }
-
-        .login-prompt h2 {
-            color: var(--color-primary);
-            margin-bottom: 1rem;
-        }
-    </style>
+    <!-- Styles moved to css/style.css -->
 </head>
 
 <body>
@@ -288,12 +60,23 @@
                     <img id="profileAvatar" class="profile-avatar" src="" alt="Profile">
                     <h1 id="profileName" class="profile-name"></h1>
                     <p id="profileEmail" class="profile-email"></p>
-                    <div class="profile-badges" id="profileBadges"></div>
+                    <div class="profile-details-form" style="max-width: 300px; margin: 1rem auto;">
+                        <div style="margin-bottom: 0.5rem; display: flex; gap: 0.5rem;">
+                            <input type="tel" id="userMobile" class="form-control" placeholder="Mobile Number"
+                                style="padding: 0.5rem; border-radius: 0.5rem; border: 1px solid var(--color-border); background: var(--color-background); color: var(--color-text); width: 100%;">
+                        </div>
+                        <div style="margin-bottom: 0.5rem;">
+                            <input type="text" id="userCity" class="form-control" placeholder="City"
+                                style="padding: 0.5rem; border-radius: 0.5rem; border: 1px solid var(--color-border); background: var(--color-background); color: var(--color-text); width: 100%;">
+                        </div>
+                        <button onclick="saveProfileDetails()" class="btn btn-primary"
+                            style="padding: 0.5rem 1rem; width: 100%; font-size: 0.875rem;">Save Details</button>
+                    </div>
                 </div>
 
                 <!-- Streak Section -->
                 <div class="streak-section">
-                    <div class="streak-flame">🔥</div>
+                    <div class="streak-flame" style="font-size: 5rem; line-height: 1;">☀️</div>
                     <div class="streak-count" id="streakCount">0</div>
                     <div class="streak-label">Day Reading Streak</div>
                     <p class="text-muted" id="streakMessage">Start your streak today!</p>
@@ -400,6 +183,18 @@
             document.getElementById('profileAvatar').src = user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || 'User')}`;
             document.getElementById('profileName').textContent = user.displayName || 'Tarot Reader';
             document.getElementById('profileEmail').textContent = user.email;
+
+            // Load extra details (Mobile, City)
+            try {
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists) {
+                    const data = userDoc.data();
+                    if (data.mobile) document.getElementById('userMobile').value = data.mobile;
+                    if (data.city) document.getElementById('userCity').value = data.city;
+                }
+            } catch (error) {
+                console.error("Error loading user details:", error);
+            }
 
             // Load readings
             const readings = await loadReadings();
@@ -634,6 +429,39 @@
             if (originalUpdateAuthUI) originalUpdateAuthUI(user);
             loadProfile();
         };
+
+        // Save Profile Details
+        async function saveProfileDetails() {
+            if (!auth.currentUser) return;
+
+            const mobile = document.getElementById('userMobile').value;
+            const city = document.getElementById('userCity').value;
+            const btn = document.querySelector('.profile-details-form button');
+
+            if (!mobile && !city) {
+                if (typeof toastError === 'function') toastError('Please enter details to save');
+                return;
+            }
+
+            try {
+                btn.textContent = 'Saving...';
+                btn.disabled = true;
+
+                await db.collection('users').doc(auth.currentUser.uid).set({
+                    mobile: mobile,
+                    city: city,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+                if (typeof toastSuccess === 'function') toastSuccess('Profile updated successfully!');
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                if (typeof toastError === 'function') toastError('Error saving profile');
+            } finally {
+                btn.textContent = 'Save Details';
+                btn.disabled = false;
+            }
+        }
     </script>
 </body>
 
