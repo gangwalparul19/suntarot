@@ -37,7 +37,7 @@ service cloud.firestore {
     // Bookings
     match /bookings/{bookingId} {
       // Allow authenticated users to create bookings
-      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow create: if isAdmin() || (isAuthenticated() && request.resource.data.userId == request.auth.uid);
       // Users can read their own bookings
       allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
       // Admins can update/delete
