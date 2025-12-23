@@ -168,6 +168,14 @@ a:hover {
   gap: 0.5rem;
 }
 
+.logo img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+
+
 .logo-icon {
   width: 32px;
   height: 32px;
