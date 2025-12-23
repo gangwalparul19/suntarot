@@ -319,46 +319,61 @@
                 <button class="modal-close" onclick="closeCreateBookingModal()">×</button>
             </div>
             <div id="createBookingContent">
-                <div style="margin-bottom: 1rem;">
-                    <label class="text-muted" style="display: block; margin-bottom: 0.5rem;">Select Service</label>
-                    <select id="createService" class="search-input" style="margin-bottom: 0;">
-                        <!-- Populated dynamically -->
-                    </select>
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                    <!-- Column 1: Service Details -->
+                    <div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <label class="text-muted">Select Service</label>
+                            <select id="createService" class="search-input">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <label class="text-muted">Date</label>
+                            <input type="date" id="createDate" class="search-input">
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <label class="text-muted">Time</label>
+                            <select id="createTime" class="search-input">
+                                <option value="">Select a date first...</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Customer Details -->
+                    <div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <label class="text-muted">Customer Name</label>
+                            <input type="text" id="createName" class="search-input" placeholder="Enter customer name">
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <label class="text-muted">Customer Email</label>
+                            <input type="email" id="createEmail" class="search-input"
+                                placeholder="Enter customer email">
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <label class="text-muted">Payment Status</label>
+                            <select id="createPaymentStatus" class="search-input">
+                                <option value="N">Pending (Not Paid)</option>
+                                <option value="Y">Paid</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div style="margin-bottom: 1rem;">
-                    <label class="text-muted" style="display: block; margin-bottom: 0.5rem;">Date</label>
-                    <input type="date" id="createDate" class="search-input" style="margin-bottom: 0;">
-                </div>
-                <div style="margin-bottom: 1rem;">
-                    <label class="text-muted" style="display: block; margin-bottom: 0.5rem;">Time</label>
-                    <select id="createTime" class="search-input" style="margin-bottom: 0;">
-                        <option value="">Select a date first...</option>
-                    </select>
-                </div>
-                <div style="margin-bottom: 1rem;">
-                    <label class="text-muted" style="display: block; margin-bottom: 0.5rem;">Customer Name</label>
-                    <input type="text" id="createName" class="search-input" style="margin-bottom: 0;"
-                        placeholder="Enter customer name">
-                </div>
-                <div style="margin-bottom: 1rem;">
-                    <label class="text-muted" style="display: block; margin-bottom: 0.5rem;">Customer Email</label>
-                    <input type="email" id="createEmail" class="search-input" style="margin-bottom: 0;"
-                        placeholder="Enter customer email">
-                </div>
-                <div style="margin-bottom: 1rem;">
-                    <label class="text-muted" style="display: block; margin-bottom: 0.5rem;">Payment Status</label>
-                    <select id="createPaymentStatus" class="search-input" style="margin-bottom: 0;">
-                        <option value="N">Pending (Not Paid)</option>
-                        <option value="Y">Paid</option>
-                    </select>
-                </div>
-                <div style="margin-bottom: 1rem;">
-                    <label class="text-muted" style="display: block; margin-bottom: 0.5rem;">Notes</label>
+
+                <!-- Full Width: Notes -->
+                <div style="margin-bottom: 2rem;">
+                    <label class="text-muted">Notes</label>
                     <textarea id="createNotes" class="notes-textarea" placeholder="Optional notes..."></textarea>
                 </div>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button class="btn btn-primary" onclick="submitManualBooking()">Create Booking</button>
-                    <button class="btn btn-outline" onclick="closeCreateBookingModal()">Cancel</button>
+
+                <!-- Actions -->
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn btn-primary" onclick="submitManualBooking()"
+                        style="flex: 1; padding: 1rem; font-size: 1rem;">Create Booking</button>
+                    <button class="btn btn-outline" onclick="closeCreateBookingModal()"
+                        style="flex: 1; padding: 1rem; font-size: 1rem;">Cancel</button>
                 </div>
             </div>
         </div>
