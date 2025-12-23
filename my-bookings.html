@@ -223,7 +223,7 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-bottom">
-                <p>© 2024 Sun Tarot. All rights reserved.</p>
+                <p>© 2025 Sun Tarot. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -240,6 +240,7 @@
 
     <!-- Scripts -->
     <script src="js/firebase-config.js"></script>
+    <script src="js/toast.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/booking.js"></script>
     <script src="js/main.js"></script>
@@ -382,10 +383,10 @@
 
             const success = await cancelBooking(bookingId);
             if (success) {
-                alert('Booking cancelled successfully.');
+                toastSuccess('Booking cancelled successfully.');
                 loadUserBookings();
             } else {
-                alert('Failed to cancel booking. Please try again.');
+                toastError('Failed to cancel booking. Please try again.');
             }
         }
 

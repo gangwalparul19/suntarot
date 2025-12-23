@@ -408,7 +408,7 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-bottom">
-                <p>© 2024 Sun Tarot. All rights reserved.</p>
+                <p>© 2025 Sun Tarot. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -425,6 +425,7 @@
 
     <!-- Firebase and Booking Config -->
     <script src="js/firebase-config.js"></script>
+    <script src="js/toast.js"></script>
     <script src="js/booking.js"></script>
 
     <!-- Load card data first -->
@@ -465,16 +466,18 @@
         let flippedCount = 0;
         const TOTAL_CARDS = 5;
 
-        // Shuffle deck and draw 5 cards
+        // Shuffle deck and draw 5 cards with reversal support
         function shuffleDeck() {
             console.log('Shuffling deck for love reading...');
 
             // Reset state
             flippedCount = 0;
 
-            // Reset card visuals
+            // Reset card visuals and animations
             for (let i = 1; i <= TOTAL_CARDS; i++) {
-                document.getElementById(`card${i}`).classList.remove('flipped');
+                const cardEl = document.getElementById(`card${i}`);
+                cardEl.classList.remove('flipped', 'reversed', 'dealing');
+                cardEl.style.opacity = '0';
             }
 
             // Hide results
@@ -483,28 +486,48 @@
             // Check if majorArcana is loaded
             if (typeof majorArcana === 'undefined') {
                 console.error('Card data not loaded!');
-                alert('Error: Card data not loaded. Please refresh the page.');
+                toastError('Card data not loaded. Please refresh the page.');
                 return;
             }
 
-            // Shuffle and draw 5 unique cards
-            const shuffled = [...majorArcana].sort(() => Math.random() - 0.5);
-            drawnCards = shuffled.slice(0, TOTAL_CARDS);
+            // Draw cards using the new function with reversal
+            drawnCards = drawCards(TOTAL_CARDS);
 
-            console.log('Drew cards:', drawnCards.map(c => c.name));
+            console.log('Drew cards:', drawnCards.map(c => `${c.name}${c.isReversed ? ' (R)' : ''}`));
 
-            // Set card images and names
+            // Set card images, names, and apply animations
             for (let i = 0; i < TOTAL_CARDS; i++) {
                 const card = drawnCards[i];
+                const cardEl = document.getElementById(`card${i + 1}`);
+
+                // Apply reversed class if needed
+                if (card.isReversed) {
+                    cardEl.classList.add('reversed');
+                }
+
                 document.getElementById(`card${i + 1}Img`).src = card.image;
                 document.getElementById(`card${i + 1}Name`).textContent = card.name;
-                document.getElementById(`result${i + 1}Name`).textContent = card.name;
-                // Use love-specific meaning if available, otherwise use general meaning
-                document.getElementById(`result${i + 1}Meaning`).textContent = loveMeanings[card.name] || card.meaning;
+
+                // Update result with reversal indication
+                const resultName = document.getElementById(`result${i + 1}Name`);
+                resultName.innerHTML = card.isReversed
+                    ? `${card.name} <span class="reversed-badge">Reversed</span>`
+                    : card.name;
+
+                // Use love-specific meaning if available, otherwise use displayMeaning
+                const loveMeaning = loveMeanings[card.name];
+                document.getElementById(`result${i + 1}Meaning`).textContent =
+                    card.isReversed ? card.reversedMeaning : (loveMeaning || card.meaning);
+
+                // Trigger dealing animation with stagger
+                setTimeout(() => {
+                    cardEl.style.opacity = '1';
+                    cardEl.classList.add('dealing');
+                }, i * 150);
             }
         }
 
-        // Flip a single card
+        // Flip a single card with enhanced animation
         function flipCard(index) {
             const cardEl = document.getElementById(`card${index + 1}`);
 
@@ -514,7 +537,14 @@
             }
 
             if (!cardEl.classList.contains('flipped')) {
-                cardEl.classList.add('flipped');
+                // Add flipping glow effect
+                cardEl.classList.add('flipping');
+
+                setTimeout(() => {
+                    cardEl.classList.add('flipped');
+                    cardEl.classList.remove('flipping');
+                }, 100);
+
                 flippedCount++;
                 console.log(`Flipped card ${index + 1}, total flipped: ${flippedCount}`);
 
@@ -523,6 +553,14 @@
                     setTimeout(() => {
                         document.getElementById('readingResult').classList.add('show');
                         document.getElementById('readingResult').scrollIntoView({ behavior: 'smooth' });
+
+                        // Save reading to history
+                        if (typeof saveReadingToHistory === 'function') {
+                            saveReadingToHistory(drawnCards.map(c => ({
+                                ...c,
+                                meaning: c.displayMeaning
+                            })), 'love');
+                        }
                     }, 800);
                 }
             }

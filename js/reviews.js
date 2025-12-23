@@ -19,7 +19,7 @@ async function submitReview(text, rating = 5) {
 
     // Validate input
     if (!text || text.trim().length < 10) {
-        alert('Please write at least 10 characters for your review.');
+        toastWarning('Please write at least 10 characters for your review.');
         return null;
     }
 
@@ -35,7 +35,7 @@ async function submitReview(text, rating = 5) {
             .get();
 
         if (!existingReview.empty) {
-            alert('You already have a review pending approval. Please wait for it to be reviewed.');
+            toastInfo('You already have a review pending approval. Please wait for it to be reviewed.');
             return null;
         }
 
@@ -55,7 +55,7 @@ async function submitReview(text, rating = 5) {
         return reviewRef.id;
     } catch (error) {
         console.error('Error submitting review:', error);
-        alert('Failed to submit review. Please try again.');
+        toastError('Failed to submit review. Please try again.');
         return null;
     }
 }
@@ -122,7 +122,7 @@ async function getAllReviews(status = null) {
 // Admin: Approve a review
 async function approveReview(reviewId) {
     if (!isAdmin()) {
-        alert('Admin access required');
+        toastError('Admin access required');
         return false;
     }
 
@@ -142,7 +142,7 @@ async function approveReview(reviewId) {
 // Admin: Reject a review
 async function rejectReview(reviewId, reason = '') {
     if (!isAdmin()) {
-        alert('Admin access required');
+        toastError('Admin access required');
         return false;
     }
 
@@ -163,7 +163,7 @@ async function rejectReview(reviewId, reason = '') {
 // Admin: Delete a review
 async function deleteReview(reviewId) {
     if (!isAdmin()) {
-        alert('Admin access required');
+        toastError('Admin access required');
         return false;
     }
 

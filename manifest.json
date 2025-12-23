@@ -1,12 +1,15 @@
 {
     "name": "Sun Tarot - Mystical Readings",
     "short_name": "Sun Tarot",
-    "description": "Discover your path with mystical tarot readings",
+    "description": "Discover your path with mystical tarot readings. Get daily card draws, love readings, and book personal sessions.",
     "start_url": "/",
+    "scope": "/",
     "display": "standalone",
-    "background_color": "#1a1a2e",
+    "background_color": "#0a0a0a",
     "theme_color": "#d4a95d",
     "orientation": "portrait-primary",
+    "lang": "en",
+    "dir": "ltr",
     "icons": [
         {
             "src": "images/icons/icon-72.png",
@@ -57,9 +60,60 @@
             "purpose": "any maskable"
         }
     ],
+    "shortcuts": [
+        {
+            "name": "Daily Reading",
+            "short_name": "Reading",
+            "description": "Draw your tarot cards",
+            "url": "/reading.html",
+            "icons": [
+                {
+                    "src": "images/icons/icon-96.png",
+                    "sizes": "96x96"
+                }
+            ]
+        },
+        {
+            "name": "Love Reading",
+            "short_name": "Love",
+            "description": "Discover your love path",
+            "url": "/love-reading.html",
+            "icons": [
+                {
+                    "src": "images/icons/icon-96.png",
+                    "sizes": "96x96"
+                }
+            ]
+        },
+        {
+            "name": "My Profile",
+            "short_name": "Profile",
+            "description": "View your stats and streaks",
+            "url": "/profile.html",
+            "icons": [
+                {
+                    "src": "images/icons/icon-96.png",
+                    "sizes": "96x96"
+                }
+            ]
+        },
+        {
+            "name": "Book Session",
+            "short_name": "Book",
+            "description": "Book a personal reading",
+            "url": "/booking.html",
+            "icons": [
+                {
+                    "src": "images/icons/icon-96.png",
+                    "sizes": "96x96"
+                }
+            ]
+        }
+    ],
     "categories": [
         "lifestyle",
-        "entertainment"
+        "entertainment",
+        "personalization"
     ],
     "screenshots": [
         {
@@ -68,5 +122,8 @@
             "type": "image/png",
             "form_factor": "wide"
         }
-    ]
+    ],
+    "related_applications": [],
+    "prefer_related_applications": false,
+    "handle_links": "preferred"
 }

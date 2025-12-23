@@ -3,6 +3,8 @@
 // ========================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    initServiceWorker();
+    initLazyLoading();
     initStars();
     initMobileMenu();
     initScrollProgress();
@@ -12,6 +14,79 @@ document.addEventListener('DOMContentLoaded', () => {
     initDeckShowcase();
     initSpotlight();
 });
+
+// ========================================
+// Service Worker Registration
+// ========================================
+function initServiceWorker() {
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('[Main] Service Worker registered:', registration.scope);
+
+                    // Check for updates
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // New content available, show update notification
+                                console.log('[Main] New content available, refresh to update');
+                            }
+                        });
+                    });
+                })
+                .catch(err => {
+                    console.log('[Main] Service Worker registration failed:', err);
+                });
+        });
+    }
+}
+
+// ========================================
+// Lazy Loading Images
+// ========================================
+function initLazyLoading() {
+    // Add loading="lazy" to all images without it
+    document.querySelectorAll('img:not([loading])').forEach(img => {
+        img.setAttribute('loading', 'lazy');
+    });
+
+    // Add loaded class when images finish loading
+    document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+        if (img.complete) {
+            img.classList.add('loaded');
+        } else {
+            img.addEventListener('load', () => {
+                img.classList.add('loaded');
+            });
+        }
+    });
+
+    // Use Intersection Observer for custom lazy loading
+    if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    if (img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                    }
+                    img.classList.add('loaded');
+                    observer.unobserve(img);
+                }
+            });
+        }, {
+            rootMargin: '50px 0px',
+            threshold: 0.01
+        });
+
+        document.querySelectorAll('img[data-src]').forEach(img => {
+            imageObserver.observe(img);
+        });
+    }
+}
 
 // ========================================
 // Starry Background
@@ -149,7 +224,7 @@ function shareCard() {
         });
     } else {
         navigator.clipboard.writeText(text).then(() => {
-            alert('Reading copied to clipboard! Share it with your friends.');
+            toastSuccess('Reading copied to clipboard! Share it with your friends.');
         });
     }
 }

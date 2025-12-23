@@ -190,7 +190,7 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-bottom">
-                <p>© 2024 Sun Tarot. All rights reserved.</p>
+                <p>© 2025 Sun Tarot. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -201,6 +201,10 @@
     <script src="js/cards.js"></script>
     <!-- Then main functionality -->
     <script src="js/main.js"></script>
+    <!-- Touch gestures for mobile -->
+    <script src="js/touch-gestures.js"></script>
+    <!-- Push notifications -->
+    <script src="js/push-notifications.js"></script>
 
     <!-- Reading page specific script -->
     <script>
@@ -208,45 +212,66 @@
         let drawnCards = [];
         let flippedCount = 0;
 
-        // Shuffle deck and draw 3 cards
+        // Shuffle deck and draw 3 cards with reversal support
         function shuffleDeck() {
             console.log('Shuffling deck...');
 
             // Reset state
             flippedCount = 0;
 
-            // Reset card visuals
-            document.getElementById('card1').classList.remove('flipped');
-            document.getElementById('card2').classList.remove('flipped');
-            document.getElementById('card3').classList.remove('flipped');
+            // Reset card visuals and animations
+            for (let i = 1; i <= 3; i++) {
+                const cardEl = document.getElementById(`card${i}`);
+                cardEl.classList.remove('flipped', 'reversed', 'dealing');
+                cardEl.style.opacity = '0';
+            }
 
             // Hide results
             document.getElementById('readingResult').classList.remove('show');
+            const shareBtn = document.getElementById('shareReadingBtn');
+            if (shareBtn) shareBtn.remove();
 
             // Check if majorArcana is loaded
             if (typeof majorArcana === 'undefined') {
                 console.error('Card data not loaded!');
-                alert('Error: Card data not loaded. Please refresh the page.');
+                toastError('Card data not loaded. Please refresh the page.');
                 return;
             }
 
-            // Shuffle and draw 3 unique cards
-            const shuffled = [...majorArcana].sort(() => Math.random() - 0.5);
-            drawnCards = shuffled.slice(0, 3);
+            // Draw cards using the new function with reversal
+            drawnCards = drawCards(3);
 
-            console.log('Drew cards:', drawnCards.map(c => c.name));
+            console.log('Drew cards:', drawnCards.map(c => `${c.name}${c.isReversed ? ' (R)' : ''}`));
 
-            // Set card images and names
+            // Set card images, names, and apply animations
             for (let i = 0; i < 3; i++) {
                 const card = drawnCards[i];
+                const cardEl = document.getElementById(`card${i + 1}`);
+
+                // Apply reversed class if needed
+                if (card.isReversed) {
+                    cardEl.classList.add('reversed');
+                }
+
                 document.getElementById(`card${i + 1}Img`).src = card.image;
                 document.getElementById(`card${i + 1}Name`).textContent = card.name;
-                document.getElementById(`result${i + 1}Name`).textContent = card.name;
-                document.getElementById(`result${i + 1}Meaning`).textContent = card.meaning;
+
+                // Update result with reversal indication
+                const resultName = document.getElementById(`result${i + 1}Name`);
+                resultName.innerHTML = card.isReversed
+                    ? `${card.name} <span class="reversed-badge">Reversed</span>`
+                    : card.name;
+                document.getElementById(`result${i + 1}Meaning`).textContent = card.displayMeaning;
+
+                // Trigger dealing animation with stagger
+                setTimeout(() => {
+                    cardEl.style.opacity = '1';
+                    cardEl.classList.add('dealing');
+                }, i * 200);
             }
         }
 
-        // Flip a single card
+        // Flip a single card with enhanced animation
         function flipCard(index) {
             const cardEl = document.getElementById(`card${index + 1}`);
 
@@ -256,7 +281,14 @@
             }
 
             if (!cardEl.classList.contains('flipped')) {
-                cardEl.classList.add('flipped');
+                // Add flipping glow effect
+                cardEl.classList.add('flipping');
+
+                setTimeout(() => {
+                    cardEl.classList.add('flipped');
+                    cardEl.classList.remove('flipping');
+                }, 100);
+
                 flippedCount++;
                 console.log(`Flipped card ${index + 1}, total flipped: ${flippedCount}`);
 
@@ -266,9 +298,12 @@
                         document.getElementById('readingResult').classList.add('show');
                         document.getElementById('readingResult').scrollIntoView({ behavior: 'smooth' });
 
-                        // Save reading to history
+                        // Save reading to history (include reversal info)
                         if (typeof saveReadingToHistory === 'function') {
-                            saveReadingToHistory(drawnCards, 'reading');
+                            saveReadingToHistory(drawnCards.map(c => ({
+                                ...c,
+                                meaning: c.displayMeaning
+                            })), 'reading');
                         }
 
                         // Show share button
@@ -286,6 +321,14 @@
             document.getElementById('card1').addEventListener('click', () => flipCard(0));
             document.getElementById('card2').addEventListener('click', () => flipCard(1));
             document.getElementById('card3').addEventListener('click', () => flipCard(2));
+
+            // Touch gesture support for cards
+            if (typeof CardGestures !== 'undefined') {
+                CardGestures.initFlipGesture(document.getElementById('card1'), () => flipCard(0));
+                CardGestures.initFlipGesture(document.getElementById('card2'), () => flipCard(1));
+                CardGestures.initFlipGesture(document.getElementById('card3'), () => flipCard(2));
+                console.log('Touch gestures initialized!');
+            }
 
             // Shuffle button listener
             document.getElementById('shuffleBtn').addEventListener('click', shuffleDeck);
@@ -317,6 +360,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     <script src="js/env.js" onerror=""></script>
     <script src="js/firebase-config.js"></script>
+    <script src="js/toast.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/share.js"></script>
 </body>

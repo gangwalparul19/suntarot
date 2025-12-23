@@ -66,7 +66,20 @@
                 const el = document.createElement('div');
                 el.className = 'card-grid-item';
                 el.onclick = () => openCardModal(i);
-                el.innerHTML = `<img src="${card.image}" alt="${card.name}"><span class="card-name">${card.name}</span>`;
+
+                // Truncate meaning to ~80 chars for preview
+                const shortMeaning = card.meaning.length > 80
+                    ? card.meaning.substring(0, 80) + '...'
+                    : card.meaning;
+
+                el.innerHTML = `
+                    <img src="${card.image}" alt="${card.name}">
+                    <span class="card-name">${card.name}</span>
+                    <div class="card-preview-tooltip">
+                        <h4>${card.name}</h4>
+                        <p>${shortMeaning}</p>
+                    </div>
+                `;
                 grid.appendChild(el);
             });
         });

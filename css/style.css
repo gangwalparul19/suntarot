@@ -12,18 +12,18 @@
   --color-text: #f5f5f5;
   --color-text-muted: #a3a3a3;
   --color-border: rgba(212, 169, 93, 0.2);
-  
+
   /* Fonts */
   --font-headline: 'Playfair Display', serif;
   --font-body: 'PT Sans', sans-serif;
-  
+
   /* Spacing */
   --spacing-xs: 0.5rem;
   --spacing-sm: 1rem;
   --spacing-md: 2rem;
   --spacing-lg: 4rem;
   --spacing-xl: 6rem;
-  
+
   /* Transitions */
   --transition-fast: 0.2s ease;
   --transition-medium: 0.3s ease;
@@ -31,7 +31,9 @@
 }
 
 /* Reset */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -51,17 +53,32 @@ body {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-headline);
   font-weight: 700;
   line-height: 1.2;
 }
 
-h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
-h2 { font-size: clamp(2rem, 4vw, 3rem); }
-h3 { font-size: clamp(1.5rem, 3vw, 2rem); }
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+}
 
-p { color: var(--color-text-muted); }
+h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+h3 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+p {
+  color: var(--color-text-muted);
+}
 
 a {
   color: var(--color-primary);
@@ -69,7 +86,9 @@ a {
   transition: color var(--transition-fast);
 }
 
-a:hover { color: var(--color-accent); }
+a:hover {
+  color: var(--color-accent);
+}
 
 /* Container */
 .container {
@@ -193,9 +212,14 @@ a:hover { color: var(--color-accent); }
     padding: var(--spacing-md);
     border-bottom: 1px solid var(--color-border);
   }
-  
-  .nav-links.active { display: flex; }
-  .mobile-menu-btn { display: block; }
+
+  .nav-links.active {
+    display: flex;
+  }
+
+  .mobile-menu-btn {
+    display: block;
+  }
 }
 
 /* ========================================
@@ -331,6 +355,288 @@ a:hover { color: var(--color-accent); }
   box-shadow: 0 20px 40px rgba(212, 169, 93, 0.2);
 }
 
+/* Reversed Card - Rotated 180 degrees */
+.tarot-card.reversed .tarot-card-front img {
+  transform: rotate(180deg);
+}
+
+.tarot-card.reversed .card-name::before {
+  content: '↺ ';
+  color: #e74c3c;
+}
+
+/* Reversed indicator badge */
+.reversed-badge {
+  display: inline-block;
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+/* ========================================
+   Card Animations
+   ======================================== */
+
+/* Shuffle Animation */
+@keyframes shuffleCards {
+  0% {
+    transform: translateX(0) rotate(0deg);
+  }
+
+  25% {
+    transform: translateX(-20px) rotate(-5deg);
+  }
+
+  50% {
+    transform: translateX(20px) rotate(5deg);
+  }
+
+  75% {
+    transform: translateX(-10px) rotate(-3deg);
+  }
+
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+}
+
+.tarot-card.shuffling {
+  animation: shuffleCards 0.6s ease-in-out;
+}
+
+/* Deal Animation */
+@keyframes dealCard {
+  0% {
+    opacity: 0;
+    transform: translateY(-100px) scale(0.5) rotate(-10deg);
+  }
+
+  60% {
+    opacity: 1;
+    transform: translateY(10px) scale(1.02) rotate(2deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+}
+
+.tarot-card.dealing {
+  animation: dealCard 0.5s ease-out forwards;
+}
+
+/* Staggered delays for multiple cards */
+.tarot-card.dealing:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.tarot-card.dealing:nth-child(2) {
+  animation-delay: 150ms;
+}
+
+.tarot-card.dealing:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+.tarot-card.dealing:nth-child(4) {
+  animation-delay: 450ms;
+}
+
+.tarot-card.dealing:nth-child(5) {
+  animation-delay: 600ms;
+}
+
+/* Enhanced 3D Flip */
+.tarot-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-style: preserve-3d;
+}
+
+.tarot-card.flipped .tarot-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Glow effect when flipping */
+.tarot-card.flipping .tarot-card-inner {
+  box-shadow: 0 0 30px rgba(212, 169, 93, 0.5);
+}
+
+/* ========================================
+   Card Hover Preview (Learn Page)
+   ======================================== */
+.card-grid-item {
+  position: relative;
+}
+
+.card-preview-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  background: var(--color-card);
+  border: 1px solid var(--color-primary);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  width: 220px;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 100;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.card-preview-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-top-color: var(--color-primary);
+}
+
+.card-grid-item:hover .card-preview-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(-5px);
+}
+
+.card-preview-tooltip h4 {
+  color: var(--color-primary);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-preview-tooltip p {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* Adjust tooltip position for edge cards */
+.card-grid-item:first-child .card-preview-tooltip,
+.card-grid-item:nth-child(3n+1) .card-preview-tooltip {
+  left: 0;
+  transform: translateX(0) translateY(-10px);
+}
+
+.card-grid-item:first-child:hover .card-preview-tooltip,
+.card-grid-item:nth-child(3n+1):hover .card-preview-tooltip {
+  transform: translateX(0) translateY(-5px);
+}
+
+.card-grid-item:first-child .card-preview-tooltip::after,
+.card-grid-item:nth-child(3n+1) .card-preview-tooltip::after {
+  left: 30px;
+}
+
+/* ========================================
+   Booking Progress Bar
+   ======================================== */
+.booking-progress {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+  position: relative;
+}
+
+.booking-progress::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--color-border);
+  transform: translateY(-50%);
+  z-index: 0;
+}
+
+.progress-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+  transform: translateY(-50%);
+  transition: width 0.5s ease;
+  z-index: 1;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-background);
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  transition: all 0.3s;
+}
+
+.progress-step.active .step-circle {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: 0 0 15px rgba(212, 169, 93, 0.3);
+}
+
+.progress-step.completed .step-circle {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-background);
+}
+
+.step-label {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.progress-step.active .step-label {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.progress-step.completed .step-label {
+  color: var(--color-text);
+}
+
+@media (max-width: 480px) {
+  .step-label {
+    display: none;
+  }
+
+  .step-circle {
+    width: 32px;
+    height: 32px;
+    font-size: 0.875rem;
+  }
+}
+
 /* ========================================
    Sections
    ======================================== */
@@ -386,7 +692,7 @@ a:hover { color: var(--color-accent); }
     grid-template-columns: 1fr;
     text-align: center;
   }
-  
+
   .card-of-day-content .tarot-card {
     margin: 0 auto;
   }
@@ -414,8 +720,13 @@ a:hover { color: var(--color-accent); }
 }
 
 @keyframes scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .deck-showcase:hover .deck-track {
@@ -641,16 +952,37 @@ a:hover { color: var(--color-accent); }
 /* ========================================
    Utilities
    ======================================== */
-.text-primary { color: var(--color-primary); }
-.text-muted { color: var(--color-text-muted); }
-.text-center { text-align: center; }
+.text-primary {
+  color: var(--color-primary);
+}
 
-.mt-sm { margin-top: var(--spacing-sm); }
-.mt-md { margin-top: var(--spacing-md); }
-.mb-sm { margin-bottom: var(--spacing-sm); }
-.mb-md { margin-bottom: var(--spacing-md); }
+.text-muted {
+  color: var(--color-text-muted);
+}
 
-.hidden { display: none !important; }
+.text-center {
+  text-align: center;
+}
+
+.mt-sm {
+  margin-top: var(--spacing-sm);
+}
+
+.mt-md {
+  margin-top: var(--spacing-md);
+}
+
+.mb-sm {
+  margin-bottom: var(--spacing-sm);
+}
+
+.mb-md {
+  margin-bottom: var(--spacing-md);
+}
+
+.hidden {
+  display: none !important;
+}
 
 /* ========================================
    Scroll Progress
@@ -840,13 +1172,27 @@ a:hover { color: var(--color-accent); }
    Animations
    ======================================== */
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .fade-in {
@@ -873,6 +1219,265 @@ a:hover { color: var(--color-accent); }
 }
 
 @keyframes twinkle {
-  0%, 100% { opacity: 0; }
-  50% { opacity: 0.8; }
+
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* ========================================
+   Toast Notifications
+   ======================================== */
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 400px;
+  width: calc(100% - 40px);
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  transform: translateX(120%);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
+}
+
+.toast.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.toast.hide {
+  transform: translateX(120%);
+  opacity: 0;
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 0.875rem;
+  font-weight: bold;
+}
+
+.toast-message {
+  flex: 1;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+
+.toast-close {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.toast-close:hover {
+  opacity: 1;
+}
+
+/* Toast Types */
+.toast-success {
+  border-color: rgba(39, 174, 96, 0.5);
+  background: linear-gradient(135deg, rgba(39, 174, 96, 0.1), var(--color-card));
+}
+
+.toast-success .toast-icon {
+  background: rgba(39, 174, 96, 0.2);
+  color: #27ae60;
+}
+
+.toast-error {
+  border-color: rgba(231, 76, 60, 0.5);
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), var(--color-card));
+}
+
+.toast-error .toast-icon {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}
+
+.toast-warning {
+  border-color: rgba(241, 196, 15, 0.5);
+  background: linear-gradient(135deg, rgba(241, 196, 15, 0.1), var(--color-card));
+}
+
+.toast-warning .toast-icon {
+  background: rgba(241, 196, 15, 0.2);
+  color: #f1c40f;
+}
+
+.toast-info {
+  border-color: rgba(52, 152, 219, 0.5);
+  background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), var(--color-card));
+}
+
+.toast-info .toast-icon {
+  background: rgba(52, 152, 219, 0.2);
+  color: #3498db;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+  .toast-container {
+    top: auto;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+  }
+
+  .toast {
+    transform: translateY(120%);
+  }
+
+  .toast.show {
+    transform: translateY(0);
+  }
+
+  .toast.hide {
+    transform: translateY(120%);
+  }
+}
+
+/* ========================================
+   Lazy Loading & Performance
+   ======================================== */
+
+/* Lazy loading images with blur-up effect */
+img[loading="lazy"] {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+img[loading="lazy"].loaded,
+img[loading="lazy"]:not([src=""]) {
+  opacity: 1;
+}
+
+/* Image placeholder while loading */
+.img-placeholder {
+  background: linear-gradient(135deg,
+      var(--color-card) 0%,
+      rgba(212, 169, 93, 0.1) 50%,
+      var(--color-card) 100%);
+  background-size: 200% 200%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Skeleton loading states */
+.skeleton {
+  background: linear-gradient(90deg,
+      var(--color-card) 0%,
+      rgba(212, 169, 93, 0.15) 50%,
+      var(--color-card) 100%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 0.5rem;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-text {
+  height: 1em;
+  margin-bottom: 0.5em;
+}
+
+.skeleton-text:last-child {
+  width: 70%;
+}
+
+.skeleton-title {
+  height: 1.5em;
+  width: 50%;
+  margin-bottom: 1em;
+}
+
+.skeleton-card {
+  height: 200px;
+  margin-bottom: 1rem;
+}
+
+.skeleton-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+/* Content visibility optimization */
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* GPU acceleration for animations */
+.gpu-accelerated {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Optimized card images */
+.tarot-card img {
+  will-change: transform;
+  backface-visibility: hidden;
 }

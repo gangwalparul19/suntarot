@@ -37,7 +37,7 @@ function initAuth() {
 // Sign in with Google
 async function signInWithGoogle() {
     if (!isFirebaseConfigured()) {
-        alert('Firebase is not configured yet. Please set up Firebase first.');
+        toastError('Firebase is not configured yet. Please set up Firebase first.');
         return;
     }
 
@@ -53,9 +53,9 @@ async function signInWithGoogle() {
         if (error.code === 'auth/popup-closed-by-user') {
             console.log('Sign in cancelled by user');
         } else if (error.code === 'auth/popup-blocked') {
-            alert('Popup blocked! Please allow popups for this site.');
+            toastWarning('Popup blocked! Please allow popups for this site.');
         } else {
-            alert('Sign in failed: ' + error.message);
+            toastError('Sign in failed: ' + error.message);
         }
         return null;
     }
@@ -129,7 +129,7 @@ function isLoggedIn() {
 // Require login (redirect or show message)
 function requireLogin(message = 'Please sign in to continue') {
     if (!isLoggedIn()) {
-        alert(message);
+        toastInfo(message);
         signInWithGoogle();
         return false;
     }

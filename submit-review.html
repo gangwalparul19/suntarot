@@ -229,7 +229,7 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-bottom">
-                <p>© 2024 Sun Tarot. All rights reserved.</p>
+                <p>© 2025 Sun Tarot. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -246,6 +246,7 @@
 
     <!-- App Scripts -->
     <script src="js/firebase-config.js"></script>
+    <script src="js/toast.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/reviews.js"></script>
     <script src="js/main.js"></script>
@@ -291,7 +292,7 @@
             const text = document.getElementById('reviewText').value;
 
             if (text.length < 10) {
-                alert('Please write at least 10 characters for your review.');
+                toastWarning('Please write at least 10 characters for your review.');
                 return;
             }
 
