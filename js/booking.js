@@ -299,14 +299,15 @@ async function getUserBookings() {
     try {
         const snapshot = await db.collection('bookings')
             .where('userId', '==', user.uid)
-            .orderBy('date', 'desc')
-            .limit(20)
             .get();
 
         const bookings = [];
         snapshot.forEach(doc => {
             bookings.push({ id: doc.id, ...doc.data() });
         });
+
+        // Sort by date desc (client-side)
+        bookings.sort((a, b) => new Date(b.date + 'T' + b.time) - new Date(a.date + 'T' + a.time));
 
         return bookings;
     } catch (error) {

@@ -642,66 +642,51 @@
 
         // Knowledge Quiz Questions
         const knowledgeQuestions = [
-            {
-                question: "What number is The Fool in the Major Arcana?",
-                options: ["0", "1", "21", "22"],
-                correct: 0,
-                cardHint: "The Fool"
-            },
-            {
-                question: "Which card represents new beginnings and infinite potential?",
-                options: ["The World", "The Tower", "The Fool", "Death"],
-                correct: 2,
-                cardHint: "The Fool"
-            },
-            {
-                question: "The High Priestess is associated with which quality?",
-                options: ["Action", "Intuition", "Wealth", "Travel"],
-                correct: 1,
-                cardHint: "The High Priestess"
-            },
-            {
-                question: "Which card is commonly associated with major transformation?",
-                options: ["The Star", "The Sun", "Death", "The Lovers"],
-                correct: 2,
-                cardHint: "Death"
-            },
-            {
-                question: "The Empress represents which element?",
-                options: ["Fire", "Water", "Earth", "Air"],
-                correct: 2,
-                cardHint: "The Empress"
-            },
-            {
-                question: "Which card symbolizes balance and fair judgement?",
-                options: ["The Chariot", "Justice", "The Tower", "The Moon"],
-                correct: 1,
-                cardHint: "Justice"
-            },
-            {
-                question: "What does The Tower generally signify?",
-                options: ["Slow growth", "Sudden upheaval", "Romance", "Financial gain"],
-                correct: 1,
-                cardHint: "The Tower"
-            },
-            {
-                question: "Which card is associated with hope and inspiration?",
-                options: ["The Moon", "The Star", "The Devil", "The Emperor"],
-                correct: 1,
-                cardHint: "The Star"
-            },
-            {
-                question: "The World card represents...",
-                options: ["Endings only", "Beginnings only", "Completion and achievement", "Confusion"],
-                correct: 2,
-                cardHint: "The World"
-            },
-            {
-                question: "Which card often represents willpower and success through determination?",
-                options: ["The Hermit", "The Chariot", "The Moon", "The Hanged Man"],
-                correct: 1,
-                cardHint: "The Chariot"
-            }
+            { question: "What number is The Fool in the Major Arcana?", options: ["0", "1", "21", "22"], correct: 0, cardHint: "The Fool" },
+            { question: "Which card represents new beginnings and infinite potential?", options: ["The World", "The Tower", "The Fool", "Death"], correct: 2, cardHint: "The Fool" },
+            { question: "The High Priestess is associated with which quality?", options: ["Action", "Intuition", "Wealth", "Travel"], correct: 1, cardHint: "The High Priestess" },
+            { question: "Which card is commonly associated with major transformation?", options: ["The Star", "The Sun", "Death", "The Lovers"], correct: 2, cardHint: "Death" },
+            { question: "The Empress represents which element?", options: ["Fire", "Water", "Earth", "Air"], correct: 2, cardHint: "The Empress" },
+            { question: "Which card symbolizes balance and fair judgement?", options: ["The Chariot", "Justice", "The Tower", "The Moon"], correct: 1, cardHint: "Justice" },
+            { question: "What does The Tower generally signify?", options: ["Slow growth", "Sudden upheaval", "Romance", "Financial gain"], correct: 1, cardHint: "The Tower" },
+            { question: "Which card is associated with hope and inspiration?", options: ["The Moon", "The Star", "The Devil", "The Emperor"], correct: 1, cardHint: "The Star" },
+            { question: "The World card represents...", options: ["Endings only", "Beginnings only", "Completion and achievement", "Confusion"], correct: 2, cardHint: "The World" },
+            { question: "Which card often represents willpower and success through determination?", options: ["The Hermit", "The Chariot", "The Moon", "The Hanged Man"], correct: 1, cardHint: "The Chariot" },
+            // Added Questions
+            { question: "Which suit is associated with emotions and relationships?", options: ["Wands", "Cups", "Swords", "Pentacles"], correct: 1, cardHint: "Ace of Cups" },
+            { question: "Which suit is associated with passion, energy, and action?", options: ["Wands", "Cups", "Swords", "Pentacles"], correct: 0, cardHint: "Ace of Wands" },
+            { question: "Which suit is associated with intellect, logic, and conflict?", options: ["Wands", "Cups", "Swords", "Pentacles"], correct: 2, cardHint: "Ace of Swords" },
+            { question: "Which suit is associated with material wealth, work, and stability?", options: ["Wands", "Cups", "Swords", "Pentacles"], correct: 3, cardHint: "Ace of Pentacles" },
+            { question: "The Magician is numbered...", options: ["I", "II", "III", "IV"], correct: 0, cardHint: "The Magician" },
+            { question: "The Emperor represents which zodiac sign?", options: ["Aries", "Taurus", "Cancer", "Leo"], correct: 0, cardHint: "The Emperor" },
+            { question: "The Hierophant is traditionally known as the...", options: ["High Priest", "Pope", "King", "Sage"], correct: 1, cardHint: "The Hierophant" },
+            { question: "What does The Lovers card primarily represent beside romance?", options: ["Choices", "War", "Money", "Travel"], correct: 0, cardHint: "The Lovers" },
+            { question: "Strength was originally numbered...", options: ["VIII", "XI", "IX", "X"], correct: 1, cardHint: "Strength" },
+            { question: "The Hermit suggests...", options: ["Socializing", "Introspection", "Public Speaking", "Partying"], correct: 1, cardHint: "The Hermit" },
+            { question: "The Wheel of Fortune reminds us that...", options: ["Life is static", "Everything changes", "Bad luck is permanent", "Rich people are lucky"], correct: 1, cardHint: "Wheel of Fortune" },
+            { question: "The Hanged Man advises us to...", options: ["Rush forward", "Pause and see a new perspective", "Give up", "Fight back"], correct: 1, cardHint: "The Hanged Man" },
+            { question: "Temperance is about...", options: ["Excess", "Balance and moderation", "Anger", "Speed"], correct: 1, cardHint: "Temperance" },
+            { question: "The Devil card often warns against...", options: ["Joy", "Bondage and addiction", "Freedom", "Spirituality"], correct: 1, cardHint: "The Devil" },
+            { question: "The Moon can signify...", options: ["Clarity", "Illusion and deception", "Sunlight", "Logic"], correct: 1, cardHint: "The Moon" },
+            { question: "The Sun is generally considered...", options: ["The most negative card", "The most positive card", "A neutral card", "A warning card"], correct: 1, cardHint: "The Sun" },
+            { question: "Judgement calls for...", options: ["Self-evaluation and awakening", "Listening to others", "Sleeping", "Running away"], correct: 0, cardHint: "Judgement" },
+            { question: "How many cards are in a standard Tarot deck?", options: ["52", "78", "44", "100"], correct: 1, cardHint: "The World" },
+            { question: "How many Major Arcana cards are there?", options: ["21", "22", "14", "56"], correct: 1, cardHint: "The Fool" },
+            { question: "How many Minor Arcana cards are there?", options: ["52", "56", "78", "40"], correct: 1, cardHint: "Ace of Wands" },
+            { question: "Court cards consist of...", options: ["Page, Knight, Queen, King", "Ace, 2, 3, 4", "King, Queen, Jack", "Prince, Princess"], correct: 0, cardHint: "Queen of Wands" },
+            { question: "Which card comes after The Fool?", options: ["The Magician", "The World", "The Empress", "The High Priestess"], correct: 0, cardHint: "The Magician" },
+            { question: "What is usually depicted on the 9 of Swords?", options: ["A celebration", "A person waking from a nightmare", "A battle", "A garden"], correct: 1, cardHint: "9 of Swords" },
+            { question: "The 3 of Cups typically signifies...", options: ["Heartbreak", "Celebration and friendship", "Loss", "Hard work"], correct: 1, cardHint: "3 of Cups" },
+            { question: "The Ace of Pentacles offers...", options: ["A new emotional start", "A new financial opportunity", "A new idea", "A fight"], correct: 1, cardHint: "Ace of Pentacles" },
+            { question: "The 10 of Cups represents...", options: ["Emotional fulfillment", "Burden", "Conflict", "Walking away"], correct: 0, cardHint: "10 of Cups" },
+            { question: "Which King is known for being emotional and caring?", options: ["King of Wands", "King of Swords", "King of Cups", "King of Pentacles"], correct: 2, cardHint: "King of Cups" },
+            { question: "The Queen of Swords is often described as...", options: ["Nurturing", "Sharp-witted and independent", "Dreamy", "Practical"], correct: 1, cardHint: "Queen of Swords" },
+            { question: "The Knight of Wands is...", options: ["Slow and steady", "Passionate and impulsive", "Emotional", "Logical"], correct: 1, cardHint: "Knight of Wands" },
+            { question: "The Page of Pentacles is a messenger of...", options: ["Love", "Ideas", "Conflict", "Practical news/money"], correct: 3, cardHint: "Page of Pentacles" },
+            { question: "A tarot reading layout is called a...", options: ["Grid", "Spread", "Table", "Map"], correct: 1, cardHint: "The World" },
+            { question: "Reversed cards can mean...", options: ["Opposite meaning or blocked energy", "Bad luck only", "The card is invalid", "Nothing"], correct: 0, cardHint: "The Hanged Man" },
+            { question: "Which Major Arcana card depicts a lion?", options: ["Strength", "The Wheel of Fortune", "The World", "All of the above"], correct: 3, cardHint: "Strength" },
+            { question: "The card 'Le Mat' is French for...", options: ["The Magician", "The Fool", "The Moon", "The Master"], correct: 1, cardHint: "The Fool" }
         ];
 
         // Badges Definition
@@ -747,6 +732,7 @@
         let currentQuestion = 0;
         let personalityAnswers = [];
         let knowledgeScore = 0;
+        let activeQuestions = [];
         let quizStats = JSON.parse(localStorage.getItem('quizStats')) || {
             personalityCompleted: 0,
             knowledgeCompleted: 0,
@@ -769,8 +755,9 @@
                 renderPersonalityQuestion();
             } else if (type === 'knowledge') {
                 knowledgeScore = 0;
-                // Shuffle knowledge questions
+                // Shuffle and pick 6 random questions
                 shuffleArray(knowledgeQuestions);
+                activeQuestions = knowledgeQuestions.slice(0, 6);
                 showSection('knowledgeQuiz');
                 renderKnowledgeQuestion();
             }
@@ -868,6 +855,12 @@
             checkBadges();
             saveQuizStats();
 
+            // Check login before showing result
+            if (!currentUser) {
+                if (typeof toastWarning === 'function') toastWarning("Please login to reveal your card! 🔒", 4000);
+                return;
+            }
+
             // Render result
             showPersonalityResult(cardData, resultCard);
         }
@@ -899,8 +892,8 @@
         // ========================================
 
         function renderKnowledgeQuestion() {
-            const q = knowledgeQuestions[currentQuestion];
-            const total = knowledgeQuestions.length;
+            const q = activeQuestions[currentQuestion];
+            const total = activeQuestions.length;
             const percent = Math.round((currentQuestion / total) * 100);
 
             document.getElementById('knowledgeProgress').textContent = `Question ${currentQuestion + 1} of ${total}`;
@@ -920,7 +913,7 @@
         }
 
         function selectKnowledgeAnswer(index) {
-            const q = knowledgeQuestions[currentQuestion];
+            const q = activeQuestions[currentQuestion];
             const options = document.querySelectorAll('#knowledgeOptions .answer-option');
 
             // Disable all options
@@ -940,20 +933,26 @@
             // Show next button
             const nextBtn = document.getElementById('knowledgeNextBtn');
             nextBtn.style.display = 'block';
-            nextBtn.textContent = currentQuestion === knowledgeQuestions.length - 1 ? 'See Results' : 'Next →';
+            nextBtn.textContent = currentQuestion === activeQuestions.length - 1 ? 'See Results' : 'Next →';
         }
 
         function nextKnowledgeQuestion() {
-            if (currentQuestion < knowledgeQuestions.length - 1) {
+            if (currentQuestion < activeQuestions.length - 1) {
                 currentQuestion++;
                 renderKnowledgeQuestion();
             } else {
+                if (!currentUser) {
+                    if (typeof toastWarning === 'function') toastWarning("Please login to reveal your score! 🔒", 4000);
+                    // Open module menu where login button is if mobile, or just highlight it?
+                    // For now just the toast
+                    return;
+                }
                 showKnowledgeResult();
             }
         }
 
         function showKnowledgeResult() {
-            const total = knowledgeQuestions.length;
+            const total = activeQuestions.length;
             const percent = Math.round((knowledgeScore / total) * 100);
 
             let message, emoji;

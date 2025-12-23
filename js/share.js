@@ -413,14 +413,21 @@ async function getReadingHistory(limit = 20) {
     try {
         const snapshot = await db.collection('readings')
             .where('userId', '==', user.uid)
-            .orderBy('createdAt', 'desc')
             .limit(limit)
             .get();
 
         const readings = [];
         snapshot.forEach(doc => {
-            readings.push({ id: doc.id, ...doc.data() });
+            const data = doc.data();
+            // Handle Timestamp conversion
+            if (data.createdAt && data.createdAt.toDate) {
+                data.createdAt = data.createdAt.toDate();
+            }
+            readings.push({ id: doc.id, ...data });
         });
+
+        // Sort by createdAt desc (client-side)
+        readings.sort((a, b) => b.createdAt - a.createdAt);
 
         return readings;
     } catch (error) {

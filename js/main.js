@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initScrollProgress();
     initScrollToTop();
-    initCardOfDay();
     initDeckShowcase();
     initSpotlight();
 });
@@ -168,28 +167,80 @@ function initScrollToTop() {
 // ========================================
 // Card of the Day
 // ========================================
-function initCardOfDay() {
-    const cardImage = document.getElementById('dailyCardImage');
-    const cardName = document.getElementById('dailyCardName');
-    const cardTitle = document.getElementById('dailyCardTitle');
-    const cardMeaning = document.getElementById('dailyCardMeaning');
+// ========================================
+// Card of the Day (Authenticated & Persistent)
+// ========================================
+async function loadDailyCard(user) {
+    const section = document.getElementById('cardOfDaySection');
+    if (!section) return;
 
-    if (!cardImage || !cardName) return;
+    if (!user) {
+        section.style.display = 'none';
+        return;
+    }
 
-    const card = getCardOfTheDay();
+    // Show section
+    section.style.display = 'block';
 
-    cardImage.src = card.image;
-    cardImage.alt = card.name;
-    cardName.textContent = card.name;
+    const today = new Date().toDateString(); // e.g., "Tue Dec 23 2025"
+    const userRef = db.collection('users').doc(user.uid);
 
-    if (cardTitle) cardTitle.textContent = card.name;
-    if (cardMeaning) cardMeaning.textContent = `"${card.meaning}"`;
+    try {
+        const doc = await userRef.get();
+        let data = doc.data() || {};
+        let cardIndex;
+
+        if (data.dailyCard && data.dailyCard.date === today) {
+            // Use existing card
+            cardIndex = data.dailyCard.cardIndex;
+            console.log('Loaded persistent daily card:', cardIndex);
+        } else {
+            // Pick new card
+            cardIndex = Math.floor(Math.random() * majorArcana.length);
+            await userRef.set({
+                dailyCard: {
+                    date: today,
+                    cardIndex: cardIndex
+                }
+            }, { merge: true });
+            console.log('Generated new daily card:', cardIndex);
+        }
+
+        renderDailyCard(cardIndex, user);
+    } catch (e) {
+        console.error('Error loading daily card:', e);
+        // Fallback to random if offline/error, but don't save to avoid sync issues
+        renderDailyCard(Math.floor(Math.random() * majorArcana.length), user);
+    }
 }
 
-// Share Card
-function shareCard() {
-    const card = getCardOfTheDay();
-    const text = `✨ My Card of the Day: ${card.name}\n\n"${card.meaning}"\n\n🔮 Get your reading at Sun Tarot!`;
+function renderDailyCard(index, user) {
+    const card = majorArcana[index];
+    const container = document.getElementById('dailyCardContainer');
+    const message = document.getElementById('dailyCardMessage');
+
+    if (container) {
+        container.innerHTML = `
+            <div class="tarot-card" onclick="openCardModal(${index})" style="cursor: pointer; max-width: 200px; margin: 0 auto;">
+                <img src="${card.image}" alt="${card.name}">
+            </div>
+            <h3 style="margin-top: 1rem; color: var(--color-primary);">${card.name}</h3>
+        `;
+    }
+
+    if (message) {
+        message.innerHTML = `
+            <p>"${card.meaning}"</p>
+            <button onclick="shareDailyCard(${index})" class="btn btn-outline" style="margin-top: 1rem; font-size: 0.9rem;">
+                Share Reading 📤
+            </button>
+        `;
+    }
+}
+
+function shareDailyCard(index) {
+    const card = majorArcana[index];
+    const text = `✨ My Card of the Day on Sun Tarot: ${card.name}\n\n"${card.meaning}"\n\n🔮 Discover yours at: https://suntarot.web.app`;
 
     if (navigator.share) {
         navigator.share({
@@ -198,7 +249,7 @@ function shareCard() {
         });
     } else {
         navigator.clipboard.writeText(text).then(() => {
-            toastSuccess('Reading copied to clipboard! Share it with your friends.');
+            alert('Reading copied to clipboard!');
         });
     }
 }

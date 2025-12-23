@@ -72,7 +72,6 @@ async function getFeaturedReviews(limit = 3) {
         let snapshot = await db.collection('reviews')
             .where('featured', '==', true)
             .where('status', '==', REVIEW_STATUS.APPROVED)
-            .orderBy('createdAt', 'desc')
             .limit(limit)
             .get();
 
@@ -89,6 +88,9 @@ async function getFeaturedReviews(limit = 3) {
                 createdAt: data.createdAt?.toDate() || new Date()
             });
         });
+
+        // Client-side sort
+        reviews.sort((a, b) => b.createdAt - a.createdAt);
 
         return reviews;
     } catch (error) {
@@ -108,7 +110,6 @@ async function getApprovedReviews(limit = 10) {
     try {
         const snapshot = await db.collection('reviews')
             .where('status', '==', REVIEW_STATUS.APPROVED)
-            .orderBy('createdAt', 'desc')
             .limit(limit)
             .get();
 
@@ -125,6 +126,9 @@ async function getApprovedReviews(limit = 10) {
                 createdAt: data.createdAt?.toDate() || new Date()
             });
         });
+
+        // Client-side sort
+        reviews.sort((a, b) => b.createdAt - a.createdAt);
 
         return reviews;
     } catch (error) {
