@@ -368,45 +368,8 @@
                     Discover compatibility, timing, and actionable guidance for your love life.
                 </p>
 
-                <div class="love-pricing">
-                    <div class="pricing-card">
-                        <h3 class="pricing-name">Love Insight</h3>
-                        <div class="pricing-price">₹350</div>
-                        <ul class="pricing-features">
-                            <li>3-Card Love Spread</li>
-                            <li>20 minute session</li>
-                            <li>Written summary</li>
-                        </ul>
-                        <a href="https://wa.me/919372776019?text=Hi! I'd like to book a Love Insight reading (₹350)"
-                            class="btn btn-outline" target="_blank">Book Now</a>
-                    </div>
-
-                    <div class="pricing-card featured">
-                        <h3 class="pricing-name">Soulmate Reading</h3>
-                        <div class="pricing-price">₹650</div>
-                        <ul class="pricing-features">
-                            <li>5-Card Relationship Spread</li>
-                            <li>40 minute session</li>
-                            <li>Detailed relationship report</li>
-                            <li>Follow-up questions</li>
-                        </ul>
-                        <a href="https://wa.me/919372776019?text=Hi! I'd like to book a Soulmate Reading (₹650)"
-                            class="btn btn-primary" target="_blank"
-                            style="background: linear-gradient(135deg, #db7093, #d4a95d);">Book Now</a>
-                    </div>
-
-                    <div class="pricing-card">
-                        <h3 class="pricing-name">Relationship Deep Dive</h3>
-                        <div class="pricing-price">₹999</div>
-                        <ul class="pricing-features">
-                            <li>Multiple Spreads</li>
-                            <li>60 minute session</li>
-                            <li>Compatibility analysis</li>
-                            <li>7-day support</li>
-                        </ul>
-                        <a href="https://wa.me/919372776019?text=Hi! I'd like to book a Relationship Deep Dive (₹999)"
-                            class="btn btn-outline" target="_blank">Book Now</a>
-                    </div>
+                <div class="love-pricing" id="lovePricingGrid">
+                    <p class="text-muted text-center">Loading prices...</p>
                 </div>
             </div>
 
@@ -451,6 +414,18 @@
     </footer>
 
     <button class="scroll-top" id="scrollTop">↑</button>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+    <!-- Environment Config -->
+    <script src="js/env.js" onerror="console.log('env.js not found - using defaults')"></script>
+
+    <!-- Firebase and Booking Config -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/booking.js"></script>
 
     <!-- Load card data first -->
     <script src="js/cards.js"></script>
@@ -553,6 +528,42 @@
             }
         }
 
+        // Render love pricing from SERVICES config
+        function renderLovePricing() {
+            const grid = document.getElementById('lovePricingGrid');
+            if (!grid) return;
+
+            // Filter love category services
+            const loveServices = [];
+            Object.entries(SERVICES).forEach(([id, service]) => {
+                if (service.category === 'love') {
+                    loveServices.push({ id, ...service });
+                }
+            });
+
+            if (loveServices.length === 0) {
+                grid.innerHTML = '<p class="text-muted text-center">No pricing available</p>';
+                return;
+            }
+
+            // Render love services - middle one is featured
+            grid.innerHTML = loveServices.map((s, i) => `
+                <div class="pricing-card ${i === 1 ? 'featured' : ''}">
+                    <h3 class="pricing-name">${s.name}</h3>
+                    <div class="pricing-price">₹${s.price}</div>
+                    <ul class="pricing-features">
+                        <li>${s.description || ''}</li>
+                        <li>${s.duration} minute session</li>
+                        <li>Written summary</li>
+                    </ul>
+                    <a href="book-appointment.html?service=${s.id}" 
+                       class="btn ${i === 1 ? 'btn-primary' : 'btn-outline'}"
+                       ${i === 1 ? 'style="background: linear-gradient(135deg, #db7093, #d4a95d);"' : ''}
+                    >Book Now</a>
+                </div>
+            `).join('');
+        }
+
         // Add click listeners when DOM is ready
         document.addEventListener('DOMContentLoaded', function () {
             console.log('Love reading page loaded, initializing...');
@@ -567,6 +578,17 @@
 
             // Initial shuffle
             shuffleDeck();
+
+            // Wait for Firebase to initialize, then load dynamic pricing
+            setTimeout(async () => {
+                if (typeof initFirebase === 'function') {
+                    initFirebase();
+                }
+                if (typeof initServices === 'function') {
+                    await initServices();
+                }
+                renderLovePricing();
+            }, 500);
 
             console.log('Love reading initialization complete!');
         });

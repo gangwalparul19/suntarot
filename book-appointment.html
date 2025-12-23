@@ -144,6 +144,22 @@
             color: var(--color-background);
         }
 
+        .time-option.booked {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(231, 76, 60, 0.1);
+            border-color: rgba(231, 76, 60, 0.3);
+            pointer-events: none;
+        }
+
+        .time-option.booked::after {
+            content: 'Booked';
+            display: block;
+            font-size: 0.65rem;
+            color: #e74c3c;
+            margin-top: 0.25rem;
+        }
+
         /* Confirmation */
         .confirm-section {
             display: none;
@@ -538,20 +554,27 @@
         }
 
         // Load time slots for selected date
+        // Shows all slots, with booked ones disabled
         function loadTimeSlots(dateStr) {
             const dateInfo = availableDates.find(d => d.date === dateStr);
             const grid = document.getElementById('timeGrid');
 
-            if (!dateInfo || dateInfo.availableSlots.length === 0) {
+            if (!dateInfo || dateInfo.allSlots.length === 0) {
                 grid.innerHTML = '<p class="text-muted text-center">No available times for this date.</p>';
                 return;
             }
 
-            grid.innerHTML = dateInfo.availableSlots.map(time => `
-                <div class="time-option" data-time="${time}" onclick="selectTime('${time}')">
-                    ${formatTime(time)}
-                </div>
-            `).join('');
+            // Show all slots, mark booked ones as disabled
+            grid.innerHTML = dateInfo.allSlots.map(slot => {
+                const isBooked = dateInfo.bookedSlots.includes(slot.time);
+                return `
+                    <div class="time-option ${isBooked ? 'booked' : ''}" 
+                         data-time="${slot.time}" 
+                         ${isBooked ? '' : `onclick="selectTime('${slot.time}')"`}>
+                        ${slot.display}
+                    </div>
+                `;
+            }).join('');
         }
 
         // Format time for display
