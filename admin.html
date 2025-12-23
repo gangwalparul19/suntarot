@@ -540,6 +540,384 @@
             outline: none;
             border-color: var(--color-primary);
         }
+
+        /* Review buttons */
+        .review-btn {
+            padding: 0.4rem 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+
+            /* Container */
+            .admin-container {
+                padding: 0.5rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+
+            .section-title {
+                font-size: 1.25rem !important;
+            }
+
+            /* Panels */
+            .admin-panel {
+                padding: 0.75rem;
+                border-radius: 0.5rem;
+            }
+
+            .admin-panel h2 {
+                font-size: 1.1rem;
+                margin-bottom: 1rem;
+            }
+
+            /* Tabs - horizontal scroll on mobile */
+            .admin-tabs {
+                display: flex;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                gap: 0.25rem;
+                padding-bottom: 0.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .admin-tab {
+                padding: 0.5rem 0.6rem;
+                font-size: 0.7rem;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            /* Stats Grid */
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+            }
+
+            .stat-card {
+                padding: 0.75rem;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .stat-label {
+                font-size: 0.65rem;
+            }
+
+            /* Tables - wrap in scrollable container */
+            .admin-table-container,
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                margin: 0 -0.75rem;
+                padding: 0 0.75rem;
+            }
+
+            .admin-table {
+                min-width: 500px;
+                font-size: 0.75rem;
+            }
+
+            .admin-table th,
+            .admin-table td {
+                padding: 0.5rem 0.4rem;
+            }
+
+            /* Status badges */
+            .status-badge {
+                padding: 0.15rem 0.4rem;
+                font-size: 0.65rem;
+            }
+
+            /* Action buttons in tables */
+            .action-btn {
+                padding: 0.3rem 0.5rem;
+                font-size: 0.7rem;
+                margin: 0.1rem;
+            }
+
+            /* Booking Cards */
+            .booking-card,
+            .customer-card {
+                padding: 0.75rem !important;
+                margin-bottom: 0.5rem;
+            }
+
+            .booking-card h4,
+            .customer-card h4 {
+                font-size: 0.9rem;
+            }
+
+            .booking-card p,
+            .customer-card p {
+                font-size: 0.8rem;
+                margin: 0.25rem 0;
+            }
+
+            /* Review cards */
+            .review-card {
+                padding: 0.75rem !important;
+            }
+
+            .review-btn {
+                padding: 0.3rem 0.5rem;
+                font-size: 0.65rem;
+            }
+
+            /* Calendar/Availability */
+            .availability-grid {
+                grid-template-columns: repeat(7, 1fr);
+                gap: 0.15rem;
+            }
+
+            .calendar-day {
+                padding: 0.2rem;
+                font-size: 0.6rem;
+                min-height: 45px;
+            }
+
+            .calendar-day-date {
+                font-size: 0.7rem;
+            }
+
+            .calendar-header {
+                font-size: 0.9rem;
+            }
+
+            .calendar-nav button {
+                padding: 0.3rem 0.5rem;
+                font-size: 0.8rem;
+            }
+
+            /* Bulk Actions */
+            .bulk-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .bulk-input-group {
+                min-width: 100%;
+            }
+
+            .bulk-input-group label {
+                font-size: 0.7rem;
+            }
+
+            .bulk-input-group input {
+                padding: 0.4rem;
+                font-size: 0.8rem;
+            }
+
+            .weekday-checkboxes {
+                justify-content: flex-start;
+            }
+
+            .weekday-checkbox {
+                padding: 0.2rem 0.3rem;
+                font-size: 0.65rem;
+            }
+
+            /* Form inputs */
+            .search-input {
+                padding: 0.5rem 0.6rem;
+                font-size: 0.85rem;
+            }
+
+            .notes-textarea {
+                min-height: 60px;
+                font-size: 0.85rem;
+            }
+
+            /* Pricing Forms */
+            #pricingForms>div {
+                padding: 0.75rem !important;
+                margin-bottom: 0.5rem;
+            }
+
+            #pricingForms h4 {
+                font-size: 0.9rem;
+                margin-bottom: 0.5rem;
+            }
+
+            #pricingForms input {
+                padding: 0.4rem;
+                font-size: 0.8rem;
+            }
+
+            #pricingForms label {
+                font-size: 0.7rem;
+            }
+
+            /* Charts */
+            .chart-container {
+                height: 200px !important;
+                margin-bottom: 1rem;
+            }
+
+            canvas {
+                max-height: 200px !important;
+            }
+
+            /* Modals */
+            .admin-modal {
+                padding: 0.5rem;
+            }
+
+            .modal-content {
+                margin: 0;
+                padding: 0.75rem;
+                max-height: 95vh;
+                overflow-y: auto;
+                border-radius: 0.5rem;
+            }
+
+            .modal-header {
+                padding-bottom: 0.5rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .modal-header h3 {
+                font-size: 1rem;
+            }
+
+            .modal-close {
+                font-size: 1.25rem;
+                padding: 0.25rem;
+            }
+
+            /* Buttons */
+            .btn {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.75rem;
+            }
+
+            .btn-primary,
+            .btn-outline {
+                width: auto;
+                min-width: auto;
+            }
+
+            /* Popular services */
+            .popular-services {
+                gap: 0.5rem;
+            }
+
+            .service-card {
+                padding: 0.5rem;
+                font-size: 0.75rem;
+            }
+
+            /* Customer details in modal */
+            #customerModalContent {
+                font-size: 0.85rem;
+            }
+
+            #customerModalContent h4 {
+                font-size: 0.9rem;
+            }
+
+            /* Reschedule modal */
+            #rescheduleModalContent select,
+            #rescheduleModalContent input {
+                font-size: 0.85rem;
+                padding: 0.5rem;
+            }
+        }
+
+        /* Very small screens (< 480px) */
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .stat-number {
+                font-size: 1.25rem;
+            }
+
+            .stat-label {
+                font-size: 0.6rem;
+            }
+
+            .admin-tab {
+                padding: 0.35rem 0.45rem;
+                font-size: 0.6rem;
+            }
+
+            .admin-panel {
+                padding: 0.5rem;
+            }
+
+            .admin-panel h2 {
+                font-size: 1rem;
+            }
+
+            /* Calendar even smaller */
+            .availability-grid {
+                gap: 0.1rem;
+            }
+
+            .calendar-day {
+                padding: 0.15rem;
+                font-size: 0.5rem;
+                min-height: 40px;
+            }
+
+            /* Buttons stack */
+            .button-group,
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+
+            .button-group .btn,
+            .action-buttons .btn {
+                width: 100%;
+            }
+
+            /* Table text smaller */
+            .admin-table {
+                font-size: 0.65rem;
+            }
+
+            .admin-table th,
+            .admin-table td {
+                padding: 0.35rem 0.25rem;
+            }
+
+            /* Review sub-tabs */
+            #reviewsPanel .admin-tabs .admin-tab {
+                font-size: 0.6rem;
+                padding: 0.3rem 0.4rem;
+            }
+        }
+
+        /* Touch-friendly improvements */
+        @media (pointer: coarse) {
+
+            .admin-tab,
+            .action-btn,
+            .btn,
+            .calendar-day,
+            .review-btn {
+                min-height: 40px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .admin-table td .action-btn {
+                min-height: 32px;
+            }
+        }
     </style>
 </head>
 
@@ -993,34 +1371,40 @@
                 }
 
                 container.innerHTML = reviews.map(review => `
-                    <div style="background: var(--color-background); border: 1px solid var(--color-border); border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1rem;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
-                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div class="review-card" style="background: var(--color-background); border: 1px solid var(--color-border); border-radius: 0.75rem; padding: 1rem; margin-bottom: 1rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; flex-wrap: wrap;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
                                 <img src="${review.userPhoto || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(review.userName || 'User')}" 
                                      alt="${review.userName || 'User'}"
-                                     style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;">
+                                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
                                 <div>
-                                    <p class="text-primary" style="margin: 0; font-weight: 600;">${review.userName || 'Anonymous'}</p>
-                                    <small class="text-muted">${review.userEmail || ''}</small>
+                                    <p class="text-primary" style="margin: 0; font-weight: 600; font-size: 0.9rem;">${review.userName || 'Anonymous'}</p>
+                                    <small class="text-muted" style="font-size: 0.75rem;">${review.userEmail || ''}</small>
                                 </div>
                             </div>
                             <div style="text-align: right;">
-                                <div style="color: gold;">${'⭐'.repeat(review.rating || 5)}</div>
-                                <small class="text-muted">${formatDate(review.createdAt)}</small>
+                                <div style="color: gold; font-size: 0.8rem;">${'⭐'.repeat(review.rating || 5)}</div>
+                                <small class="text-muted" style="font-size: 0.7rem;">${formatDate(review.createdAt)}</small>
+                                ${review.featured ? '<span style="background: var(--color-primary); color: #000; padding: 0.15rem 0.4rem; border-radius: 0.25rem; font-size: 0.65rem; margin-left: 0.25rem;">FEATURED</span>' : ''}
                             </div>
                         </div>
-                        <p style="margin: 1rem 0; font-style: italic; color: var(--color-text);">"${review.text}"</p>
-                        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <p style="margin: 0.75rem 0; font-style: italic; color: var(--color-text); font-size: 0.9rem;">"${review.text}"</p>
+                        <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
                             ${status === 'pending' ? `
-                                <button class="btn btn-primary" onclick="handleApproveReview('${review.id}')" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                <button class="btn btn-primary review-btn" onclick="handleApproveReview('${review.id}')">
                                     ✓ Approve
                                 </button>
-                                <button class="btn btn-outline" onclick="handleRejectReview('${review.id}')" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                                <button class="btn btn-outline review-btn" onclick="handleRejectReview('${review.id}')">
                                     ✗ Reject
                                 </button>
                             ` : ''}
-                            <button class="btn btn-outline" onclick="handleDeleteReview('${review.id}')" style="padding: 0.5rem 1rem; font-size: 0.875rem; color: #e74c3c;">
-                                🗑️ Delete
+                            ${status === 'approved' ? `
+                                <button class="btn ${review.featured ? 'btn-primary' : 'btn-outline'} review-btn" onclick="handleToggleFeature('${review.id}', ${!review.featured})">
+                                    ${review.featured ? '★ Featured' : '☆ Feature'}
+                                </button>
+                            ` : ''}
+                            <button class="btn btn-outline review-btn" onclick="handleDeleteReview('${review.id}')" style="color: #e74c3c;">
+                                🗑️
                             </button>
                         </div>
                     </div>
@@ -1067,6 +1451,20 @@
                 loadReviewsByStatus(currentReviewStatus);
             } else {
                 toastError('Failed to delete review');
+            }
+        }
+
+        async function handleToggleFeature(reviewId, featured) {
+            const success = await toggleFeatureReview(reviewId, featured);
+            if (success) {
+                if (featured) {
+                    toastSuccess('Review featured! It will now appear on the home page.');
+                } else {
+                    toastInfo('Review unfeatured');
+                }
+                loadReviewsByStatus(currentReviewStatus);
+            } else {
+                toastError('Failed to update feature status');
             }
         }
 

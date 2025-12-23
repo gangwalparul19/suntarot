@@ -60,6 +60,44 @@ async function submitReview(text, rating = 5) {
     }
 }
 
+// Get featured reviews for display (featured first, then approved)
+async function getFeaturedReviews(limit = 3) {
+    if (!db) {
+        console.log('Firestore not initialized, returning empty reviews');
+        return [];
+    }
+
+    try {
+        // First try to get featured reviews
+        let snapshot = await db.collection('reviews')
+            .where('featured', '==', true)
+            .where('status', '==', REVIEW_STATUS.APPROVED)
+            .orderBy('createdAt', 'desc')
+            .limit(limit)
+            .get();
+
+        const reviews = [];
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            reviews.push({
+                id: doc.id,
+                userName: data.userName,
+                userPhoto: data.userPhoto,
+                text: data.text,
+                rating: data.rating,
+                featured: data.featured || false,
+                createdAt: data.createdAt?.toDate() || new Date()
+            });
+        });
+
+        return reviews;
+    } catch (error) {
+        console.error('Error fetching featured reviews:', error);
+        // Fallback to approved reviews if index not ready
+        return getApprovedReviews(limit);
+    }
+}
+
 // Get approved reviews for display
 async function getApprovedReviews(limit = 10) {
     if (!db) {
@@ -83,6 +121,7 @@ async function getApprovedReviews(limit = 10) {
                 userPhoto: data.userPhoto,
                 text: data.text,
                 rating: data.rating,
+                featured: data.featured || false,
                 createdAt: data.createdAt?.toDate() || new Date()
             });
         });
@@ -185,15 +224,21 @@ function renderStars(rating) {
     return stars;
 }
 
-// Load and display reviews on a page
-async function loadReviewsIntoElement(elementId, limit = 6) {
+// Load and display reviews on a page (featured first, then approved)
+async function loadReviewsIntoElement(elementId, limit = 3) {
     const container = document.getElementById(elementId);
     if (!container) return;
 
     // Show loading state
     container.innerHTML = '<p class="text-muted text-center">Loading reviews...</p>';
 
-    const reviews = await getApprovedReviews(limit);
+    // Try featured reviews first, fallback to approved
+    let reviews = await getFeaturedReviews(limit);
+
+    // If no featured reviews, get approved reviews
+    if (reviews.length === 0) {
+        reviews = await getApprovedReviews(limit);
+    }
 
     if (reviews.length === 0) {
         container.innerHTML = ''; // Keep existing static testimonials
@@ -218,13 +263,34 @@ async function loadReviewsIntoElement(elementId, limit = 6) {
     `).join('');
 }
 
+// Admin: Toggle feature status of a review
+async function toggleFeatureReview(reviewId, featured) {
+    if (!isAdmin()) {
+        toastError('Admin access required');
+        return false;
+    }
+
+    try {
+        await db.collection('reviews').doc(reviewId).update({
+            featured: featured
+        });
+        return true;
+    } catch (error) {
+        console.error('Error toggling feature status:', error);
+        return false;
+    }
+}
+
 // Export functions
 window.REVIEW_STATUS = REVIEW_STATUS;
 window.submitReview = submitReview;
 window.getApprovedReviews = getApprovedReviews;
+window.getFeaturedReviews = getFeaturedReviews;
 window.getAllReviews = getAllReviews;
 window.approveReview = approveReview;
 window.rejectReview = rejectReview;
 window.deleteReview = deleteReview;
+window.toggleFeatureReview = toggleFeatureReview;
 window.loadReviewsIntoElement = loadReviewsIntoElement;
 window.renderStars = renderStars;
+
