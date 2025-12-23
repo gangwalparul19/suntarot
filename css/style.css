@@ -2030,3 +2030,27 @@ img[loading="lazy"]:not([src=""]) {
     font-size: 1.5rem;
   }
 }
+
+/* Footer Responsive Helpers */
+.footer-copyright {
+  display: block;
+}
+
+.footer-credits {
+  display: none;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+
+  /* On mobile index, hide copyright and show credits */
+  .footer-index .footer-copyright {
+    display: none;
+  }
+
+  .footer-index .footer-credits {
+    display: block;
+  }
+}
