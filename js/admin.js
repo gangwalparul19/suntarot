@@ -391,39 +391,7 @@ function formatDate(timestamp) {
 async function loadDashboardData() {
     if (!listenersInitialized) setupRealtimeListeners();
 }
-// Load all bookings
-const bookings = await getAllBookings();
-const today = new Date().toISOString().split('T')[0];
 
-// Calculate stats
-const confirmedBookings = bookings.filter(b => b.status === 'confirmed');
-const upcomingBookings = confirmedBookings.filter(b => b.date >= today);
-
-// Revenue only counts if paymentStatus is 'Y'
-const totalRevenue = confirmedBookings.reduce((sum, b) => {
-    return sum + (b.paymentStatus === 'Y' ? (b.price || 0) : 0);
-}, 0);
-
-// Unique customers
-const uniqueEmails = new Set(confirmedBookings.map(b => b.userEmail).filter(Boolean));
-
-// Display stats
-document.getElementById('statBookings').textContent = confirmedBookings.length;
-document.getElementById('statRevenue').textContent = '₹' + totalRevenue.toLocaleString();
-document.getElementById('statUpcoming').textContent = upcomingBookings.length;
-document.getElementById('statCustomers').textContent = uniqueEmails.size;
-
-const pendingReviews = await getAllReviews('pending');
-document.getElementById('statPendingReviews').textContent = pendingReviews.length;
-
-// Render charts
-renderCharts(bookings);
-
-// Popular services
-renderPopularServices(confirmedBookings);
-
-// Recent bookings
-renderBookingsTable(bookings.slice(0, 5), 'recentBookings');
 
 // Render popular services chart
 function renderPopularServices(bookings) {

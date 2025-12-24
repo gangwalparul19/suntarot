@@ -154,12 +154,14 @@ a:hover {
    Header / Navigation
    ======================================== */
 .header {
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
   z-index: var(--z-header);
   padding: var(--spacing-sm) 0;
-  background: rgba(10, 10, 10, 0.8);
+  background: rgba(10, 10, 10, 0.95);
+  /* Slightly more opaque */
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--color-border);
 }
@@ -229,13 +231,13 @@ a:hover {
     position: absolute;
     top: 100%;
     left: 0;
-    right: 0;
+    width: 100%;
     flex-direction: column;
     background: var(--color-background);
     padding: var(--spacing-md);
     border-bottom: 1px solid var(--color-border);
     border-top: 1px solid var(--color-border);
-    /* Separator */
+    z-index: 1000;
   }
 
   .nav-links.active {
@@ -1478,6 +1480,17 @@ a:hover {
 .footer-single-row .footer-bottom {
   border-top: none;
   padding-top: 0;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    display: none;
+  }
+
+  .footer-bottom {
+    padding-top: 0;
+    border-top: none;
+  }
 }
 
 /* ========================================

@@ -278,8 +278,20 @@ async function createBooking(date, time, serviceId, notes = '') {
         console.log('Creating booking with data:', bookingData);
 
         const bookingRef = await db.collection('bookings').add(bookingData);
-
         console.log('Booking created:', bookingRef.id);
+
+        // Send Email Notification (Async - don't block UI)
+        fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                booking: bookingData,
+                adminEmail: 'tarotsun555666@gmail.com'
+            })
+        }).then(res => res.json())
+            .then(data => console.log('Email API response:', data))
+            .catch(err => console.error('Email API error:', err));
+
         return bookingRef.id;
     } catch (error) {
         console.error('Error creating booking:', error);
