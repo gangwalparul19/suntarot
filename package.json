@@ -6,7 +6,14 @@
         "build": "node scripts/generate-env.js",
         "start": "npx serve ."
     },
-    "keywords": ["tarot", "spiritual", "reading"],
+    "keywords": [
+        "tarot",
+        "spiritual",
+        "reading"
+    ],
     "author": "Sun Tarot",
-    "license": "MIT"
+    "license": "MIT",
+    "dependencies": {
+        "nodemailer": "^6.9.0"
+    }
 }
