@@ -1,0 +1,82 @@
+/* Reading Page Styles */
+.reading-spread {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin: 3rem 0;
+}
+
+.reading-card {
+    text-align: center;
+}
+
+.reading-card h4 {
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+}
+
+.reading-card .tarot-card {
+    margin: 0 auto;
+}
+
+/* Card back design with CSS gradient */
+.tarot-card-back {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tarot-card-back::before {
+    content: '☀️';
+    font-size: 3rem;
+    opacity: 0.6;
+}
+
+.tarot-card-back::after {
+    content: '';
+    position: absolute;
+    inset: 10px;
+    border: 2px solid var(--color-primary);
+    border-radius: 0.5rem;
+    opacity: 0.3;
+}
+
+.reading-result {
+    background: var(--color-background-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    padding: 2rem;
+    margin-top: 2rem;
+    display: none;
+}
+
+.reading-result.show {
+    display: block;
+}
+
+.reading-result h3 {
+    color: var(--color-primary);
+    margin-bottom: 0.5rem;
+}
+
+.reading-result p {
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+}
+
+.shuffle-btn {
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 20px rgba(212, 169, 93, 0.3);
+    }
+
+    to {
+        box-shadow: 0 0 40px rgba(212, 169, 93, 0.6);
+    }
+}

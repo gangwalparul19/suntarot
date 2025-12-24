@@ -140,6 +140,51 @@
     transition: all 0.3s;
 }
 
+/* Admin Layout Utilities */
+.admin-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.admin-header-flex h2 {
+    margin: 0;
+}
+
+.admin-filter-bar {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    background: var(--color-background);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border);
+}
+
+.admin-filter-group {
+    min-width: 150px;
+}
+
+.admin-filter-group-large {
+    flex: 1;
+    min-width: 200px;
+}
+
+.admin-label {
+    font-size: 0.8rem;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.admin-date-inputs {
+    display: flex;
+    gap: 0.5rem;
+}
+
 .action-btn-approve {
     background: #27ae60;
     color: white;

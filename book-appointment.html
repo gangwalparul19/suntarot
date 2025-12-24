@@ -14,301 +14,8 @@
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=PT+Sans:wght@400;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        .booking-container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
+    <link rel="stylesheet" href="css/booking.css">
 
-        /* Service Selection */
-        .service-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .service-option {
-            background: var(--color-card);
-            border: 2px solid var(--color-border);
-            border-radius: 0.75rem;
-            padding: 1.25rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-        }
-
-        .service-option:hover {
-            border-color: var(--color-primary);
-        }
-
-        .service-option.selected {
-            border-color: var(--color-primary);
-            background: rgba(212, 169, 93, 0.1);
-        }
-
-        .service-option h4 {
-            color: var(--color-primary);
-            margin-bottom: 0.5rem;
-        }
-
-        .service-price {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--color-text);
-        }
-
-        .service-duration {
-            font-size: 0.875rem;
-            color: var(--color-text-muted);
-        }
-
-        /* Calendar */
-        .calendar-section {
-            display: none;
-        }
-
-        .calendar-section.active {
-            display: block;
-        }
-
-        .date-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-        }
-
-        .date-option {
-            background: var(--color-card);
-            border: 2px solid var(--color-border);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-        }
-
-        .date-option:hover {
-            border-color: var(--color-primary);
-        }
-
-        .date-option.selected {
-            border-color: var(--color-primary);
-            background: rgba(212, 169, 93, 0.1);
-        }
-
-        .date-option .day-name {
-            font-size: 0.75rem;
-            color: var(--color-text-muted);
-        }
-
-        .date-option .date-display {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: var(--color-text);
-        }
-
-        /* Time Slots */
-        .time-section {
-            display: none;
-        }
-
-        .time-section.active {
-            display: block;
-        }
-
-        .time-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .time-option {
-            background: var(--color-card);
-            border: 2px solid var(--color-border);
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .time-option:hover {
-            border-color: var(--color-primary);
-        }
-
-        .time-option.selected {
-            border-color: var(--color-primary);
-            background: var(--color-primary);
-            color: var(--color-background);
-        }
-
-        .time-option.booked {
-            opacity: 0.5;
-            cursor: not-allowed;
-            background: rgba(231, 76, 60, 0.1);
-            border-color: rgba(231, 76, 60, 0.3);
-            pointer-events: none;
-        }
-
-        .time-option.booked::after {
-            content: 'Booked';
-            display: block;
-            font-size: 0.65rem;
-            color: #e74c3c;
-            margin-top: 0.25rem;
-        }
-
-        /* Confirmation */
-        .confirm-section {
-            display: none;
-        }
-
-        .confirm-section.active {
-            display: block;
-        }
-
-        .booking-summary {
-            background: var(--color-card);
-            border: 1px solid var(--color-border);
-            border-radius: 1rem;
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .booking-summary h3 {
-            color: var(--color-primary);
-            margin-bottom: 1rem;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--color-border);
-        }
-
-        .summary-row:last-child {
-            border-bottom: none;
-            font-weight: bold;
-            font-size: 1.25rem;
-        }
-
-        .notes-input {
-            width: 100%;
-            padding: 1rem;
-            background: var(--color-background-secondary);
-            border: 1px solid var(--color-border);
-            border-radius: 0.5rem;
-            color: var(--color-text);
-            font-family: inherit;
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .notes-input:focus {
-            outline: none;
-            border-color: var(--color-primary);
-        }
-
-        /* Progress Steps */
-        .progress-steps {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .step {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--color-text-muted);
-        }
-
-        .step.active {
-            color: var(--color-primary);
-        }
-
-        .step.completed {
-            color: var(--color-primary);
-        }
-
-        .step-number {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--color-card);
-            border: 2px solid currentColor;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        .step.active .step-number,
-        .step.completed .step-number {
-            background: var(--color-primary);
-            color: var(--color-background);
-            border-color: var(--color-primary);
-        }
-
-        /* Login Prompt */
-        .login-prompt {
-            text-align: center;
-            padding: 3rem;
-            background: var(--color-card);
-            border: 1px solid var(--color-border);
-            border-radius: 1rem;
-        }
-
-        /* Success Message */
-        .success-message {
-            display: none;
-            text-align: center;
-            padding: 3rem;
-            background: rgba(39, 174, 96, 0.1);
-            border: 1px solid rgba(39, 174, 96, 0.3);
-            border-radius: 1rem;
-        }
-
-        .success-message.show {
-            display: block;
-        }
-
-        .success-message h2 {
-            color: #27ae60;
-        }
-
-        /* Auth Container Styles */
-        .auth-container {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .user-name {
-            color: var(--color-text);
-            font-size: 0.875rem;
-        }
-
-        #userInfo {
-            display: none;
-            align-items: center;
-            gap: 0.5rem;
-        }
-    </style>
-</head>
 
 <body>
     <div class="stars" id="stars"></div>
@@ -430,6 +137,12 @@
 
             <!-- Success Message -->
             <div class="success-message" id="successMessage">
+                <div class="success-animation">
+                    <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                        <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none" />
+                        <path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                    </svg>
+                </div>
                 <h2>🎉 Booking Confirmed!</h2>
                 <p class="text-muted" style="margin: 1rem 0;">Your appointment has been scheduled. You'll receive a
                     confirmation at your email.</p>
@@ -463,6 +176,7 @@
     <script src="js/auth.js"></script>
     <script src="js/booking.js"></script>
     <script src="js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <script>
         // State
@@ -507,7 +221,7 @@
             grid.innerHTML = Object.entries(SERVICES).map(([id, service]) => `
                 <div class="service-option" data-service="${id}" onclick="selectService('${id}')">
                     <h4>${service.name}</h4>
-                    <div class="service-price">₹${service.price}</div>
+                    <div class="service-price">Rs. ${service.price}</div>
                     <div class="service-duration">${service.duration} minutes</div>
                 </div>
             `).join('');
@@ -656,8 +370,30 @@
                 document.getElementById('confirmationDetails').innerHTML = `
                     <p><strong>${service.name}</strong></p>
                     <p>${dateInfo.dayName}, ${dateInfo.displayDate} at ${formatTime(selectedTime)}</p>
-                    <p class="text-primary" style="font-size: 1.5rem; margin-top: 1rem;">₹${service.price}</p>
+                    <p class="text-primary" style="font-size: 1.5rem; margin-top: 1rem;">Rs. ${service.price}</p>
                 `;
+
+                // Trigger Confetti
+                if (window.confetti) {
+                    var duration = 3 * 1000;
+                    var animationEnd = Date.now() + duration;
+                    var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+                    var random = function (min, max) { return Math.random() * (max - min) + min; };
+
+                    var interval = setInterval(function () {
+                        var timeLeft = animationEnd - Date.now();
+
+                        if (timeLeft <= 0) {
+                            return clearInterval(interval);
+                        }
+
+                        var particleCount = 50 * (timeLeft / duration);
+                        // since particles fall down, start a bit higher than random
+                        confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.1, 0.3), y: Math.random() - 0.2 } }));
+                        confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.7, 0.9), y: Math.random() - 0.2 } }));
+                    }, 250);
+                }
             }
         }
 

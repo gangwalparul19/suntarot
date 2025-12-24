@@ -37,7 +37,7 @@ export default async function handler(req, res) {
                     <p><strong>Customer:</strong> ${booking.userName} (${booking.userEmail})</p>
                     <p><strong>Service:</strong> ${booking.serviceName}</p>
                     <p><strong>Date & Time:</strong> ${booking.date} at ${booking.time}</p>
-                    <p><strong>Price:</strong> ₹${booking.price}</p>
+                    <p><strong>Price:</strong> Rs. ${booking.price}</p>
                     <p><strong>Notes:</strong> ${booking.notes || 'None'}</p>
                     <hr>
                     <p>Please login to the Admin Dashboard to manage this booking.</p>
