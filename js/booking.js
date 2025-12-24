@@ -341,17 +341,44 @@ async function getUserBookings() {
 }
 
 // Cancel a booking
+// Cancel a booking
 async function cancelBooking(bookingId) {
     if (!isLoggedIn()) return false;
 
     try {
-        await db.collection('bookings').doc(bookingId).update({
+        // 1. Get the booking to find the date and time
+        const bookingRef = db.collection('bookings').doc(bookingId);
+        const bookingDoc = await bookingRef.get();
+
+        if (!bookingDoc.exists) {
+            console.error('Booking not found');
+            return false;
+        }
+
+        const booking = bookingDoc.data();
+
+        // 2. Perform Batch Update: Cancel booking AND Delete slot
+        const batch = db.batch();
+
+        // Update booking status
+        batch.update(bookingRef, {
             status: 'cancelled',
             cancelledAt: firebase.firestore.FieldValue.serverTimestamp()
         });
+
+        // Delete taken slot
+        // Reconstruct slot ID: "slot_YYYY-MM-DD_HH-MM"
+        const slotId = `slot_${booking.date}_${booking.time.replace(':', '-')}`;
+        const slotRef = db.collection('taken_slots').doc(slotId);
+        batch.delete(slotRef);
+
+        await batch.commit();
+
+        console.log('Booking cancelled and slot freed');
         return true;
     } catch (error) {
         console.error('Error cancelling booking:', error);
+        toastError('Failed to cancel: ' + error.message);
         return false;
     }
 }
