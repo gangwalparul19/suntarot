@@ -532,10 +532,14 @@
             const grid = document.getElementById('dateGrid');
             grid.innerHTML = '<p class="text-muted text-center">Loading available dates...</p>';
 
-            availableDates = await getAvailableDates(30);
+            // Get duration of selected service
+            const service = SERVICES[selectedService];
+            const duration = service ? service.duration : 30;
+
+            availableDates = await getAvailableDates(30, duration);
 
             if (availableDates.length === 0) {
-                grid.innerHTML = '<p class="text-muted text-center">No available dates found. Please try again later.</p>';
+                grid.innerHTML = '<p class="text-muted text-center">No available dates found for this duration.</p>';
                 return;
             }
 
@@ -562,7 +566,6 @@
         }
 
         // Load time slots for selected date
-        // Shows all slots, with booked ones disabled
         function loadTimeSlots(dateStr) {
             const dateInfo = availableDates.find(d => d.date === dateStr);
             const grid = document.getElementById('timeGrid');
@@ -572,17 +575,14 @@
                 return;
             }
 
-            // Show all slots, mark booked ones as disabled
-            grid.innerHTML = dateInfo.allSlots.map(slot => {
-                const isBooked = dateInfo.bookedSlots.includes(slot.time);
-                return `
-                    <div class="time-option ${isBooked ? 'booked' : ''}" 
-                         data-time="${slot.time}" 
-                         ${isBooked ? '' : `onclick="selectTime('${slot.time}')"`}>
-                        ${slot.display}
-                    </div>
-                `;
-            }).join('');
+            // Render available slots (logic now handles availability)
+            grid.innerHTML = dateInfo.allSlots.map(slot => `
+                <div class="time-option" 
+                     data-time="${slot.time}" 
+                     onclick="selectTime('${slot.time}')">
+                    ${slot.display}
+                </div>
+            `).join('');
         }
 
         // Format time for display
