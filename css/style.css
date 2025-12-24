@@ -2064,3 +2064,58 @@ img[loading="lazy"]:not([src=""]) {
     display: block;
   }
 }
+
+/* ========================================
+   Mobile Hero Section Fixes
+   ======================================== */
+@media (max-width: 768px) {
+  .hero {
+    min-height: auto;
+    padding: var(--spacing-md) var(--spacing-sm);
+    align-items: flex-start;
+    padding-top: var(--spacing-lg);
+  }
+
+  .hero-content {
+    padding-top: 0;
+  }
+
+  .hero-subtitle {
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+  }
+
+  .hero-title {
+    font-size: clamp(1.75rem, 6vw, 2.5rem);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .hero-description {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .hero-buttons {
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+  }
+
+  .hero-buttons .btn {
+    padding: 0.625rem 1rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+}
+
+/* ========================================
+   Mobile About Section Image Centering
+   ======================================== */
+@media (max-width: 768px) {
+  .card-of-day-content {
+    justify-items: center;
+  }
+
+  .card-of-day-content > div:first-child {
+    margin: 0 auto;
+  }
+}
