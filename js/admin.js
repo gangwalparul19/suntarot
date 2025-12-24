@@ -1,6 +1,13 @@
 // Admin Panel Logic
 let currentMonth = new Date();
-let blockedDates = new Set();
+// Cache for real-time data
+let bookingsCache = [];
+let reviewsCache = [];
+let blockedDatesCache = new Set();
+let listenersInitialized = false;
+let unsubscribeBookings = null;
+let unsubscribeReviews = null;
+let unsubscribeAvailability = null;
 
 // Check admin access
 function checkAdminAccess() {
@@ -26,8 +33,122 @@ function checkAdminAccess() {
     } else {
         accessDenied.style.display = 'none';
         adminContent.style.display = 'block';
-        loadDashboardData();
+        if (!listenersInitialized) {
+            setupRealtimeListeners();
+        } else {
+            // If re-logging in or returning, ensure UI is up to date
+            updateDashboardUI();
+        }
     }
+}
+
+// Setup Real-time Listeners
+function setupRealtimeListeners() {
+    console.log('Initializing real-time listeners...');
+
+    // 1. Bookings Listener
+    unsubscribeBookings = db.collection('bookings')
+        .onSnapshot(snapshot => {
+            bookingsCache = [];
+            snapshot.forEach(doc => {
+                bookingsCache.push({ id: doc.id, ...doc.data() });
+            });
+            // Update UI whenever data changes
+            console.log('Real-time update: Bookings', bookingsCache.length);
+            updateDashboardUI();
+
+            // Should also update pagination/tables if they are active
+            const activePanel = document.querySelector('.admin-panel.active');
+            if (activePanel && activePanel.id === 'bookingsPanel') {
+                loadAllBookings(); // This now uses cache
+            }
+        }, error => {
+            console.error('Error listening to bookings:', error);
+            toastError('Live updates connection lost (Bookings)');
+        });
+
+    // 2. Reviews Listener
+    unsubscribeReviews = db.collection('reviews')
+        .onSnapshot(snapshot => {
+            reviewsCache = [];
+            snapshot.forEach(doc => {
+                reviewsCache.push({ id: doc.id, ...doc.data() });
+            });
+            console.log('Real-time update: Reviews', reviewsCache.length);
+
+            // Update Pending Badge in Sidebar/Stats
+            updatePendingReviewsCount();
+
+            // Refresh reviews list if active
+            const activePanel = document.querySelector('.admin-panel.active');
+            if (activePanel && activePanel.id === 'reviewsPanel') {
+                loadReviewsByStatus(currentReviewStatus);
+            }
+        }, error => {
+            console.error('Error listening to reviews:', error);
+        });
+
+    // 3. Availability Listener
+    unsubscribeAvailability = db.collection('availability')
+        .onSnapshot(snapshot => {
+            blockedDatesCache.clear();
+            snapshot.forEach(doc => {
+                if (doc.data().blocked) {
+                    blockedDatesCache.add(doc.id);
+                }
+            });
+            console.log('Real-time update: Availability');
+
+            // Refresh calendar if active
+            const activePanel = document.querySelector('.admin-panel.active');
+            if (activePanel && activePanel.id === 'availabilityPanel') {
+                renderCalendar(); // This now uses cache
+            }
+        }, error => {
+            console.error('Error listening to availability:', error);
+        });
+
+    listenersInitialized = true;
+}
+
+// Update Dashboard Stats & Charts from Cache
+function updateDashboardUI() {
+    const today = new Date().toISOString().split('T')[0];
+
+    // Calculate stats
+    const confirmedBookings = bookingsCache.filter(b => b.status === 'confirmed');
+    const upcomingBookings = confirmedBookings.filter(b => b.date >= today);
+
+    // Revenue
+    const totalRevenue = confirmedBookings.reduce((sum, b) => {
+        return sum + (b.paymentStatus === 'Y' ? (b.price || 0) : 0);
+    }, 0);
+
+    // Unique customers
+    const uniqueEmails = new Set(confirmedBookings.map(b => b.userEmail).filter(Boolean));
+
+    // Update DOM
+    const statBookings = document.getElementById('statBookings');
+    if (statBookings) {
+        statBookings.textContent = confirmedBookings.length;
+        document.getElementById('statRevenue').textContent = '₹' + totalRevenue.toLocaleString();
+        document.getElementById('statUpcoming').textContent = upcomingBookings.length;
+        document.getElementById('statCustomers').textContent = uniqueEmails.size;
+    }
+
+    // Only render high-cost items like charts if Dashboard is actually active or we just loaded
+    // But keeping it simple: Update them since they are lightweight canvas ops usually
+    renderCharts(bookingsCache);
+    renderPopularServices(confirmedBookings);
+
+    // Recent bookings table in dashboard
+    renderBookingsTable(bookingsCache.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5), 'recentBookings');
+}
+
+function updatePendingReviewsCount() {
+    const pendingCount = reviewsCache.filter(r => r.status === 'pending').length;
+    const statEl = document.getElementById('statPendingReviews');
+    if (statEl) statEl.textContent = pendingCount;
 }
 
 // Show panel
@@ -142,15 +263,29 @@ async function loadReviewsByStatus(status) {
         }
     });
 
-    try {
-        const reviews = await getAllReviews(status);
+    // Use cache instead of fetch
+    const statusReviews = reviewsCache.filter(r => r.status === status);
 
-        if (reviews.length === 0) {
-            container.innerHTML = `<p class="text-muted">No ${status} reviews found.</p>`;
-            return;
-        }
+    // Sort by date desc (assuming createdAt is timestamp)
+    // Note: Firestore timestamps need converting if not already done by cache push? 
+    // Usually cache has raw firestore data. 
+    // Let's robustly sort.
+    statusReviews.sort((a, b) => {
+        const timeA = a.createdAt?.seconds || 0;
+        const timeB = b.createdAt?.seconds || 0;
+        return timeB - timeA;
+    });
 
-        container.innerHTML = reviews.map(review => `
+    renderReviewsList(container, statusReviews, status);
+}
+
+function renderReviewsList(container, reviews, status) {
+    if (reviews.length === 0) {
+        container.innerHTML = `<p class="text-muted">No ${status} reviews found.</p>`;
+        return;
+    }
+
+    container.innerHTML = reviews.map(review => `
             <div class="review-card" style="background: var(--color-background); border: 1px solid var(--color-border); border-radius: 0.75rem; padding: 1rem; margin-bottom: 1rem;">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem; flex-wrap: wrap;">
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
@@ -189,20 +324,13 @@ async function loadReviewsByStatus(status) {
                 </div>
             </div>
         `).join('');
-    } catch (error) {
-        console.error('Error loading reviews:', error);
-        container.innerHTML = '<p class="text-muted">Error loading reviews. Please try again.</p>';
-    }
 }
 
 async function handleApproveReview(reviewId) {
     const success = await approveReview(reviewId);
     if (success) {
         toastSuccess('Review approved! It will now appear on the home page.');
-        loadReviewsByStatus(currentReviewStatus);
-        // Update pending count
-        const pendingReviews = await getAllReviews('pending');
-        document.getElementById('statPendingReviews').textContent = pendingReviews.length;
+        // Listener updates UI
     } else {
         toastError('Failed to approve review');
     }
@@ -259,41 +387,43 @@ function formatDate(timestamp) {
 }
 
 // Load dashboard data
+// Load dashboard data (Deprecated in favor of real-time updateDashboardUI, but sending to setup for back-compat if needed)
 async function loadDashboardData() {
-    // Load all bookings
-    const bookings = await getAllBookings();
-    const today = new Date().toISOString().split('T')[0];
-
-    // Calculate stats
-    const confirmedBookings = bookings.filter(b => b.status === 'confirmed');
-    const upcomingBookings = confirmedBookings.filter(b => b.date >= today);
-
-    // Revenue only counts if paymentStatus is 'Y'
-    const totalRevenue = confirmedBookings.reduce((sum, b) => {
-        return sum + (b.paymentStatus === 'Y' ? (b.price || 0) : 0);
-    }, 0);
-
-    // Unique customers
-    const uniqueEmails = new Set(confirmedBookings.map(b => b.userEmail).filter(Boolean));
-
-    // Display stats
-    document.getElementById('statBookings').textContent = confirmedBookings.length;
-    document.getElementById('statRevenue').textContent = '₹' + totalRevenue.toLocaleString();
-    document.getElementById('statUpcoming').textContent = upcomingBookings.length;
-    document.getElementById('statCustomers').textContent = uniqueEmails.size;
-
-    const pendingReviews = await getAllReviews('pending');
-    document.getElementById('statPendingReviews').textContent = pendingReviews.length;
-
-    // Render charts
-    renderCharts(bookings);
-
-    // Popular services
-    renderPopularServices(confirmedBookings);
-
-    // Recent bookings
-    renderBookingsTable(bookings.slice(0, 5), 'recentBookings');
+    if (!listenersInitialized) setupRealtimeListeners();
 }
+// Load all bookings
+const bookings = await getAllBookings();
+const today = new Date().toISOString().split('T')[0];
+
+// Calculate stats
+const confirmedBookings = bookings.filter(b => b.status === 'confirmed');
+const upcomingBookings = confirmedBookings.filter(b => b.date >= today);
+
+// Revenue only counts if paymentStatus is 'Y'
+const totalRevenue = confirmedBookings.reduce((sum, b) => {
+    return sum + (b.paymentStatus === 'Y' ? (b.price || 0) : 0);
+}, 0);
+
+// Unique customers
+const uniqueEmails = new Set(confirmedBookings.map(b => b.userEmail).filter(Boolean));
+
+// Display stats
+document.getElementById('statBookings').textContent = confirmedBookings.length;
+document.getElementById('statRevenue').textContent = '₹' + totalRevenue.toLocaleString();
+document.getElementById('statUpcoming').textContent = upcomingBookings.length;
+document.getElementById('statCustomers').textContent = uniqueEmails.size;
+
+const pendingReviews = await getAllReviews('pending');
+document.getElementById('statPendingReviews').textContent = pendingReviews.length;
+
+// Render charts
+renderCharts(bookings);
+
+// Popular services
+renderPopularServices(confirmedBookings);
+
+// Recent bookings
+renderBookingsTable(bookings.slice(0, 5), 'recentBookings');
 
 // Render popular services chart
 function renderPopularServices(bookings) {
@@ -359,7 +489,7 @@ function exportBookingsCSV() {
 
         const a = document.createElement('a');
         a.href = url;
-        a.download = `sun-tarot-bookings-${new Date().toISOString().split('T')[0]}.csv`;
+        a.download = `sun - tarot - bookings - ${new Date().toISOString().split('T')[0]}.csv`;
         a.click();
 
         URL.revokeObjectURL(url);
@@ -378,7 +508,8 @@ let bookingsPagination = {
 
 // Load all bookings
 async function loadAllBookings() {
-    bookingsPagination.allData = await getAllBookings();
+    // Use Cache
+    bookingsPagination.allData = [...bookingsCache];
 
     // Initial sort descending by date (default)
     bookingsPagination.allData.sort((a, b) => {
@@ -425,9 +556,9 @@ function renderPaginationControls() {
     }
 
     container.innerHTML = `
-        <span class="text-muted" style="font-size: 0.9rem;">
+        < span class="text-muted" style = "font-size: 0.9rem;" >
             Showing ${(bookingsPagination.currentPage - 1) * bookingsPagination.itemsPerPage + 1} to ${Math.min(bookingsPagination.currentPage * bookingsPagination.itemsPerPage, bookingsPagination.totalItems)} of ${bookingsPagination.totalItems} entries
-        </span>
+        </span >
         <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-outline" onclick="changePage(-1)" ${bookingsPagination.currentPage === 1 ? 'disabled' : ''} style="padding: 0.25rem 0.75rem;">
                 Previous
@@ -570,7 +701,7 @@ async function togglePaymentStatus(bookingId, currentStatus) {
             updatedAt: new Date()
         });
 
-        toastSuccess(`Payment marked as ${newStatus}`);
+        toastSuccess(`Payment marked as ${newStatus} `);
         loadDashboardData(); // Reload to update revenue
     } catch (error) {
         console.error('Error updating payment status:', error);
@@ -588,20 +719,27 @@ async function renderCalendar() {
     document.getElementById('currentMonthLabel').textContent =
         currentMonth.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
 
-    // Get blocked dates for this month
+    // Get available dates and bookings for this month
     const startOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
     const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
 
-    try {
-        const snapshot = await db.collection('availability')
-            .where('blocked', '==', true)
-            .get();
+    // Format for query
+    const startStr = startOfMonth.toISOString().split('T')[0];
+    const endStr = endOfMonth.toISOString().split('T')[0];
 
-        blockedDates.clear();
-        snapshot.forEach(doc => blockedDates.add(doc.id));
-    } catch (error) {
-        console.error('Error loading blocked dates:', error);
-    }
+    // Use Cache for real-time updates
+    const blockedDates = blockedDatesCache;
+
+    // Calculate Monthly Bookings from Cache
+    var monthlyBookings = {};
+
+    // Filter bookings cache for this month locally
+    bookingsCache.forEach(b => {
+        if (b.status !== 'cancelled' && b.date >= startStr && b.date <= endStr) {
+            if (!monthlyBookings[b.date]) monthlyBookings[b.date] = 0;
+            monthlyBookings[b.date]++;
+        }
+    });
 
     // Render calendar
     const calendarContainer = document.getElementById('calendarDays');
@@ -621,15 +759,17 @@ async function renderCalendar() {
         const dateStr = date.toISOString().split('T')[0];
         const isBlocked = blockedDates.has(dateStr);
         const isPast = date < new Date().setHours(0, 0, 0, 0);
+        const bookingCount = monthlyBookings[dateStr] || 0;
 
         html += `
-            <div class="calendar-day ${isBlocked ? 'blocked' : ''}" 
-                 onclick="${isPast ? '' : `toggleDate('${dateStr}')`}"
-                 style="${isPast ? 'opacity: 0.4; cursor: not-allowed;' : ''}">
+            <div class="calendar-day ${isBlocked ? 'blocked' : ''} ${bookingCount > 0 ? 'has-bookings' : ''}" 
+                 onclick="openDayDetails('${dateStr}')"
+                 style="${isPast ? 'opacity: 0.7;' : ''}">
                 <div style="font-size: 1.25rem; font-weight: bold;">${day}</div>
                 <div style="font-size: 0.75rem; color: var(--color-text-muted);">
                     ${isBlocked ? '🚫 Blocked' : '✓ Open'}
                 </div>
+                ${bookingCount > 0 ? `<div style="margin-top:0.25rem; font-size: 0.7rem; color: var(--color-primary);">📅 ${bookingCount} Booking${bookingCount > 1 ? 's' : ''}</div>` : ''}
             </div>
         `;
     }
@@ -638,20 +778,90 @@ async function renderCalendar() {
     calendarContainer.innerHTML = html;
 }
 
-async function toggleDate(dateStr) {
-    const isCurrentlyBlocked = blockedDates.has(dateStr);
-
-    if (isCurrentlyBlocked) {
-        if (await unblockDate(dateStr)) {
-            blockedDates.delete(dateStr);
+async function toggleDate(dateStr, action) {
+    if (action === 'block') {
+        if (await blockDate(dateStr, 'Blocked by admin')) {
+            // blockedDatesCache will auto-update via listener
+            toastSuccess('Date blocked successfully');
+        } else {
+            toastError('Failed to block date');
         }
     } else {
-        if (await blockDate(dateStr, 'Blocked by admin')) {
-            blockedDates.add(dateStr);
+        if (await unblockDate(dateStr)) {
+            // blockedDatesCache will auto-update via listener
+            toastSuccess('Date unblocked successfully');
+        } else {
+            toastError('Failed to unblock date');
         }
     }
+    // renderCalendar(); // Listener will trigger this
+    // openDayDetails(dateStr); // Listener might cause flicker if we rely only on it. 
+    // Let's keep manual refresh for immediate feedback UI until listener catches up? 
+    // Actually listener is fast. But we need to refresh Details Modal which pulls from DB?
+    // We should refactor openDayDetails to use cache too! but for now let's query fresh for modal.
+    setTimeout(() => openDayDetails(dateStr), 500); // Small delay to allow Firestore propagation if using fetch
+}
 
-    renderCalendar();
+async function openDayDetails(dateStr) {
+    const modal = document.getElementById('dayDetailsModal');
+    const title = document.getElementById('dayDetailsTitle');
+    const content = document.getElementById('dayBookingsList');
+    const statusText = document.getElementById('dayStatusText');
+    const blockBtn = document.getElementById('blockDateBtn');
+    const unblockBtn = document.getElementById('unblockDateBtn');
+
+    // Format date header
+    const dateObj = new Date(dateStr);
+    title.textContent = dateObj.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+    // Show modal
+    modal.classList.add('show');
+    content.innerHTML = '<p class="text-muted">Loading bookings...</p>';
+
+    // Set buttons based on current block status
+    const isBlocked = blockedDatesCache.has(dateStr);
+    if (isBlocked) {
+        statusText.innerHTML = 'Current Status: <span style="color: #e74c3c; font-weight: bold;">🚫 Blocked</span>';
+        blockBtn.style.display = 'none';
+        unblockBtn.style.display = 'block';
+        unblockBtn.onclick = () => toggleDate(dateStr, 'unblock');
+    } else {
+        statusText.innerHTML = 'Current Status: <span style="color: #27ae60; font-weight: bold;">✓ Open for Business</span>';
+        blockBtn.style.display = 'block';
+        unblockBtn.style.display = 'none';
+        blockBtn.onclick = () => toggleDate(dateStr, 'block');
+    }
+
+    // Fetch bookings for this day (Use Cache!)
+    const dayBookings = bookingsCache.filter(b => b.date === dateStr && b.status !== 'cancelled');
+    // Sort by time
+    dayBookings.sort((a, b) => {
+        return a.time.localeCompare(b.time);
+    });
+
+    if (dayBookings.length === 0) {
+        content.innerHTML = '<p class="text-muted">No bookings for this date.</p>';
+    } else {
+        content.innerHTML = `
+        < h4 class="text-primary" style = "margin-bottom: 0.5rem;" >📅 Bookings(${dayBookings.length})</h4 >
+            <div style="max-height: 300px; overflow-y: auto;">
+                ${dayBookings.map(b => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--color-background); border: 1px solid var(--color-border); margin-bottom: 0.5rem; border-radius: 0.5rem;">
+                            <div>
+                            <div style="font-weight: bold; color: var(--color-primary);">${b.time}</div>
+                            <div>${b.userName}</div>
+                            <div class="text-muted" style="font-size: 0.8rem;">${b.serviceName}</div>
+                            </div>
+                            <span class="status-badge status-${b.status}">${b.status}</span>
+                    </div>
+                `).join('')}
+            </div>
+    `;
+    }
+}
+
+function closeDayDetailsModal() {
+    document.getElementById('dayDetailsModal').classList.remove('show');
 }
 
 // ========================================
@@ -1016,16 +1226,19 @@ function openRescheduleModal(bookingId, currentDate) {
         const select = document.getElementById('rescheduleTime');
         select.innerHTML = '<option value="">Loading...</option>';
 
-        const dates = await getAvailableDates(60);
+        const dates = await getAvailableDates(60, 30); // Default to 30 min for reschedule as we don't have service id handy easily
         const dateInfo = dates.find(d => d.date === dateStr);
 
-        if (!dateInfo || dateInfo.slots.length === 0) {
+        if (!dateInfo || dateInfo.availableSlots.length === 0) {
             select.innerHTML = '<option value="">No slots available</option>';
             return;
         }
 
         select.innerHTML = '<option value="">Select a time...</option>' +
-            dateInfo.slots.map(s => `<option value="${s.time}">${s.display}</option>`).join('');
+            dateInfo.availableSlots.map(t => {
+                const slot = dateInfo.allSlots.find(s => s.time === t);
+                return `<option value="${t}">${slot ? slot.display : t}</option>`;
+            }).join('');
     };
 }
 
@@ -1173,19 +1386,31 @@ async function openCreateBookingModal() {
     document.getElementById('createDate').onchange = async function () {
         const dateStr = this.value;
         const timeSelect = document.getElementById('createTime');
+        const serviceId = document.getElementById('createService').value;
+
+        // Get duration
+        let duration = 30;
+        if (serviceId && SERVICES[serviceId]) {
+            duration = SERVICES[serviceId].duration;
+        }
+
         timeSelect.innerHTML = '<option value="">Loading...</option>';
 
-        // Use existing function to get slots
-        const dates = await getAvailableDates(60);
+        // Use new function to get slots with overlap check
+        const dates = await getAvailableDates(60, duration);
         const dateInfo = dates.find(d => d.date === dateStr);
 
-        if (!dateInfo || dateInfo.slots.length === 0) {
+        if (!dateInfo || dateInfo.availableSlots.length === 0) {
             timeSelect.innerHTML = '<option value="">No slots available</option>';
             return;
         }
 
         timeSelect.innerHTML = '<option value="">Select a time...</option>' +
-            dateInfo.slots.map(s => `<option value="${s.time}">${s.display}</option>`).join('');
+            dateInfo.availableSlots.map(t => {
+                // Find display name
+                const slot = dateInfo.allSlots.find(s => s.time === t);
+                return `<option value="${t}">${slot ? slot.display : t}</option>`;
+            }).join('');
     };
 }
 

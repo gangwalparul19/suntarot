@@ -406,6 +406,38 @@
         </div>
     </div>
 
+    <!-- Day Details Modal (Block/Unblock & View Bookings) -->
+    <div class="admin-modal" id="dayDetailsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-primary" id="dayDetailsTitle">Date Details</h3>
+                <button class="modal-close" onclick="closeDayDetailsModal()">×</button>
+            </div>
+            <div id="dayDetailsContent">
+                <div id="dayBookingsList" style="margin-bottom: 2rem;">
+                    Loading...
+                </div>
+
+                <h4 class="text-primary" style="margin-bottom: 0.5rem;">📅 Manage Availability</h4>
+                <div
+                    style="background: var(--color-background); padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--color-border);">
+                    <p id="dayStatusText" style="margin-bottom: 1rem;">Current Status: <span
+                            class="text-muted">Loading...</span></p>
+                    <div style="display: flex; gap: 1rem;">
+                        <button id="blockDateBtn" class="btn btn-outline"
+                            style="flex: 1; border-color: #e74c3c; color: #e74c3c;">
+                            🚫 Block Date
+                        </button>
+                        <button id="unblockDateBtn" class="btn btn-outline"
+                            style="flex: 1; border-color: #27ae60; color: #27ae60;">
+                            ✓ Unblock Date
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="footer footer-single-row">
         <div class="container">
             <div class="footer-bottom">
