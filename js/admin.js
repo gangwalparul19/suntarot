@@ -131,7 +131,7 @@ function updateDashboardUI() {
     const statBookings = document.getElementById('statBookings');
     if (statBookings) {
         statBookings.textContent = confirmedBookings.length;
-        document.getElementById('statRevenue').textContent = '₹' + totalRevenue.toLocaleString();
+        document.getElementById('statRevenue').textContent = 'Rs. ' + totalRevenue.toLocaleString();
         document.getElementById('statUpcoming').textContent = upcomingBookings.length;
         document.getElementById('statCustomers').textContent = uniqueEmails.size;
     }
@@ -187,7 +187,7 @@ async function renderPricingForms() {
                            style="width: 100%; padding: 0.5rem; border: 1px solid var(--color-border); border-radius: 0.25rem; background: var(--color-card); color: var(--color-text);">
                 </div>
                 <div>
-                    <label class="text-muted" style="display: block; margin-bottom: 0.25rem; font-size: 0.875rem;">Price (₹)</label>
+                    <label class="text-muted" style="display: block; margin-bottom: 0.25rem; font-size: 0.875rem;">Price (Rs.)</label>
                     <input type="number" id="price_${id}" value="${service.price}" min="0"
                            style="width: 100%; padding: 0.5rem; border: 1px solid var(--color-border); border-radius: 0.25rem; background: var(--color-card); color: var(--color-text);">
                 </div>
@@ -422,7 +422,7 @@ function renderPopularServices(bookings) {
         <div style="margin-bottom: 1rem;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
                 <span>${name}</span>
-                <span class="text-muted">${count} bookings | ₹${serviceRevenue[name].toLocaleString()}</span>
+                <span class="text-muted">${count} bookings | Rs. ${serviceRevenue[name].toLocaleString()}</span>
             </div>
             <div style="background: var(--color-background); border-radius: 0.25rem; height: 8px; overflow: hidden;">
                 <div style="width: ${(count / maxCount * 100)}%; background: var(--color-primary); height: 100%;"></div>

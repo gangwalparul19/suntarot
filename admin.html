@@ -135,9 +135,8 @@
 
                 <!-- Bookings Panel -->
                 <div class="admin-panel" id="bookingsPanel">
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
-                        <h2 style="margin: 0;">All Bookings</h2>
+                    <div class="admin-header-flex">
+                        <h2>All Bookings</h2>
                         <button class="btn btn-outline" onclick="exportBookingsCSV()" style="padding: 0.5rem 1rem;">
                             📥 Export CSV
                         </button>
@@ -146,30 +145,26 @@
                             + New Booking
                         </button>
                     </div>
-                    <div id="bookingFilters"
-                        style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; background: var(--color-background); padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--color-border);">
-                        <div style="flex: 1; min-width: 200px;">
-                            <label class="text-muted"
-                                style="font-size: 0.8rem; display: block; margin-bottom: 0.25rem;">Date Range</label>
-                            <div style="display: flex; gap: 0.5rem;">
+                    <div id="bookingFilters" class="admin-filter-bar">
+                        <div class="admin-filter-group-large">
+                            <label class="text-muted admin-label">Date Range</label>
+                            <div class="admin-date-inputs">
                                 <input type="date" id="filterStartDate" class="search-input"
                                     style="margin-bottom: 0; padding: 0.25rem;">
                                 <input type="date" id="filterEndDate" class="search-input"
                                     style="margin-bottom: 0; padding: 0.25rem;">
                             </div>
                         </div>
-                        <div style="min-width: 150px;">
-                            <label class="text-muted"
-                                style="font-size: 0.8rem; display: block; margin-bottom: 0.25rem;">Payment</label>
+                        <div class="admin-filter-group">
+                            <label class="text-muted admin-label">Payment</label>
                             <select id="filterPayment" class="search-input" style="margin-bottom: 0; padding: 0.25rem;">
                                 <option value="all">All</option>
                                 <option value="Y">Paid (Y)</option>
                                 <option value="N">Pending (N)</option>
                             </select>
                         </div>
-                        <div style="min-width: 150px;">
-                            <label class="text-muted"
-                                style="font-size: 0.8rem; display: block; margin-bottom: 0.25rem;">Status</label>
+                        <div class="admin-filter-group">
+                            <label class="text-muted admin-label">Status</label>
                             <select id="filterStatus" class="search-input" style="margin-bottom: 0; padding: 0.25rem;">
                                 <option value="all">All</option>
                                 <option value="confirmed">Confirmed</option>
