@@ -8,7 +8,7 @@ A mystical tarot reading website with beautiful dark theme and interactive featu
 - **Learn Tarot** - Browse all 22 Major Arcana cards
 - **Spreads Guide** - Visual guide to popular tarot layouts
 - **FAQ** - Common questions about tarot
-- **Book a Reading** - Pricing with WhatsApp booking
+- **Book Your Reading** - Pricing with WhatsApp booking
 
 ## 🚀 Deploy to Vercel
 

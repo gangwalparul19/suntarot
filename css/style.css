@@ -28,6 +28,18 @@
   --transition-fast: 0.2s ease;
   --transition-medium: 0.3s ease;
   --transition-slow: 0.5s ease;
+
+  /* Z-Index Layers */
+  --z-negative: -1;
+  --z-base: 1;
+  --z-card-content: 10;
+  --z-header: 100;
+  --z-fab: 100;
+  /* Floating buttons */
+  --z-menu-btn: 102;
+  --z-dropdown: 200;
+  --z-overlay: 200;
+  --z-modal: 200;
 }
 
 /* Reset */
@@ -49,7 +61,8 @@ body {
   color: var(--color-text);
   line-height: 1.6;
   min-height: 100vh;
-  overflow-x: hidden;
+  /* overflow-x: hidden; Removed to handle layout naturally */
+  width: 100%;
 }
 
 /* Typography */
@@ -141,11 +154,10 @@ a:hover {
    Header / Navigation
    ======================================== */
 .header {
-  position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: var(--z-header);
   padding: var(--spacing-sm) 0;
   background: rgba(10, 10, 10, 0.8);
   backdrop-filter: blur(10px);
@@ -204,9 +216,10 @@ a:hover {
   background: none;
   border: none;
   color: var(--color-text);
+  color: var(--color-text);
   font-size: 1.5rem;
   cursor: pointer;
-  z-index: 102;
+  z-index: var(--z-menu-btn);
   /* Ensure above nav-links */
 }
 
@@ -290,7 +303,7 @@ a:hover {
   min-width: 150px;
   display: none;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  z-index: 200;
+  z-index: var(--z-dropdown);
 }
 
 .user-dropdown-menu.active {
@@ -357,7 +370,7 @@ a:hover {
 
 .hero-content {
   position: relative;
-  z-index: 1;
+  z-index: var(--z-base);
   max-width: 800px;
 }
 
@@ -673,7 +686,7 @@ a:hover {
   transform: translateX(-50%);
   font-size: 1.5rem;
   animation: sparkle 0.6s ease-out forwards;
-  z-index: 10;
+  z-index: var(--z-card-content);
   pointer-events: none;
 }
 

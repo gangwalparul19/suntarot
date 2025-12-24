@@ -55,9 +55,23 @@ function initFirebase() {
 
 // Check if Firebase is properly configured
 function isFirebaseConfigured() {
-    return firebaseConfig.apiKey !== "PLACEHOLDER" &&
-        firebaseConfig.apiKey !== "YOUR_API_KEY" &&
-        firebaseConfig.apiKey !== "";
+    const placeholders = ["PLACEHOLDER", "YOUR_API_KEY", ""];
+    const requiredKeys = ["apiKey", "authDomain", "projectId"]; // Critical keys
+
+    // Check if critical keys have placeholder values
+    const missingKeys = requiredKeys.filter(key =>
+        !firebaseConfig[key] || placeholders.includes(firebaseConfig[key])
+    );
+
+    if (missingKeys.length > 0) {
+        if (missingKeys.length < requiredKeys.length) {
+            // Only some keys missing - likely partial setup
+            console.warn('Firebase partially configured. Missing:', missingKeys.join(', '));
+        }
+        return false;
+    }
+
+    return true;
 }
 
 // Export for use in other scripts

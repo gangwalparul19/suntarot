@@ -55,7 +55,7 @@
         <li><a href="quiz.html">Quiz</a></li>
         <li><a href="spreads.html">Spreads</a></li>
         <li><a href="faq.html">FAQ</a></li>
-        <li><a href="booking.html">Book</a></li>
+        <li><a href="booking.html">Book Your Reading</a></li>
       </ul>
 
       <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">☰</button>
@@ -84,7 +84,7 @@
       </p>
       <div class="hero-buttons">
         <a href="learn.html" class="btn btn-primary">✨ Explore the Cards</a>
-        <a href="booking.html" class="btn btn-outline">Book a Reading</a>
+        <a href="booking.html" class="btn btn-outline">Book Your Reading</a>
       </div>
     </div>
   </section>
@@ -211,7 +211,7 @@
           <ul class="footer-links">
             <li><a href="index.html">Home</a></li>
             <li><a href="learn.html">Learn Tarot</a></li>
-            <li><a href="booking.html">Book a Reading</a></li>
+            <li><a href="booking.html">Book Your Reading</a></li>
           </ul>
         </div>
         <div class="footer-section">
@@ -259,12 +259,27 @@
   <!-- Load dynamic reviews -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Try to load dynamic reviews after a short delay
-      setTimeout(async () => {
+      // Try to load dynamic reviews efficiently
+      const loadReviews = async () => {
         if (typeof loadReviewsIntoElement === 'function' && isFirebaseConfigured()) {
           await loadReviewsIntoElement('reviewsContainer', 6);
+          return true;
         }
-      }, 1000);
+        return false;
+      };
+
+      // Poll briefly for dependencies if not immediately available
+      (async () => {
+        if (!await loadReviews()) {
+          let attempts = 0;
+          const interval = setInterval(async () => {
+            attempts++;
+            if (await loadReviews() || attempts > 10) {
+              clearInterval(interval);
+            }
+          }, 500);
+        }
+      })();
 
       // Register service worker for PWA
       if ('serviceWorker' in navigator) {
