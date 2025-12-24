@@ -422,7 +422,7 @@ function renderPopularServices(bookings) {
         <div style="margin-bottom: 1rem;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
                 <span>${name}</span>
-                <span class="text-muted">${count} bookings | Rs. ${serviceRevenue[name].toLocaleString()}</span>
+                <span class="text-muted">${count} bookings | Rs. ${(serviceRevenue[name] || 0).toLocaleString()}</span>
             </div>
             <div style="background: var(--color-background); border-radius: 0.25rem; height: 8px; overflow: hidden;">
                 <div style="width: ${(count / maxCount * 100)}%; background: var(--color-primary); height: 100%;"></div>
@@ -838,6 +838,7 @@ function closeDayDetailsModal() {
 let bookingTrendsChart = null;
 let revenueChart = null;
 let timeSlotsChart = null;
+let cityChart = null;
 
 async function renderCharts(bookings) {
     const confirmedBookings = bookings.filter(b => b.status === 'confirmed');
@@ -846,6 +847,7 @@ async function renderCharts(bookings) {
     if (bookingTrendsChart) bookingTrendsChart.destroy();
     if (revenueChart) revenueChart.destroy();
     if (timeSlotsChart) timeSlotsChart.destroy();
+    if (cityChart) cityChart.destroy();
 
     // Booking Trends - last 30 days
     const trendData = {};
@@ -887,7 +889,7 @@ async function renderCharts(bookings) {
         }
     });
 
-    // Revenue by Service
+    // Revenue by Service (Fixed toLocaleString error logic)
     const revenueData = {};
     confirmedBookings.forEach(b => {
         const name = b.serviceName || 'Other';
@@ -948,7 +950,6 @@ async function renderCharts(bookings) {
     // We need to fetch city from user details map (which we should cache globally or refetch)
     // For now, let's try to get city from bookings if we can map it. 
     // We might need to call loadCustomers first or fetch users here.
-
     // To be efficient, let's just fetch users here once or use a global if available.
     // Since this function is async, we can fetch.
     try {
@@ -970,7 +971,7 @@ async function renderCharts(bookings) {
         const sortedCities = Object.entries(cityData).sort((a, b) => b[1] - a[1]);
 
         const ctx4 = document.getElementById('cityChart').getContext('2d');
-        new Chart(ctx4, {
+        cityChart = new Chart(ctx4, {
             type: 'bar',
             data: {
                 labels: sortedCities.map(c => c[0]),
