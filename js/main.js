@@ -93,7 +93,11 @@ function initStars() {
     const starsContainer = document.getElementById('stars');
     if (!starsContainer) return;
 
-    for (let i = 0; i < 100; i++) {
+    // Reduce stars on mobile for performance
+    const isMobile = window.innerWidth < 768;
+    const starCount = isMobile ? 40 : 100;
+
+    for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
         star.className = 'star';
         star.style.left = `${Math.random() * 100}%`;
