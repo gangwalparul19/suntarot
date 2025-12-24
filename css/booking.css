@@ -93,38 +93,62 @@
 }
 
 /* Steps Progress */
-.steps-container {
+.booking-progress {
     display: flex;
     justify-content: space-between;
     padding: 2rem 3rem;
     background: rgba(0, 0, 0, 0.2);
     position: relative;
+    margin-bottom: 2rem;
 }
 
-.steps-progress {
+/* Gray Track Line */
+.booking-progress::before {
+    content: '';
     position: absolute;
-    top: 50%;
-    left: 3rem;
-    right: 3rem;
+    top: 52px;
+    /* 2rem (32px) padding + 20px (half circle) */
+    left: 4rem;
+    /* 3rem padding + 1rem approx center match */
+    right: 4rem;
     height: 2px;
     background: var(--color-border);
-    transform: translateY(-50%);
     z-index: 0;
 }
 
+/* Colored Fill Line */
 .progress-line {
     position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
+    top: 52px;
+    left: 4rem;
+    height: 2px;
     background: var(--color-primary);
-    width: 0%;
+    z-index: 0;
     transition: width 0.3s ease;
+    width: 0%;
+    /* JS updates this */
+    max-width: calc(100% - 8rem);
+    /* Prevent overshooting */
 }
 
-.step-indicator {
+/* Remove pseudo element from previous attempt */
+.progress-line::after {
+    display: none;
+}
+
+.progress-step {
     position: relative;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    width: 40px;
+    /* Ensure consistent width for centering */
+}
+
+.step-circle {
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -138,16 +162,26 @@
     transition: all 0.3s ease;
 }
 
-.step-indicator.active {
+.progress-step.active .step-circle {
     border-color: var(--color-primary);
     color: var(--color-primary);
     box-shadow: 0 0 10px rgba(212, 169, 93, 0.3);
 }
 
-.step-indicator.completed {
+.progress-step.completed .step-circle {
     background: var(--color-primary);
     border-color: var(--color-primary);
     color: #000;
+}
+
+.step-label {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    font-weight: 500;
+}
+
+.progress-step.active .step-label {
+    color: var(--color-primary);
 }
 
 .booking-content {
@@ -192,63 +226,93 @@
     color: var(--color-text-muted);
 }
 
-/* Calendar Styles */
-.calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.calendar-grid {
+/* Date Grid Styles (replacing unused calendar styles) */
+.date-grid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 0.5rem;
-    text-align: center;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
 }
 
-.calendar-day-header {
-    font-size: 0.8rem;
-    color: var(--color-text-muted);
-    padding: 0.5rem 0;
-}
-
-.calendar-day {
-    padding: 0.75rem 0.25rem;
+.date-option {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--color-border);
     border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
     cursor: pointer;
-    border: 1px solid transparent;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
 }
 
-.calendar-day:hover:not(.disabled) {
-    background: rgba(255, 255, 255, 0.1);
+.date-option:hover {
+    border-color: var(--color-primary);
+    background: rgba(212, 169, 93, 0.1);
+    transform: translateY(-2px);
 }
 
-.calendar-day.selected {
+.date-option.selected {
     background: var(--color-primary);
+    border-color: var(--color-primary);
     color: #000;
+    box-shadow: 0 4px 15px rgba(212, 169, 93, 0.3);
+}
+
+.date-option .day-name {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+    opacity: 0.8;
+}
+
+.date-option .date-display {
+    font-size: 1.1rem;
     font-weight: bold;
 }
 
-.calendar-day.disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
+/* Ensure text colors contrast well when selected */
+.date-option.selected .day-name {
+    opacity: 0.7;
 }
 
-.calendar-day.today {
-    border-color: var(--color-primary);
+/* Sections Visibility */
+.calendar-section,
+.time-section,
+.confirm-section {
+    display: none;
+    /* Hidden by default */
 }
 
-/* Time Slots */
-.time-slots-grid {
+.calendar-section.active,
+.time-section.active,
+.confirm-section.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Time Grid (Corrected class name) */
+.time-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 0.75rem;
     margin-top: 1rem;
+    margin-bottom: 2rem;
 }
 
-.time-slot {
+.time-option {
     padding: 0.75rem;
     border: 1px solid var(--color-border);
     border-radius: 0.5rem;
@@ -258,12 +322,12 @@
     font-size: 0.9rem;
 }
 
-.time-slot:hover {
+.time-option:hover {
     border-color: var(--color-primary);
     color: var(--color-primary);
 }
 
-.time-slot.selected {
+.time-option.selected {
     background: var(--color-primary);
     color: #000;
     border-color: var(--color-primary);
@@ -278,7 +342,8 @@
     border-top: 1px solid var(--color-border);
 }
 
-.summary-card {
+/* Booking Summary (Corrected class name) */
+.booking-summary {
     background: rgba(255, 255, 255, 0.03);
     border-radius: 0.5rem;
     padding: 1.5rem;
@@ -298,6 +363,18 @@
     border-top: 1px solid var(--color-border);
     font-weight: bold;
     color: var(--color-primary);
+}
+
+.notes-input {
+    width: 100%;
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    color: var(--color-text);
+    min-height: 100px;
+    margin-bottom: 1rem;
+    resize: vertical;
 }
 
 .error-message {

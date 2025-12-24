@@ -1,23 +1,18 @@
 // Sun Tarot Share Utility
 // ========================
-// Enhanced social sharing with image generation
+// Enhanced social sharing with image generation and native share support
 
 // Share a reading to various platforms
 function shareReading(cards, spreadType = 'reading') {
     const text = generateShareText(cards, spreadType);
     const url = window.location.origin;
 
-    // Check for native share API
-    if (navigator.share) {
-        navigator.share({
-            title: 'My Sun Tarot Reading',
-            text: text,
-            url: url
-        }).catch(err => console.log('Share cancelled:', err));
-        return;
-    }
+    // Check for native share API with files support
+    // We will show the modal mostly to generate the image first,
+    // as sharing a file requires a File object which takes time to generate.
+    // However, if we only wanted to share text, we could do it here.
+    // For this app, we want to emphasize the visual, so we go to the modal.
 
-    // Fallback: show share modal
     showShareModal(text, url, cards, spreadType);
 }
 
@@ -39,7 +34,7 @@ function generateShareText(cards, spreadType) {
 }
 
 // Show enhanced share modal with image generation
-function showShareModal(text, url, cards = [], spreadType = 'reading') {
+async function showShareModal(text, url, cards = [], spreadType = 'reading') {
     // Remove existing modal
     const existing = document.getElementById('shareModal');
     if (existing) existing.remove();
@@ -57,55 +52,40 @@ function showShareModal(text, url, cards = [], spreadType = 'reading') {
                 <!-- Generated Image Preview -->
                 <div id="shareImageContainer" style="margin-bottom: 1.5rem; display: none;">
                     <canvas id="shareCanvas" style="max-width: 100%; border-radius: 0.5rem; border: 1px solid var(--color-border);"></canvas>
+                    <p id="generatingText" style="color: var(--color-text-muted); margin-top: 0.5rem;">Generating magic...</p>
                 </div>
                 
                 <p style="color: var(--color-text-muted); margin-bottom: 1.5rem; font-size: 0.875rem;">${text.substring(0, 100)}...</p>
                 
                 <!-- Image Generation Buttons -->
-                <div style="display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1rem; flex-wrap: wrap;">
-                    <button onclick="generateShareImage('${spreadType}')" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
-                        🖼️ Create Image
+                <div id="shareButtonsContainer" style="display: none; gap: 0.5rem; justify-content: center; margin-bottom: 1rem; flex-wrap: wrap;">
+                    <button onclick="shareImageNative('${spreadType}')" id="nativeShareBtn" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.875rem; display: none;">
+                        📱 Share Image (WhatsApp etc.)
                     </button>
-                    <button onclick="downloadShareImage()" id="downloadBtn" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem; display: none;">
-                        ⬇️ Download
+                    <button onclick="downloadShareImage()" id="downloadBtn" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">
+                        ⬇️ Download Image
                     </button>
                 </div>
                 
-                <!-- Social Share Buttons -->
+                <!-- Fallback Links -->
+                <p style="font-size: 0.75rem; color: var(--color-text-muted); margin-bottom: 0.5rem;">Or share link only:</p>
                 <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
                     <a href="https://wa.me/?text=${encodedText}%20${encodedUrl}" target="_blank" 
-                       style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; background: #25D366; color: white; border-radius: 0.5rem; text-decoration: none; font-weight: 600;">
-                        📱 WhatsApp
+                       style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #25D366; color: white; border-radius: 0.5rem; text-decoration: none; font-weight: 600; font-size: 0.875rem;">
+                        WhatsApp Link
                     </a>
                     <a href="https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}" target="_blank"
-                       style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; background: #1DA1F2; color: white; border-radius: 0.5rem; text-decoration: none; font-weight: 600;">
-                        🐦 Twitter
+                       style="display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: #1DA1F2; color: white; border-radius: 0.5rem; text-decoration: none; font-weight: 600; font-size: 0.875rem;">
+                        Twitter
                     </a>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}&quote=${encodedText}" target="_blank"
-                       style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.25rem; background: #4267B2; color: white; border-radius: 0.5rem; text-decoration: none; font-weight: 600;">
-                        👍 Facebook
-                    </a>
+                    <button onclick="copyShareUrl()" class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.875rem;">📋 Copy Link</button>
+                </div>
+
+                <div style="display: flex; justify-content: center;">
+                    <button onclick="closeShareModal()" class="btn btn-outline" style="padding: 0.5rem 1rem; min-width: 100px;">Close</button>
                 </div>
                 
-                <!-- Instagram Story Instructions -->
-                <div id="instagramInstructions" style="background: var(--color-background); padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; display: none;">
-                    <p style="color: var(--color-primary); font-weight: 600; margin-bottom: 0.5rem;">📸 Share to Instagram</p>
-                    <p style="color: var(--color-text-muted); font-size: 0.75rem;">
-                        1. Click "Create Image" above<br>
-                        2. Download the image<br>
-                        3. Open Instagram → Stories → Add image
-                    </p>
-                </div>
-                
-                <div style="background: var(--color-background); padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 1rem;">
-                    <input type="text" value="${url}" readonly id="shareUrlInput"
-                           style="width: 100%; background: transparent; border: none; color: var(--color-text); text-align: center; font-size: 0.875rem;">
-                </div>
-                
-                <div style="display: flex; gap: 0.5rem; justify-content: center;">
-                    <button onclick="copyShareUrl()" class="btn btn-outline" style="padding: 0.5rem 1rem;">📋 Copy Link</button>
-                    <button onclick="closeShareModal()" class="btn btn-outline" style="padding: 0.5rem 1rem;">Close</button>
-                </div>
+                <input type="text" value="${url}" readonly id="shareUrlInput" style="position: absolute; left: -9999px;">
             </div>
         </div>
     `;
@@ -115,15 +95,31 @@ function showShareModal(text, url, cards = [], spreadType = 'reading') {
     // Store cards data for image generation
     window._shareCards = cards;
     window._shareSpreadType = spreadType;
+    window._shareText = text;
+
+    // Automatically start generating image
+    document.getElementById('shareImageContainer').style.display = 'block';
+
+    // Check if native sharing is supported to show/hide button
+    if (navigator.share && navigator.canShare) {
+        // We'll verify canShare with file later, but show button for now
+        document.getElementById('nativeShareBtn').style.display = 'inline-block';
+    }
+
+    try {
+        await generateShareImage(spreadType);
+        document.getElementById('generatingText').style.display = 'none';
+        document.getElementById('shareButtonsContainer').style.display = 'flex';
+    } catch (e) {
+        console.error('Error generating image:', e);
+        document.getElementById('generatingText').textContent = 'Could not generate image.';
+    }
 }
 
 // Generate shareable card image using Canvas
 async function generateShareImage(spreadType = 'reading') {
     const cards = window._shareCards || [];
-    if (cards.length === 0) {
-        toastWarning('No cards to generate image');
-        return;
-    }
+    if (cards.length === 0) return;
 
     const canvas = document.getElementById('shareCanvas');
     const ctx = canvas.getContext('2d');
@@ -163,6 +159,10 @@ async function generateShareImage(spreadType = 'reading') {
     const startX = (canvas.width - (cardWidth * cards.length + 30 * (cards.length - 1))) / 2;
     const cardY = isStory ? 400 : 200;
 
+    // Create prompt for images to ensure they load
+    const imagePromises = cards.map(c => loadImage(c.image).catch(() => null));
+    const loadedImages = await Promise.all(imagePromises);
+
     for (let i = 0; i < cards.length; i++) {
         const card = cards[i];
         const x = startX + i * (cardWidth + 30);
@@ -176,9 +176,9 @@ async function generateShareImage(spreadType = 'reading') {
         ctx.fill();
         ctx.stroke();
 
-        // Try to load and draw card image
-        try {
-            const img = await loadImage(card.image);
+        const img = loadedImages[i];
+
+        if (img) {
             ctx.save();
             ctx.beginPath();
             ctx.roundRect(x + 5, cardY + 5, cardWidth - 10, cardHeight - 10, 8);
@@ -192,7 +192,7 @@ async function generateShareImage(spreadType = 'reading') {
                 ctx.drawImage(img, x + 5, cardY + 5, cardWidth - 10, cardHeight - 10);
             }
             ctx.restore();
-        } catch (e) {
+        } else {
             // Fallback: draw card name
             ctx.fillStyle = '#d4a95d';
             ctx.font = '24px PT Sans, sans-serif';
@@ -211,7 +211,7 @@ async function generateShareImage(spreadType = 'reading') {
     // Quote/meaning section
     if (cards.length === 1 && cards[0].meaning) {
         const meaning = cards[0].displayMeaning || cards[0].meaning;
-        const truncated = meaning.length > 150 ? meaning.substring(0, 150) + '...' : meaning;
+        const truncated = meaning.length > 200 ? meaning.substring(0, 200) + '...' : meaning;
 
         ctx.fillStyle = '#a3a3a3';
         ctx.font = 'italic 28px PT Sans, sans-serif';
@@ -245,11 +245,47 @@ async function generateShareImage(spreadType = 'reading') {
     ctx.fillStyle = '#a3a3a3';
     ctx.font = '20px PT Sans, sans-serif';
     ctx.fillText(window.location.origin, canvas.width / 2, canvas.height - 40);
+}
 
-    // Show canvas and buttons
-    document.getElementById('shareImageContainer').style.display = 'block';
-    document.getElementById('downloadBtn').style.display = 'inline-block';
-    document.getElementById('instagramInstructions').style.display = 'block';
+// Share image using native sharing (WhatsApp etc)
+async function shareImageNative(spreadType) {
+    const canvas = document.getElementById('shareCanvas');
+    if (!canvas) return;
+
+    try {
+        canvas.toBlob(async (blob) => {
+            if (!blob) {
+                toastError('Failed to prepare image');
+                return;
+            }
+
+            const file = new File([blob], `sun-tarot-${spreadType}.png`, { type: 'image/png' });
+            const filesArray = [file];
+            const text = window._shareText || 'My Tarot Reading';
+
+            if (navigator.canShare && navigator.canShare({ files: filesArray })) {
+                try {
+                    await navigator.share({
+                        files: filesArray,
+                        title: 'Sun Tarot Reading',
+                        text: text
+                    });
+                    console.log('Shared successfully');
+                } catch (error) {
+                    // Abort error is common if user cancels
+                    if (error.name !== 'AbortError') {
+                        console.error('Error sharing:', error);
+                        toastError('Could not open share menu');
+                    }
+                }
+            } else {
+                toastWarning('Your device does not support image sharing. Please download instead.');
+            }
+        }, 'image/png');
+    } catch (e) {
+        console.error('Error in shareImageNative:', e);
+        toastError('Something went wrong');
+    }
 }
 
 // Load image as promise
@@ -258,7 +294,7 @@ function loadImage(src) {
         const img = new Image();
         img.crossOrigin = 'anonymous';
         img.onload = () => resolve(img);
-        img.onerror = reject;
+        img.onerror = () => reject(new Error('Failed to load image'));
         img.src = src;
     });
 }
@@ -276,87 +312,6 @@ function downloadShareImage() {
     toastSuccess('Image downloaded!');
 }
 
-// Generate quote card for a single card
-async function generateQuoteCard(card) {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-
-    // Square format for Instagram posts
-    canvas.width = 1080;
-    canvas.height = 1080;
-
-    // Background
-    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    gradient.addColorStop(0, '#0a0a0a');
-    gradient.addColorStop(1, '#1a1a2e');
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    // Card image (centered, large)
-    const cardWidth = 400;
-    const cardHeight = 600;
-    const cardX = (canvas.width - cardWidth) / 2;
-    const cardY = 100;
-
-    try {
-        const img = await loadImage(card.image);
-        ctx.save();
-        ctx.shadowColor = '#d4a95d';
-        ctx.shadowBlur = 30;
-        ctx.beginPath();
-        ctx.roundRect(cardX, cardY, cardWidth, cardHeight, 15);
-        ctx.clip();
-
-        if (card.isReversed) {
-            ctx.translate(cardX + cardWidth / 2, cardY + cardHeight / 2);
-            ctx.rotate(Math.PI);
-            ctx.drawImage(img, -cardWidth / 2, -cardHeight / 2, cardWidth, cardHeight);
-        } else {
-            ctx.drawImage(img, cardX, cardY, cardWidth, cardHeight);
-        }
-        ctx.restore();
-    } catch (e) {
-        console.log('Failed to load card image');
-    }
-
-    // Card name
-    ctx.fillStyle = '#d4a95d';
-    ctx.font = 'bold 48px Playfair Display, serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(card.name + (card.isReversed ? ' (Reversed)' : ''), canvas.width / 2, cardY + cardHeight + 70);
-
-    // Brief meaning
-    const meaning = card.displayMeaning || card.meaning || '';
-    const briefMeaning = meaning.split('.')[0] + '.';
-
-    ctx.fillStyle = '#f5f5f5';
-    ctx.font = 'italic 28px PT Sans, sans-serif';
-
-    // Word wrap for meaning
-    const words = briefMeaning.split(' ');
-    let line = '';
-    let lineY = cardY + cardHeight + 130;
-
-    for (const word of words) {
-        const testLine = line + word + ' ';
-        if (ctx.measureText(testLine).width > canvas.width - 100) {
-            ctx.fillText(line.trim(), canvas.width / 2, lineY);
-            line = word + ' ';
-            lineY += 38;
-        } else {
-            line = testLine;
-        }
-    }
-    ctx.fillText(line.trim(), canvas.width / 2, lineY);
-
-    // Branding
-    ctx.fillStyle = '#d4a95d';
-    ctx.font = '28px Playfair Display, serif';
-    ctx.fillText('☀️ Sun Tarot', canvas.width / 2, canvas.height - 50);
-
-    return canvas.toDataURL('image/png');
-}
-
 function copyShareUrl() {
     const input = document.getElementById('shareUrlInput');
     input.select();
@@ -369,9 +324,10 @@ function closeShareModal() {
     if (modal) modal.remove();
     window._shareCards = null;
     window._shareSpreadType = null;
+    window._shareText = null;
 }
 
-// Save reading to history (enhanced with isReversed)
+// Save reading to history
 async function saveReadingToHistory(cards, spreadType = 'reading') {
     if (!isLoggedIn()) {
         console.log('User not logged in, skipping reading save');
@@ -426,7 +382,7 @@ async function getReadingHistory(limit = 20) {
             readings.push({ id: doc.id, ...data });
         });
 
-        // Sort by createdAt desc (client-side)
+        // Sort by createdAt desc (client-side as firestore requires index for ordering by field when using where)
         readings.sort((a, b) => b.createdAt - a.createdAt);
 
         return readings;
@@ -445,5 +401,5 @@ window.saveReadingToHistory = saveReadingToHistory;
 window.getReadingHistory = getReadingHistory;
 window.generateShareImage = generateShareImage;
 window.downloadShareImage = downloadShareImage;
-window.generateQuoteCard = generateQuoteCard;
+window.shareImageNative = shareImageNative;
 
