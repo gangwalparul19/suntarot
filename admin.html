@@ -137,13 +137,19 @@
                 <div class="admin-panel" id="bookingsPanel">
                     <div class="admin-header-flex">
                         <h2>All Bookings</h2>
-                        <button class="btn btn-outline" onclick="exportBookingsCSV()" style="padding: 0.5rem 1rem;">
-                            📥 Export CSV
-                        </button>
-                        <button class="btn btn-primary" onclick="openCreateBookingModal()"
-                            style="padding: 0.5rem 1rem;">
-                            + New Booking
-                        </button>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn btn-outline" id="syncBtn" onclick="syncTakenSlots()"
+                                style="padding: 0.5rem 1rem;">
+                                🔄 Sync Slots
+                            </button>
+                            <button class="btn btn-outline" onclick="exportBookingsCSV()" style="padding: 0.5rem 1rem;">
+                                📥 Export CSV
+                            </button>
+                            <button class="btn btn-primary" onclick="openCreateBookingModal()"
+                                style="padding: 0.5rem 1rem;">
+                                + New Booking
+                            </button>
+                        </div>
                     </div>
                     <div id="bookingFilters" class="admin-filter-bar">
                         <div class="admin-filter-group-large">

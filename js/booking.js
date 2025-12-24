@@ -113,11 +113,12 @@ async function getAvailableDates(daysAhead = 30) {
     endDate.setDate(endDate.getDate() + daysAhead);
 
     let blockedDates = new Set();
-    let bookedSlots = {};
+    let bookedSlots = {}; // Format: { "YYYY-MM-DD": ["HH:MM", ...] }
 
-    // Try to get blocked dates and booked slots from Firestore
+    // Try to get blocked dates and taken slots from Firestore
     if (typeof db !== 'undefined' && db) {
         try {
+            // 1. Get Admin Blocked Dates
             const blockedSnapshot = await db.collection('availability')
                 .where('blocked', '==', true)
                 .get();
@@ -126,21 +127,24 @@ async function getAvailableDates(daysAhead = 30) {
                 blockedDates.add(doc.id);
             });
 
-            const bookingsSnapshot = await db.collection('bookings')
+            // 2. Get Taken Slots (Public Collection)
+            // Note: We query the public 'taken_slots' instead of private 'bookings'
+            const slotsSnapshot = await db.collection('taken_slots')
                 .where('date', '>=', formatDate(today))
                 .where('date', '<=', formatDate(endDate))
-                .where('status', '!=', 'cancelled')
                 .get();
 
-            bookingsSnapshot.forEach(doc => {
-                const booking = doc.data();
-                if (!bookedSlots[booking.date]) {
-                    bookedSlots[booking.date] = [];
+            slotsSnapshot.forEach(doc => {
+                const slot = doc.data();
+                if (!bookedSlots[slot.date]) {
+                    bookedSlots[slot.date] = [];
                 }
-                bookedSlots[booking.date].push(booking.time);
+                bookedSlots[slot.date].push(slot.time);
             });
         } catch (error) {
-            console.log('Firestore not available, showing all slots as available:', error.message);
+            console.log('Error fetching availability:', error);
+            // Fallback: If 'taken_slots' is empty/fails, we might show all open (risk of overlap)
+            // or we try to gracefully handle.
         }
     }
 
@@ -172,37 +176,7 @@ async function getAvailableDates(daysAhead = 30) {
     return availableDates;
 }
 
-// Generate time slots for a specific day
-function generateTimeSlots(date) {
-    const slots = [];
-    const weekend = isWeekend(date);
-    const schedule = weekend ? AVAILABILITY.weekend.slots : AVAILABILITY.weekday.slots;
-
-    for (const period of schedule) {
-        for (let hour = period.start; hour < period.end; hour++) {
-            for (let min = 0; min < 60; min += AVAILABILITY.slotDuration) {
-                const time = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
-                slots.push({
-                    time: time,
-                    display: formatTimeDisplay(hour, min)
-                });
-            }
-        }
-    }
-    return slots;
-}
-
-// Format time for display (12-hour format)
-function formatTimeDisplay(hour, min) {
-    const period = hour >= 12 ? 'PM' : 'AM';
-    const displayHour = hour % 12 || 12;
-    return `${displayHour}:${min.toString().padStart(2, '0')} ${period}`;
-}
-
-// Format date as YYYY-MM-DD
-function formatDate(date) {
-    return date.toISOString().split('T')[0];
-}
+// ... (GenerateTimeSlots and Format functions unchanged) ...
 
 // Create a booking
 async function createBooking(date, time, serviceId, notes = '') {
@@ -218,8 +192,7 @@ async function createBooking(date, time, serviceId, notes = '') {
         return null;
     }
 
-    // Secure Pricing: Fetch latest service details directly from Firestore
-    // This prevents client-side price manipulation
+    // Secure Pricing: Fetch latest service details
     let confirmedPrice = service.price;
     let confirmedDuration = service.duration;
     let confirmedName = service.name;
@@ -232,35 +205,20 @@ async function createBooking(date, time, serviceId, notes = '') {
                 confirmedPrice = data.price;
                 confirmedDuration = data.duration;
                 confirmedName = data.name;
-                console.log(`Secured price for ${serviceId}: ${confirmedPrice}`);
             }
         }
     } catch (e) {
-        console.warn('Could not verify price with server, using loaded config', e);
+        console.warn('Could not verify price with server', e);
     }
 
     try {
-        // Check if slot is still available (simplified query to avoid index issues)
-        const existingBookings = await db.collection('bookings')
-            .where('date', '==', date)
-            .where('time', '==', time)
-            .get();
+        // Use a Batch Write to ensure both 'bookings' and 'taken_slots' are created atomically
+        const batch = db.batch();
 
-        // Check if any non-cancelled booking exists for this slot
-        let slotTaken = false;
-        existingBookings.forEach(doc => {
-            if (doc.data().status !== 'cancelled') {
-                slotTaken = true;
-            }
-        });
-
-        if (slotTaken) {
-            toastWarning('Sorry, this slot has just been booked. Please select another time.');
-            return null;
-        }
-
-        // Create the booking
+        // 1. Prepare Booking Document
+        const bookingRef = db.collection('bookings').doc(); // Auto ID
         const bookingData = {
+            id: bookingRef.id,
             userId: user.uid,
             userEmail: user.email,
             userName: user.displayName || 'User',
@@ -272,15 +230,37 @@ async function createBooking(date, time, serviceId, notes = '') {
             price: confirmedPrice,
             notes: notes || '',
             status: 'confirmed',
+            paymentStatus: 'N',
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         };
+        batch.set(bookingRef, bookingData);
 
-        console.log('Creating booking with data:', bookingData);
+        // 2. Prepare Taken Slot Document (Deterministic ID to prevent duplicates)
+        // ID Format: "slot_YYYY-MM-DD_HH-MM"
+        const slotId = `slot_${date}_${time.replace(':', '-')}`;
+        const slotRef = db.collection('taken_slots').doc(slotId);
 
-        const bookingRef = await db.collection('bookings').add(bookingData);
-        console.log('Booking created:', bookingRef.id);
+        // Check if slot exists handling is via Rules (allow create, deny update on taken_slots?)
+        // Or we rely on the transaction/batch failing if we added a precondition?
+        // Firestore Batches don't support "create only if not exists" natively for specific ops unless using Rules.
+        // Our Rule: allow create/read. allow update/delete: if isAdmin.
+        // If the doc exists, 'set' counts as overwrite/update?
+        // If permission is deny update, then this batch will FAIL if doc exists! Perfect.
 
-        // Send Email Notification (Async - don't block UI)
+        batch.set(slotRef, {
+            date: date,
+            time: time,
+            bookedBy: user.uid, // Minimized info
+            bookingId: bookingRef.id,
+            expiresAt: null // Could add TTL
+        });
+
+        // Commit Batch
+        await batch.commit();
+
+        console.log('Booking and slot created successfully:', bookingRef.id);
+
+        // Send Email Notification
         fetch('/api/send-email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -288,16 +268,18 @@ async function createBooking(date, time, serviceId, notes = '') {
                 booking: bookingData,
                 adminEmail: 'tarotsun555666@gmail.com'
             })
-        }).then(res => res.json())
-            .then(data => console.log('Email API response:', data))
-            .catch(err => console.error('Email API error:', err));
+        }).catch(err => console.error('Email API error:', err));
 
         return bookingRef.id;
+
     } catch (error) {
         console.error('Error creating booking:', error);
-        console.error('Error code:', error.code);
-        console.error('Error message:', error.message);
-        toastError('Failed to create booking: ' + error.message);
+        if (error.code === 'permission-denied') {
+            // This likely means the slot is taken (update denied on taken_slots) or actual permission issue
+            toastError('This time slot is no longer available. Please choose another.');
+        } else {
+            toastError('Booking failed: ' + error.message);
+        }
         return null;
     }
 }

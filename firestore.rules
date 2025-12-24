@@ -62,6 +62,13 @@ service cloud.firestore {
       allow read: if true; // Needed for booking page to see blocked dates
       allow write: if isAdmin();
     }
+
+    // Public Taken Slots (For availability checking without exposing private details)
+    match /taken_slots/{slotId} {
+      allow read: if true;
+      allow create: if isAuthenticated(); // Allow users to reserve a slot
+      allow update, delete: if isAdmin(); // Only admin can clear slots (or cancellation logic)
+    }
     
     // Default deny
     match /{document=**} {
