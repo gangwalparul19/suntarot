@@ -1446,3 +1446,57 @@ window.updateAuthUI = function (user) {
     if (originalUpdateAuthUI) originalUpdateAuthUI(user);
     checkAdminAccess();
 };
+
+// ========================================
+// SYNC UTILS (Fix for Permissions)
+// ========================================
+async function syncTakenSlots() {
+    if (!isAdmin()) return;
+
+    console.log('Syncing taken slots...');
+    const btn = document.getElementById('syncBtn');
+    if (btn) btn.innerHTML = 'Syncing...';
+
+    try {
+        const bookings = await getAllBookings();
+        const batch = db.batch();
+        let count = 0;
+        let batchSize = 0;
+
+        for (const b of bookings) {
+            if (b.status === 'cancelled') continue;
+
+            const slotId = `slot_${b.date}_${b.time.replace(':', '-')}`;
+            const slotRef = db.collection('taken_slots').doc(slotId);
+
+            batch.set(slotRef, {
+                date: b.date,
+                time: b.time,
+                bookingId: b.id,
+                syncedAt: new Date()
+            });
+
+            batchSize++;
+            count++;
+
+            // Commit every 400 (limit is 500)
+            if (batchSize >= 400) {
+                await batch.commit();
+                batchSize = 0;
+            }
+        }
+
+        if (batchSize > 0) {
+            await batch.commit();
+        }
+
+        toastSuccess(`Synced ${count} taken slots!`);
+        console.log('Sync complete');
+    } catch (error) {
+        console.error('Error syncing slots:', error);
+        toastError('Sync failed');
+    } finally {
+        if (btn) btn.innerHTML = '🔄 Sync Slots';
+    }
+}
+window.syncTakenSlots = syncTakenSlots;

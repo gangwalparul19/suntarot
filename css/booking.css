@@ -190,7 +190,8 @@
 
 .service-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    /* Allow 2 columns on mobile (min 150px fits comfortably on most phones) */
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
     margin-top: 1rem;
 }
@@ -229,8 +230,9 @@
 /* Date Grid Styles (replacing unused calendar styles) */
 .date-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 1rem;
+    /* Allow 2 columns on mobile (min 140px generally fits on 320px+ screens with gap) */
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.75rem;
     margin-top: 1rem;
     margin-bottom: 2rem;
 }
@@ -239,12 +241,14 @@
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid var(--color-border);
     border-radius: 0.5rem;
-    padding: 1rem;
+    padding: 0.75rem;
+    /* Reduced padding for mobile */
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
+/* ... (hover/active styles unchanged) ... */
 .date-option:hover {
     border-color: var(--color-primary);
     background: rgba(212, 169, 93, 0.1);
@@ -259,7 +263,7 @@
 }
 
 .date-option .day-name {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 0.25rem;
@@ -267,7 +271,7 @@
 }
 
 .date-option .date-display {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: bold;
 }
 
