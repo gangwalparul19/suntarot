@@ -176,7 +176,37 @@ async function getAvailableDates(daysAhead = 30) {
     return availableDates;
 }
 
-// ... (GenerateTimeSlots and Format functions unchanged) ...
+// Generate time slots for a specific day
+function generateTimeSlots(date) {
+    const slots = [];
+    const weekend = isWeekend(date);
+    const schedule = weekend ? AVAILABILITY.weekend.slots : AVAILABILITY.weekday.slots;
+
+    for (const period of schedule) {
+        for (let hour = period.start; hour < period.end; hour++) {
+            for (let min = 0; min < 60; min += AVAILABILITY.slotDuration) {
+                const time = `${hour.toString().padStart(2, '0')}:${min.toString().padStart(2, '0')}`;
+                slots.push({
+                    time: time,
+                    display: formatTimeDisplay(hour, min)
+                });
+            }
+        }
+    }
+    return slots;
+}
+
+// Format time for display (12-hour format)
+function formatTimeDisplay(hour, min) {
+    const period = hour >= 12 ? 'PM' : 'AM';
+    const displayHour = hour % 12 || 12;
+    return `${displayHour}:${min.toString().padStart(2, '0')} ${period}`;
+}
+
+// Format date as YYYY-MM-DD
+function formatDate(date) {
+    return date.toISOString().split('T')[0];
+}
 
 // Create a booking
 async function createBooking(date, time, serviceId, notes = '') {
