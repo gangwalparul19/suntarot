@@ -524,9 +524,9 @@ function renderPaginationControls() {
     }
 
     container.innerHTML = `
-        < span class="text-muted" style = "font-size: 0.9rem;" >
+        <span class="text-muted" style = "font-size: 0.9rem;" >
             Showing ${(bookingsPagination.currentPage - 1) * bookingsPagination.itemsPerPage + 1} to ${Math.min(bookingsPagination.currentPage * bookingsPagination.itemsPerPage, bookingsPagination.totalItems)} of ${bookingsPagination.totalItems} entries
-        </span >
+        </span>
         <div style="display: flex; gap: 0.5rem;">
             <button class="btn btn-outline" onclick="changePage(-1)" ${bookingsPagination.currentPage === 1 ? 'disabled' : ''} style="padding: 0.25rem 0.75rem;">
                 Previous
