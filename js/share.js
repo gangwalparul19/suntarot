@@ -45,13 +45,14 @@ async function showShareModal(text, url, cards = [], spreadType = 'reading') {
     const modal = document.createElement('div');
     modal.id = 'shareModal';
     modal.innerHTML = `
-        <div style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 1rem; overflow-y: auto;">
-            <div style="background: var(--color-card); border: 1px solid var(--color-border); border-radius: 1rem; padding: 2rem; max-width: 500px; width: 100%; text-align: center;">
+        <div style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: flex-start; justify-content: center; padding: 1rem; overflow-y: auto;">
+            <div style="background: var(--color-card); border: 1px solid var(--color-border); border-radius: 1rem; padding: 2rem; padding-top: 3rem; max-width: min(700px, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); width: 100%; text-align: center; overflow-y: auto; margin: auto; position: relative;">
+                <button onclick="closeShareModal()" style="position: absolute; top: 1rem; right: 1rem; background: rgba(255,255,255,0.1); border: 1px solid var(--color-border); color: var(--color-text); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; z-index: 10;">✕</button>
                 <h3 style="color: var(--color-primary); margin-bottom: 1rem;">Share Your Reading</h3>
                 
                 <!-- Generated Image Preview -->
                 <div id="shareImageContainer" style="margin-bottom: 1.5rem; display: none;">
-                    <canvas id="shareCanvas" style="max-width: 100%; border-radius: 0.5rem; border: 1px solid var(--color-border);"></canvas>
+                    <canvas id="shareCanvas" style="width: 100%; height: auto; border-radius: 0.5rem; border: 1px solid var(--color-border);"></canvas>
                     <p id="generatingText" style="color: var(--color-text-muted); margin-top: 0.5rem;">Generating magic...</p>
                 </div>
                 
@@ -124,10 +125,9 @@ async function generateShareImage(spreadType = 'reading') {
     const canvas = document.getElementById('shareCanvas');
     const ctx = canvas.getContext('2d');
 
-    // Set canvas size (Instagram story size: 1080x1920 for stories, or 1080x1080 for posts)
-    const isStory = cards.length <= 3;
+    // Set canvas size - Compact portrait orientation
     canvas.width = 1080;
-    canvas.height = isStory ? 1920 : 1080;
+    canvas.height = 1200;
 
     // Background gradient
     const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
@@ -151,100 +151,171 @@ async function generateShareImage(spreadType = 'reading') {
     ctx.textAlign = 'center';
 
     const title = spreadType === 'love' ? '💕 Love Reading' : spreadType === 'daily' ? '☀️ Card of the Day' : '🔮 My Tarot Reading';
-    ctx.fillText(title, canvas.width / 2, isStory ? 200 : 120);
+    ctx.fillText(title, canvas.width / 2, 100);
 
-    // Load and draw card images
-    const cardWidth = Math.min(280, (canvas.width - 100) / cards.length);
-    const cardHeight = cardWidth * 1.5;
-    const startX = (canvas.width - (cardWidth * cards.length + 30 * (cards.length - 1))) / 2;
-    const cardY = isStory ? 400 : 200;
+    // Calculate card dimensions
+    const totalCards = cards.length;
+    const cardSpacing = 40;
+    const sideMargin = 60;
+    const availableWidth = canvas.width - (2 * sideMargin) - ((totalCards - 1) * cardSpacing);
+    const cardWidth = availableWidth / totalCards;
+    const cardHeight = cardWidth * 1.6;
+    const startX = sideMargin;
+    const cardY = 180;
 
-    // Create prompt for images to ensure they load
-    const imagePromises = cards.map(c => loadImage(c.image).catch(() => null));
-    const loadedImages = await Promise.all(imagePromises);
-
-    for (let i = 0; i < cards.length; i++) {
+    // Try to get images from the DOM first (already loaded on page)
+    const loadedImages = [];
+    
+    for (let i = 0; i < totalCards; i++) {
         const card = cards[i];
-        const x = startX + i * (cardWidth + 30);
+        
+        // Try to find the image in the DOM
+        const domImg = document.querySelector(`img[src="${card.image}"]`);
+        
+        if (domImg && domImg.complete && domImg.naturalHeight > 0) {
+            console.log(`Using DOM image for card ${i + 1}:`, card.name);
+            loadedImages.push(domImg);
+        } else {
+            // Load image fresh
+            console.log(`Loading fresh image for card ${i + 1}:`, card.name);
+            try {
+                const img = await new Promise((resolve, reject) => {
+                    const newImg = new Image();
+                    // Don't use crossOrigin for same-origin images
+                    
+                    newImg.onload = () => {
+                        console.log(`Fresh image loaded for card ${i + 1}:`, card.name);
+                        resolve(newImg);
+                    };
+                    
+                    newImg.onerror = (err) => {
+                        console.error(`Failed to load image for card ${i + 1}:`, card.name, err);
+                        reject(err);
+                    };
+                    
+                    // Add timestamp to prevent caching issues
+                    const imgSrc = card.image.includes('?') 
+                        ? `${card.image}&t=${Date.now()}` 
+                        : `${card.image}?t=${Date.now()}`;
+                    
+                    newImg.src = imgSrc;
+                    
+                    // Timeout after 3 seconds
+                    setTimeout(() => {
+                        if (!newImg.complete) {
+                            reject(new Error('Timeout'));
+                        }
+                    }, 3000);
+                });
+                
+                loadedImages.push(img);
+            } catch (err) {
+                console.error(`Could not load image for card ${i + 1}:`, card.name, err);
+                loadedImages.push(null);
+            }
+        }
+    }
 
-        // Card background
+    console.log('Images ready:', loadedImages.map((img, i) => img ? 'loaded' : 'failed'));
+
+    // Draw each card
+    for (let i = 0; i < totalCards; i++) {
+        const card = cards[i];
+        const x = startX + i * (cardWidth + cardSpacing);
+
+        // Card background with border
         ctx.fillStyle = '#1a1a2e';
         ctx.strokeStyle = '#d4a95d';
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 4;
         ctx.beginPath();
-        ctx.roundRect(x, cardY, cardWidth, cardHeight, 10);
+        ctx.roundRect(x, cardY, cardWidth, cardHeight, 12);
         ctx.fill();
         ctx.stroke();
 
         const img = loadedImages[i];
+        const imageAreaHeight = cardHeight - 70;
 
-        if (img) {
+        if (img && img.complete && img.naturalHeight > 0) {
+            console.log(`Drawing card ${i + 1}:`, card.name);
             ctx.save();
+            
+            // Clip to card area
             ctx.beginPath();
-            ctx.roundRect(x + 5, cardY + 5, cardWidth - 10, cardHeight - 10, 8);
+            ctx.roundRect(x + 8, cardY + 8, cardWidth - 16, imageAreaHeight - 8, 8);
             ctx.clip();
 
-            if (card.isReversed) {
-                ctx.translate(x + cardWidth / 2, cardY + cardHeight / 2);
-                ctx.rotate(Math.PI);
-                ctx.drawImage(img, -cardWidth / 2 + 5, -cardHeight / 2 + 5, cardWidth - 10, cardHeight - 10);
-            } else {
-                ctx.drawImage(img, x + 5, cardY + 5, cardWidth - 10, cardHeight - 10);
+            // Draw image
+            try {
+                if (card.isReversed) {
+                    ctx.translate(x + cardWidth / 2, cardY + imageAreaHeight / 2);
+                    ctx.rotate(Math.PI);
+                    ctx.drawImage(img, -cardWidth / 2 + 8, -imageAreaHeight / 2 + 8, cardWidth - 16, imageAreaHeight - 8);
+                } else {
+                    ctx.drawImage(img, x + 8, cardY + 8, cardWidth - 16, imageAreaHeight - 8);
+                }
+            } catch (err) {
+                console.error(`Error drawing card ${i + 1}:`, err);
             }
+            
             ctx.restore();
         } else {
+            console.warn(`Using fallback for card ${i + 1}:`, card.name);
             // Fallback: draw card name
             ctx.fillStyle = '#d4a95d';
-            ctx.font = '24px PT Sans, sans-serif';
+            ctx.font = 'bold 28px PT Sans, sans-serif';
             ctx.textAlign = 'center';
-            ctx.fillText(card.name || 'Card', x + cardWidth / 2, cardY + cardHeight / 2);
+            ctx.fillText(card.name || 'Card', x + cardWidth / 2, cardY + imageAreaHeight / 2);
         }
 
-        // Card name below
+        // Draw card name at bottom
         ctx.fillStyle = '#f5f5f5';
-        ctx.font = '28px PT Sans, sans-serif';
+        ctx.font = 'bold 22px PT Sans, sans-serif';
         ctx.textAlign = 'center';
-        const displayName = (card.name || 'Card') + (card.isReversed ? ' ↩️' : '');
-        ctx.fillText(displayName, x + cardWidth / 2, cardY + cardHeight + 50);
-    }
-
-    // Quote/meaning section
-    if (cards.length === 1 && cards[0].meaning) {
-        const meaning = cards[0].displayMeaning || cards[0].meaning;
-        const truncated = meaning.length > 200 ? meaning.substring(0, 200) + '...' : meaning;
-
-        ctx.fillStyle = '#a3a3a3';
-        ctx.font = 'italic 28px PT Sans, sans-serif';
-        ctx.textAlign = 'center';
-
-        // Word wrap
-        const words = truncated.split(' ');
-        let line = '';
-        let lineY = cardY + cardHeight + 120;
-        const maxWidth = canvas.width - 100;
-
-        for (const word of words) {
-            const testLine = line + word + ' ';
-            if (ctx.measureText(testLine).width > maxWidth) {
-                ctx.fillText(line.trim(), canvas.width / 2, lineY);
-                line = word + ' ';
-                lineY += 40;
-            } else {
-                line = testLine;
+        
+        const displayName = (card.name || 'Card') + (card.isReversed ? ' ↺' : '');
+        const nameY = cardY + cardHeight - 35;
+        
+        // Wrap text if too long
+        const maxWidth = cardWidth - 20;
+        const metrics = ctx.measureText(displayName);
+        
+        if (metrics.width > maxWidth) {
+            const words = displayName.split(' ');
+            let line1 = '';
+            let line2 = '';
+            
+            for (let w = 0; w < words.length; w++) {
+                const testLine = line1 + words[w] + ' ';
+                if (ctx.measureText(testLine).width > maxWidth && line1.length > 0) {
+                    line2 = words.slice(w).join(' ');
+                    break;
+                } else {
+                    line1 = testLine;
+                }
             }
+            
+            ctx.fillText(line1.trim(), x + cardWidth / 2, nameY - 12);
+            if (line2) {
+                ctx.fillText(line2.trim(), x + cardWidth / 2, nameY + 12);
+            }
+        } else {
+            ctx.fillText(displayName, x + cardWidth / 2, nameY);
         }
-        ctx.fillText(line.trim(), canvas.width / 2, lineY);
     }
 
     // Footer
+    const footerY = cardY + cardHeight + 80;
+    
     ctx.fillStyle = '#d4a95d';
-    ctx.font = '32px Playfair Display, serif';
+    ctx.font = 'bold 36px Playfair Display, serif';
     ctx.textAlign = 'center';
-    ctx.fillText('☀️ Sun Tarot', canvas.width / 2, canvas.height - 80);
+    ctx.fillText('☀️ Sun Tarot', canvas.width / 2, footerY);
 
     ctx.fillStyle = '#a3a3a3';
-    ctx.font = '20px PT Sans, sans-serif';
-    ctx.fillText(window.location.origin, canvas.width / 2, canvas.height - 40);
+    ctx.font = '22px PT Sans, sans-serif';
+    ctx.fillText(window.location.origin, canvas.width / 2, footerY + 40);
+    
+    console.log('Canvas generation complete');
 }
 
 // Share image using native sharing (WhatsApp etc)

@@ -66,7 +66,7 @@
             <p class="text-center text-muted" style="margin-bottom: 2rem;">— Select a package below —</p>
 
             <div class="pricing-grid" id="regularPricingGrid">
-                <p class="text-muted text-center">Loading prices...</p>
+                <!-- Skeleton loaders will be shown here -->
             </div>
 
             <div class="section" style="margin-top: 4rem;">
@@ -88,7 +88,7 @@
                 </div>
 
                 <div class="pricing-grid" id="lovePricingGrid">
-                    <p class="text-muted text-center">Loading prices...</p>
+                    <!-- Skeleton loaders will be shown here -->
                 </div>
             </div>
         </div>
@@ -116,12 +116,18 @@
     <script src="js/firebase-config.js"></script>
     <script src="js/toast.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/skeleton-loader.js"></script>
+    <script src="js/mobile-nav.js"></script>
     <script src="js/booking.js"></script>
     <script src="js/main.js"></script>
 
     <script>
         // Load and render prices dynamically
         document.addEventListener('DOMContentLoaded', async () => {
+            // Show skeleton loaders immediately
+            SkeletonLoader.show('regularPricingGrid', SkeletonLoader.pricingGrid(3));
+            SkeletonLoader.show('lovePricingGrid', SkeletonLoader.pricingGrid(3));
+
             // Wait for Firebase to initialize
             setTimeout(async () => {
                 await initServices();
@@ -145,7 +151,7 @@
             });
 
             // Render regular services
-            regularGrid.innerHTML = regularServices.map((s, i) => `
+            const regularHtml = regularServices.map((s, i) => `
                 <div class="pricing-card ${i === 1 ? 'featured' : ''}">
                     <h3 class="pricing-name">${s.name}</h3>
                     <div class="pricing-price">Rs. ${s.price}</div>
@@ -158,7 +164,7 @@
             `).join('');
 
             // Render love services
-            loveGrid.innerHTML = loveServices.map((s, i) => `
+            const loveHtml = loveServices.map((s, i) => `
                 <div class="pricing-card ${i === 1 ? 'featured' : ''}" style="border-color: ${i === 1 ? '#db7093' : 'rgba(219, 112, 147, 0.3)'};">
                     <h3 class="pricing-name">${s.name}</h3>
                     <div class="pricing-price" style="color: #db7093;">Rs. ${s.price}</div>
@@ -172,6 +178,10 @@
                     >Book Now</a>
                 </div>
             `).join('');
+
+            // Use skeleton loader's hide method for smooth transition
+            SkeletonLoader.hide('regularPricingGrid', regularHtml);
+            SkeletonLoader.hide('lovePricingGrid', loveHtml);
         }
     </script>
 </body>

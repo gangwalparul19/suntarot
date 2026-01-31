@@ -290,15 +290,8 @@ async function createBooking(date, time, serviceId, notes = '') {
 
         console.log('Booking and slot created successfully:', bookingRef.id);
 
-        // Send Email Notification
-        fetch('/api/send-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                booking: bookingData,
-                adminEmail: 'tarotsun555666@gmail.com'
-            })
-        }).catch(err => console.error('Email API error:', err));
+        // Send Email Notifications (async, don't wait)
+        sendBookingEmails(bookingData);
 
         return bookingRef.id;
 
@@ -341,7 +334,6 @@ async function getUserBookings() {
 }
 
 // Cancel a booking
-// Cancel a booking
 async function cancelBooking(bookingId) {
     if (!isLoggedIn()) return false;
 
@@ -375,6 +367,10 @@ async function cancelBooking(bookingId) {
         await batch.commit();
 
         console.log('Booking cancelled and slot freed');
+
+        // Send cancellation email (async, don't wait)
+        sendCancellationEmail(booking);
+
         return true;
     } catch (error) {
         console.error('Error cancelling booking:', error);
@@ -457,3 +453,95 @@ window.cancelBooking = cancelBooking;
 window.blockDate = blockDate;
 window.unblockDate = unblockDate;
 window.getAllBookings = getAllBookings;
+
+// Email Notification Helper
+async function sendBookingEmails(booking) {
+    try {
+        // Send confirmation email to customer
+        await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                type: 'bookingConfirmation',
+                booking: booking
+            })
+        });
+
+        // Send notification to admin
+        await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                type: 'adminNotification',
+                booking: booking,
+                adminEmail: 'tarotsun555666@gmail.com'
+            })
+        });
+
+        console.log('Booking emails sent successfully');
+    } catch (error) {
+        console.error('Error sending booking emails:', error);
+        // Don't fail the booking if email fails
+    }
+}
+
+// Send reminder emails (to be called by a scheduled function)
+async function sendBookingReminder(booking) {
+    try {
+        await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                type: 'bookingReminder',
+                booking: booking
+            })
+        });
+        console.log('Reminder email sent for booking:', booking.id);
+    } catch (error) {
+        console.error('Error sending reminder email:', error);
+    }
+}
+
+// Send cancellation email
+async function sendCancellationEmail(booking) {
+    try {
+        await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                type: 'bookingCancellation',
+                booking: booking
+            })
+        });
+        console.log('Cancellation email sent');
+    } catch (error) {
+        console.error('Error sending cancellation email:', error);
+    }
+}
+
+// Check for bookings that need reminders (call this daily)
+async function checkAndSendReminders() {
+    if (!isLoggedIn()) return;
+
+    try {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrowStr = formatDate(tomorrow);
+
+        const snapshot = await db.collection('bookings')
+            .where('date', '==', tomorrowStr)
+            .where('status', '==', 'confirmed')
+            .get();
+
+        snapshot.forEach(doc => {
+            const booking = doc.data();
+            sendBookingReminder(booking);
+        });
+    } catch (error) {
+        console.error('Error checking reminders:', error);
+    }
+}
+
+window.sendBookingReminder = sendBookingReminder;
+window.sendCancellationEmail = sendCancellationEmail;
+window.checkAndSendReminders = checkAndSendReminders;
